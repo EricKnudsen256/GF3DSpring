@@ -14,18 +14,19 @@
     <ProjectGuid>{F2888FF8-08AA-47C4-B321-B8090877719F}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>gf3d</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -41,15 +42,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\djkehoe\git\gf3d\gfc\simple_logger\include;C:\Users\djkehoe\git\gf3d\gfc\simple_json\include;C:\Users\djkehoe\git\gf3d\gfc\include;C:\Users\djkehoe\git\gf3d\include;C:\Users\djkehoe\git\libs\VulkanSDK\1.1.82.1\Include;C:\Users\djkehoe\git\libs\SDL2_ttf-2.0.14\include;C:\Users\djkehoe\git\libs\SDL2_mixer-2.0.2\include;C:\Users\djkehoe\git\libs\SDL2_image-2.0.3\include;C:\Users\djkehoe\git\libs\SDL2-2.0.8\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\djkehoe\git\libs\VulkanSDK\1.1.82.1\Lib32;C:\Users\djkehoe\git\libs\SDL2_ttf-2.0.14\lib\x86;C:\Users\djkehoe\git\libs\SDL2_mixer-2.0.2\lib\x86;C:\Users\djkehoe\git\libs\SDL2_image-2.0.3\lib\x86;C:\Users\djkehoe\git\libs\SDL2-2.0.8\lib\x86;$(LibraryPath)</LibraryPath>
-    <OutDir>..\</OutDir>
+    <IncludePath>C:\Users\Eric\Git\libs\SDL2-2.0.16\include;C:\Users\Eric\Git\libs\SDL2_image-2.0.5\include;C:\Users\Eric\Git\libs\SDL2_ttf-2.0.15\include;C:\Users\Eric\Git\libs\SDL2_mixer-2.0.4\include;E:\VulkanSDK-1.2.189.1\Include;C:\Users\Eric\Git\gf3d\include;C:\Users\Eric\Git\gf3d\gfc\include;C:\Users\Eric\Git\gf3d\gfc\simple_logger\include;C:\Users\Eric\Git\gf3d\gfc\simple_json\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Eric\Git\libs\SDL2-2.0.16\lib\x86;C:\Users\Eric\Git\libs\SDL2_image-2.0.5\lib\x86;C:\Users\Eric\Git\libs\SDL2_ttf-2.0.15\lib\x86;C:\Users\Eric\Git\libs\SDL2_mixer-2.0.4\lib\x86;E:\VulkanSDK-1.2.189.1\Lib32;$(LibraryPath)</LibraryPath>
+    <OutDir>../</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\djkehoe\git\gf3d\gfc\simple_logger\include;C:\Users\djkehoe\git\gf3d\gfc\simple_json\include;C:\Users\djkehoe\git\gf3d\gfc\include;C:\Users\djkehoe\git\gf3d\include;C:\Users\djkehoe\git\libs\VulkanSDK\1.2.148.1\Include;C:\Users\djkehoe\git\libs\SDL2_ttf-2.0.14\include;C:\Users\djkehoe\git\libs\SDL2_mixer-2.0.2\include;C:\Users\djkehoe\git\libs\SDL2_image-2.0.3\include;C:\Users\djkehoe\git\libs\SDL2-2.0.8\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\djkehoe\git\libs\VulkanSDK\1.2.148.1\Lib32;C:\Users\djkehoe\git\libs\SDL2_ttf-2.0.14\lib\x86;C:\Users\djkehoe\git\libs\SDL2_mixer-2.0.2\lib\x86;C:\Users\djkehoe\git\libs\SDL2_image-2.0.3\lib\x86;C:\Users\djkehoe\git\libs\SDL2-2.0.8\lib\x86;$(LibraryPath)</LibraryPath>
-    <OutDir>..</OutDir>
+    <IncludePath>C:\Users\Eric\Git\libs\SDL2-2.0.16\include;C:\Users\Eric\Git\libs\SDL2_image-2.0.5\include;C:\Users\Eric\Git\libs\SDL2_ttf-2.0.15\include;C:\Users\Eric\Git\libs\SDL2_mixer-2.0.4\include;E:\VulkanSDK-1.2.189.1\Include;C:\Users\Eric\Git\gf3d\include;C:\Users\Eric\Git\gf3d\gfc\include;C:\Users\Eric\Git\gf3d\gfc\simple_logger\include;C:\Users\Eric\Git\gf3d\gfc\simple_json\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Eric\Git\libs\SDL2-2.0.16\lib\x86;C:\Users\Eric\Git\libs\SDL2_image-2.0.5\lib\x86;C:\Users\Eric\Git\libs\SDL2_ttf-2.0.15\lib\x86;C:\Users\Eric\Git\libs\SDL2_mixer-2.0.4\lib\x86;E:\VulkanSDK-1.2.189.1\Lib32;$(LibraryPath)</LibraryPath>
+    <OutDir>../</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -62,7 +63,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>sdl2_ttf.lib;sdl2_mixer.lib;sdl2_image.lib;SDL2.lib;SDL2main.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sdl2_ttf.lib;sdl2_mixer.lib;sdl2_image.lib;SDL2.lib;SDL2main.lib;vulkan-1.lib;%(AdditionalDependencies);%(AdditionalDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -80,7 +81,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>vulkan-1.lib;SDL2_ttf.lib;SDL2_mixer.lib;SDL2_image.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vulkan-1.lib;SDL2_ttf.lib;SDL2_mixer.lib;SDL2_image.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies);%(AdditionalDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
