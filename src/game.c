@@ -47,9 +47,9 @@ int main(int argc,char *argv[])
     // main game loop
     slog("gf3d main loop begin");
 	slog_sync();
-	model = gf3d_model_load("dino");
+	model = gf3d_model_load("fridge");
 	gfc_matrix_identity(modelMat);
-	model2 = gf3d_model_load("dino");
+	model2 = gf3d_model_load("cube");
     gfc_matrix_identity(modelMat2);
     gfc_matrix_make_translation(
             modelMat2,
