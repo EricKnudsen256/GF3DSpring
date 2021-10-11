@@ -89,7 +89,7 @@ VkFormat gf3d_pipeline_find_supported_format(VkFormat * candidates, Uint32 candi
     }
 
     slog("failed to find supported format!");
-    return VK_NULL_HANDLE;
+    return VK_FORMAT_UNDEFINED;
 }
 
 VkFormat gf3d_pipeline_find_depth_format()
@@ -475,7 +475,6 @@ void gf3d_pipeline_create_descriptor_sets(Pipeline *pipe)
             return;
         }
     }
-    pipe->descriptorSetCount = gf3d_pipeline.chainLength;
 }
 
 void gf3d_pipeline_create_basic_model_descriptor_set_layout(Pipeline *pipe)
