@@ -11,6 +11,8 @@
 #include "gf3d_camera.h"
 #include "gf3d_texture.h"
 
+#include "g_entity.h"
+
 int main(int argc,char *argv[])
 {
     int done = 0;
@@ -19,10 +21,10 @@ int main(int argc,char *argv[])
     const Uint8 * keys;
     Uint32 bufferFrame = 0;
     VkCommandBuffer commandBuffer;
-    Model *model;
-    Matrix4 modelMat;
-    Model *model2;
-    Matrix4 modelMat2;
+    Entity* dino1;
+    Entity* dino2;
+    Model* model;
+
     
     for (a = 1; a < argc;a++)
     {
@@ -47,12 +49,18 @@ int main(int argc,char *argv[])
     // main game loop
     slog("gf3d main loop begin");
 	slog_sync();
-	model = gf3d_model_load("fridge");
-	gfc_matrix_identity(modelMat);
-	model2 = gf3d_model_load("cube");
-    gfc_matrix_identity(modelMat2);
+
+    entity_manager_init(1000);
+
+    dino1 = entity_new();
+    dino2 = entity_new();
+
+    dino1->model = gf3d_model_load("dino");
+    gfc_matrix_identity(dino1->modelMat);
+    dino2->model = gf3d_model_load("dino");
+    gfc_matrix_identity(dino2->modelMat);
     gfc_matrix_make_translation(
-            modelMat2,
+        dino2->modelMat,
             vector3d(10,0,0)
         );
     while(!done)
@@ -62,6 +70,8 @@ int main(int argc,char *argv[])
         //update game things here
         
         gf3d_vgraphics_rotate_camera(0.001);
+
+        /*
         gfc_matrix_rotate(
             modelMat,
             modelMat,
@@ -72,6 +82,7 @@ int main(int argc,char *argv[])
             modelMat2,
             0.002,
             vector3d(0,0,1));
+            */
 
         // configure render command for graphics command pool
         // for each mesh, get a command and configure it from the pool
@@ -79,8 +90,10 @@ int main(int argc,char *argv[])
         gf3d_pipeline_reset_frame(gf3d_vgraphics_get_graphics_pipeline(),bufferFrame);
             commandBuffer = gf3d_command_rendering_begin(bufferFrame);
 
-                gf3d_model_draw(model,bufferFrame,commandBuffer,modelMat);
-                gf3d_model_draw(model2,bufferFrame,commandBuffer,modelMat2);
+                entity_manager_draw(bufferFrame, commandBuffer);
+
+                //gf3d_model_draw(model,bufferFrame,commandBuffer,modelMat);
+                //gf3d_model_draw(model2,bufferFrame,commandBuffer,modelMat2);
                 
             gf3d_command_rendering_end(commandBuffer);
             

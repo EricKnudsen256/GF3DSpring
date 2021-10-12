@@ -113,6 +113,7 @@
     <ClInclude Include="..\include\gf3d_validation.h" />
     <ClInclude Include="..\include\gf3d_vgraphics.h" />
     <ClInclude Include="..\include\gf3d_vqueues.h" />
+    <ClInclude Include="..\include\g_entity.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\gfc\simple_json\src\simple_json.c" />
@@ -145,6 +146,7 @@
     <ClCompile Include="..\src\gf3d_validation.c" />
     <ClCompile Include="..\src\gf3d_vgraphics.c" />
     <ClCompile Include="..\src\gf3d_vqueues.c" />
+    <ClCompile Include="..\src\g_entity.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -2,16 +2,17 @@
 #define __ENTITY_H__
 
 #include "gf3d_model.h"
+#include "gfc_types.h"
 
 typedef struct Entity_s
 {
     Uint8 _inuse;
     Uint32 _id;
     Model *model;
-    Vector3 position;
-    Vector3 rotation;
-    Vector3 velocity;
-    Vector3 scale;
+    Vector3D position;
+    Vector3D rotation;
+    Vector3D velocity;
+    Vector3D scale;
     Matrix4 modelMat;
     
     void(*update)(struct Entity_s *self);
@@ -32,11 +33,17 @@ void entity_manager_think();
 
 void entity_manager_update();
 
-void entity_manager_draw();
+void entity_manager_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer);
 
 void entity_manager_free();
 
 Entity* entity_new();
+
+void entity_think(Entity *self);
+
+void entity_update(Entity* self);
+
+void entity_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer, Entity* self);
 
 void entity_free(Entity *self);
 
