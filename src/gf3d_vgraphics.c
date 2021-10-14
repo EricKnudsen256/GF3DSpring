@@ -107,8 +107,8 @@ void gf3d_vgraphics_init(
     gfc_matrix_identity(gf3d_vgraphics.ubo.proj);
     gfc_matrix_view(
         gf3d_vgraphics.ubo.view,
-        vector3d(2,40,2),
         vector3d(0,0,0),
+        vector3d(0,10,0),
         vector3d(0,0,1)
     );
     gfc_matrix_perspective(
@@ -657,13 +657,40 @@ uint32_t gf3d_vgraphics_find_memory_type(uint32_t typeFilter, VkMemoryPropertyFl
     return 0;
 }
 
-void gf3d_vgraphics_rotate_camera(float degrees)
+void gf3d_vgraphics_rotate_camera(float degrees, int axis)
 {
-    gfc_matrix_rotate(
-        gf3d_vgraphics.ubo.view,
-        gf3d_vgraphics.ubo.view,
-        degrees,
-        vector3d(0,0,1));
+    if (axis == 0)
+    {
+        gfc_matrix_rotate(
+            gf3d_vgraphics.ubo.view,
+            gf3d_vgraphics.ubo.view,
+            degrees,
+            vector3d(1, 0, 0));
+    }
+    else if (axis == 1)
+    {
+        gfc_matrix_rotate(
+            gf3d_vgraphics.ubo.view,
+            gf3d_vgraphics.ubo.view,
+            degrees,
+            vector3d(0, 1, 0));
+    }
+    else if (axis == 2)
+    {
+        gfc_matrix_rotate(
+            gf3d_vgraphics.ubo.view,
+            gf3d_vgraphics.ubo.view,
+            degrees,
+            vector3d(0, 0, 1));
+    }
+
+    gf3d_vgraphics_slog_camera();
+}
+
+void gf3d_vgraphics_translate_camera(float x, float y, float z)
+{
+    gfc_matrix_translate(gf3d_vgraphics.ubo.view, vector3d(x, y, z));
+    gf3d_vgraphics_slog_camera();
 
 }
 
@@ -704,6 +731,27 @@ VkImageView gf3d_vgraphics_create_image_view(VkImage image, VkFormat format)
     }
 
     return imageView;
+}
+
+void gf3d_vgraphics_slog_camera()
+{
+    slog("CameraSlog\n[%f, %f, %f, %f]\n[%f, %f, %f, %f]\n[%f, %f, %f, %f]\n[%f, %f, %f, %f]", 
+        gf3d_vgraphics.ubo.view[0][0], gf3d_vgraphics.ubo.view[0][1], gf3d_vgraphics.ubo.view[0][2], gf3d_vgraphics.ubo.view[0][3],
+        gf3d_vgraphics.ubo.view[1][0], gf3d_vgraphics.ubo.view[1][1], gf3d_vgraphics.ubo.view[1][2], gf3d_vgraphics.ubo.view[1][3],
+        gf3d_vgraphics.ubo.view[2][0], gf3d_vgraphics.ubo.view[2][1], gf3d_vgraphics.ubo.view[2][2], gf3d_vgraphics.ubo.view[2][3],
+        gf3d_vgraphics.ubo.view[3][0], gf3d_vgraphics.ubo.view[3][1], gf3d_vgraphics.ubo.view[3][2], gf3d_vgraphics.ubo.view[3][3]);
+
+}
+
+void gf3d_vgraphics_test_function(int test)
+{
+    gfc_matrix_view(gf3d_vgraphics.ubo.view, vector3d(0, 0, 0), vector3d(5, 5, 5), vector3d(0, 0, 1));
+    //gf3d_vgraphics_slog_camera();
+}
+
+void gf3d_set_view(Matrix4 matrix)
+{
+    gfc_matrix_copy(gf3d_vgraphics.ubo.view, matrix);
 }
 
 /*eol@eof*/

@@ -1,19 +1,29 @@
 #include "gfc_matrix.h"
 
+#include "gf3d_camera.h"
+#include "gf3d_vgraphics.h"
+
 #include <string.h>
 
-Matrix4 gf3d_camera = {0};
+Camera camera = { 0 };
 
-void gf3d_camera_get_view(Matrix4 *view)
+
+void gf3d_camera_init()
 {
-    if (!view)return;
-    memcpy(view,gf3d_camera,sizeof(Matrix4));
+    gfc_matrix_identity(camera.view);
+
+    gf3d_camera_look_at(
+        vector3d(0, 0, 0),
+        vector3d(0, 10, 0),
+        vector3d(0, 0, 1)
+    );
+
+    camera._active = 1;
 }
 
-void gf3d_camera_set_view(Matrix4 *view)
+void gf3d_camera_update()
 {
-    if (!view)return;
-    memcpy(gf3d_camera,view,sizeof(Matrix4));
+    gf3d_set_view(camera.view);
 }
 
 void gf3d_camera_look_at(
@@ -23,7 +33,7 @@ void gf3d_camera_look_at(
 )
 {
     gfc_matrix_view(
-        gf3d_camera,
+        camera.view,
         position,
         target,
         up
@@ -32,16 +42,16 @@ void gf3d_camera_look_at(
 
 void gf3d_camera_set_position(Vector3D position)
 {
-    gf3d_camera[0][3] = position.x;
-    gf3d_camera[1][3] = position.y;
-    gf3d_camera[2][3] = position.z;
+    camera.view[0][3] = position.x;
+    camera.view[1][3] = position.y;
+    camera.view[2][3] = position.z;
 }
 
 void gf3d_camera_move(Vector3D move)
 {
-    gf3d_camera[0][3] += move.x;
-    gf3d_camera[1][3] += move.y;
-    gf3d_camera[2][3] += move.z;
+    camera.view[0][3] += move.x;
+    camera.view[1][3] += move.y;
+    camera.view[2][3] += move.z;
 }
 
 /*eol@eof*/

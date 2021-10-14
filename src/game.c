@@ -25,6 +25,10 @@ int main(int argc,char *argv[])
     Entity* dino2;
     Model* model;
 
+    float test = 0;
+
+    int x, y;
+
     
     for (a = 1; a < argc;a++)
     {
@@ -51,25 +55,80 @@ int main(int argc,char *argv[])
 	slog_sync();
 
     entity_manager_init(1000);
+    gf3d_camera_init();
 
     dino1 = entity_new();
     dino2 = entity_new();
 
     dino1->model = gf3d_model_load("dino");
     gfc_matrix_identity(dino1->modelMat);
-    dino2->model = gf3d_model_load("dino");
-    gfc_matrix_identity(dino2->modelMat);
     gfc_matrix_make_translation(
-        dino2->modelMat,
-            vector3d(10,0,0)
+        dino1->modelMat,
+            vector3d(0,20,0)
         );
+
+    //SDL_ShowCursor(SDL_DISABLE);
+    SDL_SetRelativeMouseMode(SDL_ENABLE);
+
+    //gf3d_vgraphics_rotate_camera(0, 2);
+
+    
+
     while(!done)
     {
         SDL_PumpEvents();   // update SDL's internal event structures
         keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
         //update game things here
         
-        gf3d_vgraphics_rotate_camera(0.001);
+        //gf3d_vgraphics_rotate_camera(0.001, 2);
+
+        SDL_GetRelativeMouseState(&x, &y);
+
+
+        //gf3d_vgraphics_test_function((int)test);
+       
+
+        
+        if (x != 0)
+        {
+            //gf3d_vgraphics_rotate_camera(0.001 * x, 2);
+        }
+        if (y != 0)
+        {
+            //gf3d_vgraphics_rotate_camera(0.001 * y, 0);
+        }
+
+
+        if (keys[SDL_SCANCODE_W])
+        {
+            //gf3d_vgraphics_translate_camera(0, 0, .01);
+        }
+        else if (keys[SDL_SCANCODE_S])
+        {
+            //gf3d_vgraphics_translate_camera(0, 0, -.01);
+        }
+
+        if (keys[SDL_SCANCODE_A])
+        {
+            //gf3d_vgraphics_translate_camera(.01, 0, 0);
+        }
+        else if (keys[SDL_SCANCODE_D])
+        {
+           //gf3d_vgraphics_translate_camera(-.01, 0, 0);
+        }
+
+        if (keys[SDL_SCANCODE_SPACE])
+        {
+            //gf3d_vgraphics_translate_camera(0, -.01, 0);
+        }
+        else if (keys[SDL_SCANCODE_LSHIFT])
+        {
+            //gf3d_vgraphics_translate_camera(0, .01, 0);
+        }
+
+
+        gf3d_camera_update();
+        
 
         /*
         gfc_matrix_rotate(

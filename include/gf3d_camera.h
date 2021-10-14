@@ -3,17 +3,18 @@
 
 #include "gfc_matrix.h"
 
-/**
- * @brief get the current camera view
- * @param view output, the matrix provided will be populated with the current camera information
- */
-void gf3d_camera_get_view(Matrix4 view);
+typedef struct
+{
+    Bool _active;
+    Vector3D forward;
+    Vector3D rotation;
+    Matrix4 view;
 
-/**
- * @brief set the current camera based on the matrix provided
- */
-void gf3d_camera_set_view(Matrix4 view);
+}Camera;
 
+void gf3d_camera_init();
+
+void gf3d_camera_update();
 /**
  * @brief set the camera properties based on position and direction that the camera should be looking
  * @param position the location for the camera

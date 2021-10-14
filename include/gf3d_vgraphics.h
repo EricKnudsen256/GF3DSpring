@@ -42,9 +42,15 @@ void gf3d_vgraphics_copy_buffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDevice
 
 uint32_t gf3d_vgraphics_find_memory_type(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
-void gf3d_vgraphics_rotate_camera(float degrees);
+/** 
+* @params axis, 0 for x, 1 for y, 2 for z
+*/
+void gf3d_vgraphics_rotate_camera(float degrees, int axis);
+
+void gf3d_vgraphics_translate_camera(float x, float y, float z);
 
 VkBuffer gf3d_vgraphics_get_uniform_buffer_by_index(Uint32 index);
+
 UniformBufferObject gf3d_vgraphics_get_uniform_buffer_object();
 
 Pipeline *gf3d_vgraphics_get_graphics_pipeline();
@@ -52,6 +58,10 @@ Pipeline *gf3d_vgraphics_get_graphics_pipeline();
 Command *gf3d_vgraphics_get_graphics_command_pool();
 
 VkImageView gf3d_vgraphics_create_image_view(VkImage image, VkFormat format);
+
+void gf3d_vgraphics_slog_camera();
+
+void gf3d_vgraphics_test_function(int test);
 
 
 #endif
