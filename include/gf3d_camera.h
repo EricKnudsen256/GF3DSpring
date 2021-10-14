@@ -33,10 +33,20 @@ void gf3d_camera_look_at(
  */
 void gf3d_camera_set_position(Vector3D position);
 
+void gf3d_rotate_camera(float degrees, int axis);
+
+void gf3d_translate_camera(float x, float y, float z);
+
 /**
  * @brief move the camera relatively based on the vector provided
  * @param move the ammount to move the camera
  */
 void gf3d_camera_move(Vector3D move);
+
+
+void gf3d_camera_test1();
+
+
+void gf3d_camera_test2();
 
 #endif

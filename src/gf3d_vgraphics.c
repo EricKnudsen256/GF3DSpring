@@ -690,7 +690,7 @@ void gf3d_vgraphics_rotate_camera(float degrees, int axis)
 void gf3d_vgraphics_translate_camera(float x, float y, float z)
 {
     gfc_matrix_translate(gf3d_vgraphics.ubo.view, vector3d(x, y, z));
-    gf3d_vgraphics_slog_camera();
+    //gf3d_vgraphics_slog_camera();
 
 }
 
