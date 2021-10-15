@@ -91,6 +91,7 @@ int main(int argc,char *argv[])
         
         if (x != 0)
         {
+            //slog("x:%i", x);
             gf3d_rotate_camera(0.001 * x, 2);
         }
         if (y != 0)
@@ -102,48 +103,35 @@ int main(int argc,char *argv[])
         if (keys[SDL_SCANCODE_W])
         {
             //gf3d_camera_test1();
-            gf3d_translate_camera(0, 0, .01);
+            gf3d_camera_move(vector3d(0, 0, .01));
         }
         else if (keys[SDL_SCANCODE_S])
         {
             //gf3d_camera_test2();
-            gf3d_translate_camera(0, 0, -.01);
+            gf3d_camera_move(vector3d(0, 0, -.01));
         }
 
         if (keys[SDL_SCANCODE_A])
         {
-            gf3d_translate_camera(.01, 0, 0);
+            gf3d_camera_move(vector3d(.01, 0, 0));
         }
         else if (keys[SDL_SCANCODE_D])
         {
-            gf3d_translate_camera(-.01, 0, 0);
+            gf3d_camera_move(vector3d(-.01, 0, 0));
         }
 
         if (keys[SDL_SCANCODE_SPACE])
         {
-            gf3d_translate_camera(0, -.01, 0);
+            gf3d_camera_move(vector3d(0, -.01, 0));
         }
         else if (keys[SDL_SCANCODE_LSHIFT])
         {
-            gf3d_translate_camera(0, .01, 0);
+            gf3d_camera_move(vector3d(0, .01, 0));
         }
 
 
-        //gf3d_camera_update();
+        gf3d_camera_update();
         
-
-        /*
-        gfc_matrix_rotate(
-            modelMat,
-            modelMat,
-            0.002,
-            vector3d(1,0,0));
-        gfc_matrix_rotate(
-            modelMat2,
-            modelMat2,
-            0.002,
-            vector3d(0,0,1));
-            */
 
         // configure render command for graphics command pool
         // for each mesh, get a command and configure it from the pool

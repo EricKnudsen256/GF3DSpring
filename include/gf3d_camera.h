@@ -6,8 +6,9 @@
 typedef struct
 {
     Bool _active;
-    Vector3D forward;
+    Vector3D scale;
     Vector3D rotation;
+    Vector3D position;
     Matrix4 view;
 
 }Camera;

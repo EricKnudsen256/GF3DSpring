@@ -1,3 +1,5 @@
+#include "simple_logger.h"
+
 #include "gfc_matrix.h"
 
 #include "gf3d_camera.h"
@@ -16,16 +18,59 @@ void gf3d_camera_init()
 
     gf3d_camera_look_at(
         vector3d(0, 0, 0),
-        vector3d(0, 10, 0),
+        vector3d(0, 1, 0),
         vector3d(0, 0, 1)
     );
+    
+    camera.rotation = vector3d(0, 0, 0);
+    
+    camera.position = vector3d(0, 0, 0);
 
     camera._active = 1;
 }
 
 void gf3d_camera_update()
 {
+    //Order of operations here, rotate, scale, transform
+    
+    gf3d_camera_look_at(
+        vector3d(0, 0, 0),
+        vector3d(0, 1, 0),
+        vector3d(0, 0, 1)
+    );
+    
+    
+
+    gfc_matrix_rotate(
+        camera.view,
+        camera.view,
+        camera.rotation.z,
+        vector3d(1, 0, 0));
+    //camera.view[0][1] = 0;
+    //camera.view[2][0] = 0;
+
+    gfc_matrix_rotate(
+        camera.view,
+        camera.view,
+        camera.rotation.x,
+        vector3d(0, 0, 1));
+    //camera.view[0][1] = 0;
+    //camera.view[2][0] = 0;
+    
+    
+    
+    //scale here
+    
+    //translation
+    
+    gfc_matrix_translate(camera.view, camera.position);
+    
+    slog("T: X:%f, Y:%f, Z:%f", camera.position.x, camera.position.y, camera.position.z);
+    
+    slog("R: X:%f, Y:%f, Z:%f", camera.rotation.x, camera.rotation.y, camera.rotation.z);
+    
     gf3d_set_view(camera.view);
+    
 }
 
 void gf3d_camera_look_at(
@@ -44,47 +89,30 @@ void gf3d_camera_look_at(
 
 void gf3d_camera_set_position(Vector3D position)
 {
-    camera.view[0][3] = position.x;
-    camera.view[1][3] = position.y;
-    camera.view[2][3] = position.z;
+    camera.position.x = position.x;
+    camera.position.y = position.y;
+    camera.position.z = position.z;
 }
 
 void gf3d_camera_move(Vector3D move)
 {
-    camera.view[0][3] += move.x;
-    camera.view[1][3] += move.y;
-    camera.view[2][3] += move.z;
+    camera.position.x += move.x;
+    camera.position.y += move.y;
+    camera.position.z += move.z;
 }
 
 void gf3d_rotate_camera(float degrees, int axis)
 {
 
-    if (axis == 0)
+    if(axis == 2)
     {
-        gfc_matrix_rotate(
-            camera.view,
-            camera.view,
-            degrees,
-            vector3d(1, 0, 0));
-        //camera.view[0][1] = 0;
-        //camera.view[2][0] = 0;
+        camera.rotation.x += degrees;
     }
-    else if (axis == 2)
+    else if(axis == 0)
     {
-        gfc_matrix_rotate(
-            camera.view,
-            camera.view,
-            degrees,
-            vector3d(0, 0, 1));
-        //camera.view[0][1] = 0;
-        //camera.view[2][0] = 0;
+        camera.rotation.z += degrees;
     }
 
-}
-
-void gf3d_translate_camera(float x, float y, float z)
-{
-    gfc_matrix_translate(camera.view, vector3d(x, y, z));
 }
 
 void gf3d_camera_test1()

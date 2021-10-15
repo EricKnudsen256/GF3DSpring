@@ -17,7 +17,7 @@ typedef struct Entity_s
     
     void(*update)(struct Entity_s *self);
 	void(*think)(struct Entity_s *self);
-	void(*draw)(struct Entity_s *self);
+	void(*draw)(Uint32 bufferFrame, VkCommandBuffer commandBuffer, struct Entity_s *self);
     
 }Entity;
 
