@@ -1,6 +1,7 @@
 #include "simple_logger.h"
 
 #include "gfc_matrix.h"
+#include "gfc_vector.h"
 
 #include "gf3d_camera.h"
 #include "gf3d_vgraphics.h"
@@ -38,6 +39,17 @@ void gf3d_camera_update()
         vector3d(0, 1, 0),
         vector3d(0, 0, 1)
     );
+    
+    vector3d_angle_vectors(camera.rotation, &camera.forward, &camera.right, &camera.up);
+    
+    if(camera.rotation.z > M_PI - M_PI/8)
+    {
+        camera.rotation.z = M_PI - M_PI/8;
+    }
+    else if(camera.rotation.z < -M_PI + M_PI/8)
+    {
+        camera.rotation.z = -M_PI + M_PI/8;
+    }
     
     
 
@@ -96,9 +108,9 @@ void gf3d_camera_set_position(Vector3D position)
 
 void gf3d_camera_move(Vector3D move)
 {
-    camera.position.x += move.x;
-    camera.position.y += move.y;
-    camera.position.z += move.z;
+    camera.position.x -= move.x;
+    camera.position.y -= move.y;
+    camera.position.z -= move.z;
 }
 
 void gf3d_rotate_camera(float degrees, int axis)

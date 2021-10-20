@@ -103,30 +103,30 @@ int main(int argc,char *argv[])
         if (keys[SDL_SCANCODE_W])
         {
             //gf3d_camera_test1();
-            gf3d_camera_move(vector3d(0, 0, .01));
+            gf3d_camera_move(vector3d(0, 0, -.01));
         }
         else if (keys[SDL_SCANCODE_S])
         {
             //gf3d_camera_test2();
-            gf3d_camera_move(vector3d(0, 0, -.01));
+            gf3d_camera_move(vector3d(0, 0, .01));
         }
 
         if (keys[SDL_SCANCODE_A])
         {
-            gf3d_camera_move(vector3d(.01, 0, 0));
+            gf3d_camera_move(vector3d(-.01, 0, 0));
         }
         else if (keys[SDL_SCANCODE_D])
         {
-            gf3d_camera_move(vector3d(-.01, 0, 0));
+            gf3d_camera_move(vector3d(.01, 0, 0));
         }
 
         if (keys[SDL_SCANCODE_SPACE])
         {
-            gf3d_camera_move(vector3d(0, -.01, 0));
+            gf3d_camera_move(vector3d(0, .01, 0));
         }
         else if (keys[SDL_SCANCODE_LSHIFT])
         {
-            gf3d_camera_move(vector3d(0, .01, 0));
+            gf3d_camera_move(vector3d(0, -.01, 0));
         }
 
 

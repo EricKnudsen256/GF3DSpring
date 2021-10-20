@@ -9,6 +9,10 @@ typedef struct
     Vector3D scale;
     Vector3D rotation;
     Vector3D position;
+    Vector3D forward;
+    Vector3D right;
+    Vector3D up;
+    
     Matrix4 view;
 
 }Camera;
@@ -27,6 +31,13 @@ void gf3d_camera_look_at(
     Vector3D target,
     Vector3D up
 );
+
+void gf3d_camera_forward(float move);
+
+void gf3d_camera_right(float move);
+
+void gf3d_camera_up(float move);
+
 
 /**
  * @brief explicitely set the camera positon, holding all other parameters the same
