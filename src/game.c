@@ -20,10 +20,11 @@ int main(int argc,char *argv[])
     Uint8 validate = 0;
     const Uint8 * keys;
     Uint32 bufferFrame = 0;
-    VkCommandBuffer commandBuffer;
+    VkCommandBuffer commandBuffer, wireCommandBuffer;
     Entity* dino1;
     Entity* dino2;
     Model* model;
+    Pipeline *pipe, *wirePipe;
 
     float test = 0;
 
@@ -67,6 +68,8 @@ int main(int argc,char *argv[])
             vector3d(0,20,0)
         );
 
+    entity_make_hitbox(vector3d(10, 10, 10), dino1);
+
     //SDL_ShowCursor(SDL_DISABLE);
     SDL_SetRelativeMouseMode(SDL_ENABLE);
 
@@ -79,74 +82,41 @@ int main(int argc,char *argv[])
         SDL_PumpEvents();   // update SDL's internal event structures
         keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
         //update game things here
+
+        pipe = gf3d_vgraphics_get_graphics_pipeline();
+        wirePipe = gf3d_vgraphics_get_wireframe_pipeline();
         
-        //gf3d_vgraphics_rotate_camera(0.001, 2);
 
-        SDL_GetRelativeMouseState(&x, &y);
-
-
-        //gf3d_vgraphics_test_function((int)test);
        
-
-        
-        if (x != 0)
-        {
-            //slog("x:%i", x);
-            gf3d_rotate_camera(0.001 * x, 2);
-        }
-        if (y != 0)
-        {
-            gf3d_rotate_camera(0.001 * y, 0);
-        }
-
-
-        if (keys[SDL_SCANCODE_W])
-        {
-            //gf3d_camera_test1();
-            gf3d_camera_move(vector3d(0, 0, -.01));
-        }
-        else if (keys[SDL_SCANCODE_S])
-        {
-            //gf3d_camera_test2();
-            gf3d_camera_move(vector3d(0, 0, .01));
-        }
-
-        if (keys[SDL_SCANCODE_A])
-        {
-            gf3d_camera_move(vector3d(-.01, 0, 0));
-        }
-        else if (keys[SDL_SCANCODE_D])
-        {
-            gf3d_camera_move(vector3d(.01, 0, 0));
-        }
-
-        if (keys[SDL_SCANCODE_SPACE])
-        {
-            gf3d_camera_move(vector3d(0, .01, 0));
-        }
-        else if (keys[SDL_SCANCODE_LSHIFT])
-        {
-            gf3d_camera_move(vector3d(0, -.01, 0));
-        }
-
-
         gf3d_camera_update();
         
 
         // configure render command for graphics command pool
         // for each mesh, get a command and configure it from the pool
         bufferFrame = gf3d_vgraphics_render_begin();
-        gf3d_pipeline_reset_frame(gf3d_vgraphics_get_graphics_pipeline(),bufferFrame);
-            commandBuffer = gf3d_command_rendering_begin(bufferFrame);
+        gf3d_pipeline_reset_frame(pipe, bufferFrame);
+            commandBuffer = gf3d_command_rendering_begin(bufferFrame, pipe);
 
-                entity_manager_draw(bufferFrame, commandBuffer);
+            entity_manager_draw(bufferFrame, commandBuffer);
 
-                //gf3d_model_draw(model,bufferFrame,commandBuffer,modelMat);
-                //gf3d_model_draw(model2,bufferFrame,commandBuffer,modelMat2);
-                
-            gf3d_command_rendering_end(commandBuffer);
-            
+        gf3d_command_rendering_end(commandBuffer);
+
         gf3d_vgraphics_render_end(bufferFrame);
+            
+            
+        /*
+
+        gf3d_pipeline_reset_frame(gf3d_vgraphics_get_wireframe_pipeline(), bufferFrame);
+            wireCommandBuffer = gf3d_command_rendering_begin(bufferFrame, gf3d_vgraphics_get_wireframe_pipeline());
+
+
+
+
+            gf3d_command_rendering_end(wireCommandBuffer);
+
+
+        */
+        
 
         if (keys[SDL_SCANCODE_ESCAPE])done = 1; // exit condition
     }    

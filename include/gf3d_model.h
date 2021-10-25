@@ -51,6 +51,7 @@ void gf3d_model_manager_init(Uint32 max_models,Uint32 chain_length,VkDevice devi
 
 Model * gf3d_model_load(char * filename);
 Model * gf3d_model_new();
+Model* gf3d_model_from_hitbox(Vector3D dimensions);
 /**
  * @brief queue up a model for rendering
  * @param model the model to render

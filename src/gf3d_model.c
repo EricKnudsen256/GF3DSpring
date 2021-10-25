@@ -14,6 +14,7 @@ typedef struct
     Uint32                  chain_length;   /**<length of swap chain*/
     VkDevice                device;
     Pipeline            *   pipe;           /**<the pipeline associated with model rendering*/
+    Pipeline            * wireframePipe;
 }ModelManager;
 
 static ModelManager gf3d_model = {0};
@@ -54,6 +55,7 @@ void gf3d_model_manager_init(Uint32 max_models,Uint32 chain_length,VkDevice devi
     gf3d_model.max_models = max_models;
     gf3d_model.device = device;
     gf3d_model.pipe = gf3d_vgraphics_get_graphics_pipeline();
+    gf3d_model.wireframePipe = gf3d_vgraphics_get_wireframe_pipeline();
     
     slog("model manager initiliazed");
     atexit(gf3d_model_manager_close);
@@ -88,6 +90,21 @@ Model * gf3d_model_load(char * filename)
     snprintf(assetname,GFCLINELEN,"images/%s.png",filename);
     model->texture = gf3d_texture_load(assetname);
     
+    return model;
+}
+
+Model* gf3d_model_from_hitbox(Vector3D dimensions)
+{
+    TextLine assetname;
+    Model* model;
+    model = gf3d_model_new();
+    if (!model)return NULL;
+
+    model->mesh = gf3d_mesh_from_hitbox(dimensions);
+
+
+    model->texture = gf3d_texture_load("images/cube.png");
+
     return model;
 }
 

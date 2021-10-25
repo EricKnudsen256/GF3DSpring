@@ -4,6 +4,8 @@
 #include "gf3d_model.h"
 #include "gfc_types.h"
 
+#include "g_hitbox.h"
+
 typedef struct Entity_s
 {
     Uint8 _inuse;
@@ -14,6 +16,8 @@ typedef struct Entity_s
     Vector3D velocity;
     Vector3D scale;
     Matrix4 modelMat;
+
+    Hitbox *hitbox;
     
     void(*update)(struct Entity_s *self);
 	void(*think)(struct Entity_s *self);
@@ -38,6 +42,8 @@ void entity_manager_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer);
 void entity_manager_free();
 
 Entity* entity_new();
+
+void entity_make_hitbox(Vector3D dimensions, Entity* self);
 
 void entity_think(Entity *self);
 

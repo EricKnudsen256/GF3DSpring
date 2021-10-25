@@ -112,6 +112,17 @@ Entity* entity_new()
     return NULL;
 }
 
+void entity_make_hitbox(Vector3D dimensions, Entity* self)
+{
+    if (!self) return;
+    if (self->hitbox)
+    {
+        self->hitbox = NULL;
+    }
+
+    self->hitbox = hitbox_new(vector3d(0,0,0), dimensions);
+}
+
 void entity_think(Entity* self)
 {
 
@@ -134,6 +145,12 @@ void entity_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer, Entity* self
     if (!self->modelMat) return;
 
     gf3d_model_draw(self->model, bufferFrame, commandBuffer, self->modelMat);
+    
+    if (self->hitbox)
+    {
+        //hitbox_draw(self->hitbox, bufferFrame, self->modelMat);
+    }
+
     //slog("Draw successful");
 }
 

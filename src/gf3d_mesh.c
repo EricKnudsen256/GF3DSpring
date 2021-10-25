@@ -178,7 +178,20 @@ void gf3d_mesh_render(Mesh *mesh,VkCommandBuffer commandBuffer, VkDescriptorSet 
         slog("cannot render a NULL mesh");
         return;
     }
-    pipe = gf3d_vgraphics_get_graphics_pipeline();
+
+    //if (mesh->type == MESH_WIREFRAME)
+    //{
+        pipe = gf3d_vgraphics_get_graphics_pipeline();
+    //}
+
+    /*
+    else
+    {
+        pipe = gf3d_vgraphics_get_wireframe_pipeline();
+    }
+    */
+
+
     vkCmdBindVertexBuffers(commandBuffer, 0, 1, &mesh->buffer, offsets);
     
     vkCmdBindIndexBuffer(commandBuffer, mesh->faceBuffer, 0, VK_INDEX_TYPE_UINT32);
@@ -244,6 +257,7 @@ void gf3d_mesh_create_vertex_buffer_from_vertices(Mesh *mesh,Vertex *vertices,Ui
     slog("created a mesh with %i vertices and %i face",vcount,fcount);
 }
 
+
 Mesh *gf3d_mesh_load(char *filename)
 {
     Mesh *mesh;
@@ -265,7 +279,102 @@ Mesh *gf3d_mesh_load(char *filename)
     }
     gf3d_mesh_create_vertex_buffer_from_vertices(mesh,obj->faceVertices,obj->face_vert_count,obj->outFace,obj->face_count);
     gf3d_obj_free(obj);
+    mesh->type = MESH_DEFAULT;
     gfc_line_cpy(mesh->filename,filename);
+    return mesh;
+}
+
+
+Mesh* gf3d_mesh_from_hitbox(Vector3D dimensions)
+{
+    Mesh* mesh;
+    ObjData* obj;
+
+    FILE* file;
+
+    obj = (ObjData*)gfc_allocate_array(sizeof(ObjData), 1);
+
+    if (!obj)
+    {
+        return NULL;
+    }
+
+    mesh = gf3d_mesh_new();
+    if (!mesh)
+    {
+        return NULL;
+    }
+
+    //setup code from making the mesh by hand
+
+    file = fopen("models/cube.obj", "r");
+
+    gf3d_obj_get_counts_from_file(obj, file);
+
+    slog("Didn't Fucking Crash");
+
+    obj->vertices = (Vector3D*)gfc_allocate_array(sizeof(Vector3D), obj->vertex_count);
+    obj->normals = (Vector3D*)gfc_allocate_array(sizeof(Vector3D), obj->normal_count);
+    obj->texels = (Vector2D*)gfc_allocate_array(sizeof(Vector2D), obj->texel_count);
+
+    obj->faceVerts = (Face*)gfc_allocate_array(sizeof(Face), obj->face_count);
+    obj->faceNormals = (Face*)gfc_allocate_array(sizeof(Face), obj->face_count);
+    obj->faceTexels = (Face*)gfc_allocate_array(sizeof(Face), obj->face_count);
+
+    gf3d_obj_load_get_data_from_file(obj, file);
+
+    //setup all 8 verticies
+
+    obj->vertices[0].x = -dimensions.x / 2;
+    obj->vertices[0].y = dimensions.y / 2;
+    obj->vertices[0].z = -dimensions.z / 2;
+
+    obj->vertices[1].x = dimensions.x / 2;
+    obj->vertices[1].y = dimensions.y / 2;
+    obj->vertices[1].z = -dimensions.z / 2;
+
+    obj->vertices[2].x = dimensions.x / 2;
+    obj->vertices[2].y = -dimensions.y / 2;
+    obj->vertices[2].z = -dimensions.z / 2;
+
+    obj->vertices[3].x = -dimensions.x / 2;
+    obj->vertices[3].y = -dimensions.y / 2;
+    obj->vertices[3].z = -dimensions.z / 2;
+
+    obj->vertices[4].x = -dimensions.x / 2;
+    obj->vertices[4].y = dimensions.y / 2;
+    obj->vertices[4].z = dimensions.z / 2;
+
+    obj->vertices[5].x = dimensions.x / 2;
+    obj->vertices[5].y = dimensions.y / 2;
+    obj->vertices[5].z = dimensions.z / 2;
+
+    obj->vertices[6].x = dimensions.x / 2;
+    obj->vertices[6].y = -dimensions.y / 2;
+    obj->vertices[6].z = dimensions.z / 2;
+
+    obj->vertices[7].x = -dimensions.x / 2;
+    obj->vertices[7].y = -dimensions.y / 2;
+    obj->vertices[7].z = dimensions.z / 2;
+
+    fclose(file);
+    gf3d_obj_load_reorg(obj);
+
+    /*
+    slog("Verts:%i", obj->vertex_count);
+    slog("Normals:%i", obj->normal_count);
+    slog("Texels:%i", obj->texel_count);
+
+    slog("FaceVerts:%i", obj->face_count);
+    slog("FaceNormals:%i", obj->face_count);
+    slog("FaceTexels:%i", obj->face_count);
+    */
+
+    gf3d_mesh_create_vertex_buffer_from_vertices(mesh, obj->faceVertices, obj->face_vert_count, obj->outFace, obj->face_count);
+    gf3d_obj_free(obj);
+
+    mesh->type = MESH_WIREFRAME;
+
     return mesh;
 }
 
