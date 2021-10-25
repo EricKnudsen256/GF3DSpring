@@ -34,6 +34,8 @@ VkCommandBuffer gf3d_command_begin_single_time(Command *com);
 
 void gf3d_command_end_single_time(Command *com, VkCommandBuffer commandBuffer);
 
+void gf3d_command_queue(Command* com, VkCommandBuffer commandBuffer);
+
 Uint32 gf3d_command_pool_get_used_buffer_count(Command *com);
 
 VkCommandBuffer * gf3d_command_pool_get_used_buffers(Command *com);
@@ -43,7 +45,9 @@ VkCommandBuffer * gf3d_command_pool_get_used_buffers(Command *com);
  * @param index the rendering frame to use
  * @return the command buffer used for this drawing pass.
  */
-VkCommandBuffer gf3d_command_rendering_begin(Uint32 index, Pipeline *pipe);
+VkCommandBuffer gf3d_command_rendering_begin(Uint32 index, Pipeline *pipe, Pipeline* wirePipe);
+
+void gf3d_command_rendering_next_pipeline(Uint32 index, VkCommandBuffer commandBuffer, Pipeline* wirePipe);
 
 void gf3d_command_rendering_end(VkCommandBuffer commandBuffer);
 

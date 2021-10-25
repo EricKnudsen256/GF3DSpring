@@ -440,7 +440,7 @@ void gf3d_pipeline_create_basic_model_descriptor_pool(Pipeline *pipe)
     pipe->descriptorPoolCount = gf3d_pipeline.chainLength;
 }
 
-void gf3d_pipeline_reset_frame(Pipeline *pipe,Uint32 frame)
+void gf3d_pipeline_reset_frame(Pipeline* pipe, Pipeline* wirePipe, Uint32 frame)
 {
     if (!pipe)return;
     if (frame >= gf3d_pipeline.chainLength)
@@ -449,6 +449,7 @@ void gf3d_pipeline_reset_frame(Pipeline *pipe,Uint32 frame)
         return;
     }
     pipe->descriptorCursor[frame] = 0;
+    wirePipe->descriptorCursor[frame] = 0;
 }
 
 void gf3d_pipeline_create_descriptor_sets(Pipeline *pipe)

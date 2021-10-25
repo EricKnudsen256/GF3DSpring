@@ -77,6 +77,23 @@ void entity_manager_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer)
     }
 }
 
+void entity_manager_draw_hitboxes(Uint32 bufferFrame, VkCommandBuffer commandBuffer)
+{
+    if (!entity_manager.entity_list)
+    {
+        slog("Entity list not created, call entity_manager_init first");
+        return;
+    }
+    for (int i = 0; i < entity_manager.max_entities; i++)
+    {
+        if (!entity_manager.entity_list[i]._inuse)continue;
+        if (!entity_manager.entity_list[i].hitbox)continue;
+
+        hitbox_draw(entity_manager.entity_list[i].hitbox, bufferFrame, commandBuffer, entity_manager.entity_list[i].modelMat);
+
+    }
+}
+
 void entity_manager_free()
 {
     if (entity_manager.entity_list)

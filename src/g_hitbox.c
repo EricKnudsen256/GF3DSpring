@@ -63,27 +63,6 @@ Bool hitbox_check_collision(Hitbox* box1, Hitbox* box2)
 void hitbox_draw(Hitbox* hitbox, Uint32 bufferFrame, VkCommandBuffer commandBuffer, Matrix4 modelMat)
 {
 
-	/*
-	VkDescriptorSet* descriptorSet = NULL;
-	Pipeline *pipe;
-
-	pipe = gf3d_vgraphics_get_wireframe_pipeline();
-
-	if (!hitbox)
-	{
-		slog("cannot render a NULL hitbox");
-		return;
-	}
-	descriptorSet = gf3d_pipeline_get_descriptor_set(pipe, bufferFrame);
-	if (descriptorSet == NULL)
-	{
-		slog("failed to get a free descriptor Set for model rendering");
-		return;
-	}
-	gf3d_model_update_basic_model_descriptor_set(hitbox->wireframe, *descriptorSet, bufferFrame, modelMat);
-	gf3d_mesh_render(hitbox->wireframe, commandBuffer, descriptorSet);
-	*/
-
 	gf3d_model_draw(hitbox->wireframe, bufferFrame, commandBuffer, modelMat);
 
 }

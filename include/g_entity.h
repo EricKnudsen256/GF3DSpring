@@ -51,6 +51,8 @@ void entity_update(Entity* self);
 
 void entity_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer, Entity* self);
 
+void entity_manager_draw_hitboxes(Uint32 bufferFrame, VkCommandBuffer commandBuffer);
+
 void entity_free(Entity *self);
 
 #endif

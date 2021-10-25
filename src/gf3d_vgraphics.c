@@ -147,7 +147,7 @@ void gf3d_vgraphics_init(
 	gf3d_command_system_init(8 * gf3d_swapchain_get_swap_image_count(), device);
 
     gf3d_vgraphics.graphicsCommandPool = gf3d_command_graphics_pool_setup(gf3d_swapchain_get_swap_image_count(),gf3d_vgraphics.pipe);
-    gf3d_vgraphics.graphicsCommandPool = gf3d_command_graphics_pool_setup(gf3d_swapchain_get_swap_image_count(), gf3d_vgraphics.wireframePipe);
+    //gf3d_vgraphics.graphicsCommandPool = gf3d_command_graphics_pool_setup(gf3d_swapchain_get_swap_image_count(), gf3d_vgraphics.wireframePipe);
 
     gf3d_swapchain_create_depth_image();
     gf3d_swapchain_setup_frame_buffers(gf3d_vgraphics.pipe);
@@ -447,6 +447,7 @@ void gf3d_vgraphics_render_end(Uint32 imageIndex)
     //get the list of command buffers
     
     submitInfo.commandBufferCount = gf3d_command_pool_get_used_buffer_count(gf3d_vgraphics.graphicsCommandPool);
+
     submitInfo.pCommandBuffers = gf3d_command_pool_get_used_buffers(gf3d_vgraphics.graphicsCommandPool);
     
     submitInfo.signalSemaphoreCount = 1;

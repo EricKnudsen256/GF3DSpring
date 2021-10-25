@@ -94,28 +94,20 @@ int main(int argc,char *argv[])
         // configure render command for graphics command pool
         // for each mesh, get a command and configure it from the pool
         bufferFrame = gf3d_vgraphics_render_begin();
-        gf3d_pipeline_reset_frame(pipe, bufferFrame);
-            commandBuffer = gf3d_command_rendering_begin(bufferFrame, pipe);
+        gf3d_pipeline_reset_frame(pipe, wirePipe, bufferFrame);
+    
+            commandBuffer = gf3d_command_rendering_begin(bufferFrame, pipe, wirePipe);
 
             entity_manager_draw(bufferFrame, commandBuffer);
+
+            //gf3d_command_rendering_next_pipeline(bufferFrame, commandBuffer, wirePipe);
+
+            entity_manager_draw_hitboxes(bufferFrame, commandBuffer);
 
         gf3d_command_rendering_end(commandBuffer);
 
         gf3d_vgraphics_render_end(bufferFrame);
             
-            
-        /*
-
-        gf3d_pipeline_reset_frame(gf3d_vgraphics_get_wireframe_pipeline(), bufferFrame);
-            wireCommandBuffer = gf3d_command_rendering_begin(bufferFrame, gf3d_vgraphics_get_wireframe_pipeline());
-
-
-
-
-            gf3d_command_rendering_end(wireCommandBuffer);
-
-
-        */
         
 
         if (keys[SDL_SCANCODE_ESCAPE])done = 1; // exit condition
