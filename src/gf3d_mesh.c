@@ -179,17 +179,16 @@ void gf3d_mesh_render(Mesh *mesh,VkCommandBuffer commandBuffer, VkDescriptorSet 
         return;
     }
 
-    //if (mesh->type == MESH_WIREFRAME)
-    //{
+    if (mesh->type == MESH_WIREFRAME)
+    {
         pipe = gf3d_vgraphics_get_graphics_pipeline();
-    //}
+    }
 
-    /*
+
     else
     {
         pipe = gf3d_vgraphics_get_wireframe_pipeline();
     }
-    */
 
 
     vkCmdBindVertexBuffers(commandBuffer, 0, 1, &mesh->buffer, offsets);

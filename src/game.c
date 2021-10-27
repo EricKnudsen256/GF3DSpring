@@ -26,6 +26,9 @@ int main(int argc,char *argv[])
     Model* model;
     Pipeline *pipe, *wirePipe;
 
+    SDL_Event event;
+    Bool drawWireframe = false;
+
     float test = 0;
 
     int x, y;
@@ -81,6 +84,7 @@ int main(int argc,char *argv[])
     {
         SDL_PumpEvents();   // update SDL's internal event structures
         keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
+
         //update game things here
 
         pipe = gf3d_vgraphics_get_graphics_pipeline();
@@ -98,13 +102,33 @@ int main(int argc,char *argv[])
     
             commandBuffer = gf3d_command_rendering_begin(bufferFrame, pipe, wirePipe);
 
-            entity_manager_draw(bufferFrame, commandBuffer);
+            while (SDL_PollEvent(&event))
+            {
+                if (event.type == SDL_KEYDOWN && event.button.button == SDL_SCANCODE_P)
+                {
+                    if (drawWireframe == false)
+                    {
+                        drawWireframe = true;
+                    }
+                    else if (drawWireframe == true)
+                    {
+                        drawWireframe = false;
+                    }
+                }
+            }
 
-            //gf3d_command_rendering_next_pipeline(bufferFrame, commandBuffer, wirePipe);
+            if (drawWireframe)
+            {
+                gf3d_command_rendering_next_pipeline(bufferFrame, commandBuffer, wirePipe);
 
-            entity_manager_draw_hitboxes(bufferFrame, commandBuffer);
+                entity_manager_draw_hitboxes(bufferFrame, commandBuffer);
+            }
 
-        gf3d_command_rendering_end(commandBuffer);
+            
+
+            entity_manager_draw(bufferFrame, commandBuffer); 
+
+        gf3d_command_rendering_end(commandBuffer, wireCommandBuffer);
 
         gf3d_vgraphics_render_end(bufferFrame);
             

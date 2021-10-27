@@ -453,6 +453,7 @@ void gf3d_vgraphics_render_end(Uint32 imageIndex)
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores;
     
+
     if (vkQueueSubmit(gf3d_vqueues_get_graphics_queue(), 1, &submitInfo, VK_NULL_HANDLE) != VK_SUCCESS)
     {
         slog("failed to submit draw command buffer!");

@@ -129,7 +129,7 @@ Texture *gf3d_texture_get_by_filename(char * filename)
 
 void gf3d_texture_copy_buffer_to_image(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height)
 {
-    VkCommandBuffer commandBuffer;
+    VkCommandBuffer *commandBuffer;
     Command * commandPool;
     VkBufferImageCopy region = {0};
 
