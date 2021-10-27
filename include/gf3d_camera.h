@@ -13,6 +13,8 @@ typedef struct
     Vector3D right, left;
     Vector3D up, down;
     
+    float time;
+    
     Matrix4 view;
 
 }Camera;

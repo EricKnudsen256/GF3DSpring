@@ -116,7 +116,7 @@ int main(int argc,char *argv[])
                     }
                 }
             }
-
+            
             if (drawWireframe)
             {
                 gf3d_command_rendering_next_pipeline(bufferFrame, commandBuffer, wirePipe);
@@ -124,11 +124,9 @@ int main(int argc,char *argv[])
                 entity_manager_draw_hitboxes(bufferFrame, commandBuffer);
             }
 
-            
+            entity_manager_draw(bufferFrame, commandBuffer);             
 
-            entity_manager_draw(bufferFrame, commandBuffer); 
-
-        gf3d_command_rendering_end(commandBuffer, wireCommandBuffer);
+        gf3d_command_rendering_end(commandBuffer);
 
         gf3d_vgraphics_render_end(bufferFrame);
             

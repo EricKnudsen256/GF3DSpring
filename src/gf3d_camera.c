@@ -28,11 +28,17 @@ void gf3d_camera_init()
     camera.position = vector3d(0, 0, 0);
 
     camera._active = 1;
+    
+    camera.time = SDL_GetTicks() / 1000.0;
 }
 
 void gf3d_camera_update()
 {
     //Order of operations here, rotate, scale, transform
+    
+    float deltaTime = (SDL_GetTicks() / 1000.0) - camera.time;
+    
+    slog("deltaTime: %f", deltaTime);
 
     int x, y;
 
@@ -52,12 +58,30 @@ void gf3d_camera_update()
 
     if (x != 0)
     {
-        gf3d_rotate_camera(0.001 * x, 2);
+        gf3d_rotate_camera(0.1 * deltaTime * x, 2);
     }
     if (y != 0)
     {
-        gf3d_rotate_camera(0.001 * y, 0);
+        gf3d_rotate_camera(0.1 * deltaTime * y, 0);
     }
+    
+    Vector3D xaxis = vector3d(camera.view[0][0], camera.view[1][0],         camera.view[2][0]);
+    Vector3D yaxis = vector3d(camera.view[0][1], camera.view[1][1], camera.view[2][1]);
+    Vector3D zaxis = vector3d(camera.view[0][2], camera.view[1][2], camera.view[2][2]);
+
+    //getting wrong input from rotation values, need rotation to be based on actual degrees, use sin + cos for rotation amount
+    gf3d_camera_angle_vectors(camera.rotation, &camera.forward, &camera.right, &camera.up);
+
+    camera.back = vector3d(-camera.forward.x, -camera.forward.y,-camera.forward.z);
+    camera.left = vector3d(-camera.right.x, -camera.right.y, -camera.right.z);
+    camera.down = vector3d(-camera.up.x, -camera.up.y, -camera.up.z);
+
+    vector3d_scale(camera.forward, camera.forward, 8 * deltaTime);
+    vector3d_scale(camera.back, camera.back, 8 * deltaTime);
+    vector3d_scale(camera.right, camera.right, 8 * deltaTime);
+    vector3d_scale(camera.left, camera.left, 8 * deltaTime);
+    vector3d_scale(camera.up, camera.up, 8 * deltaTime);
+    vector3d_scale(camera.down, camera.down, 8 * deltaTime);
 
 
     if (keys[SDL_SCANCODE_W])
@@ -110,32 +134,8 @@ void gf3d_camera_update()
         camera.view,
         camera.rotation.z,
         vector3d(0, 0, 1));
-    //camera.view[0][1] = 0;
-    //camera.view[2][0] = 0;
 
 
-    //camera.view[0][1] = 0;
-    //camera.view[2][0] = 0;
-
-
-
-    Vector3D xaxis = vector3d(camera.view[0][0], camera.view[1][0], camera.view[2][0]);
-    Vector3D yaxis = vector3d(camera.view[0][1], camera.view[1][1], camera.view[2][1]);
-    Vector3D zaxis = vector3d(camera.view[0][2], camera.view[1][2], camera.view[2][2]);
-
-    //getting wrong input from rotation values, need rotation to be based on actual degrees, use sin + cos for rotation amount
-    gf3d_camera_angle_vectors(camera.rotation, &camera.forward, &camera.right, &camera.up);
-
-    camera.back = vector3d(-camera.forward.x, -camera.forward.y,-camera.forward.z);
-    camera.left = vector3d(-camera.right.x, -camera.right.y, -camera.right.z);
-    camera.down = vector3d(-camera.up.x, -camera.up.y, -camera.up.z);
-
-    vector3d_scale(camera.forward, camera.forward, .01);
-    vector3d_scale(camera.back, camera.back, .01);
-    vector3d_scale(camera.right, camera.right, .01);
-    vector3d_scale(camera.left, camera.left, .01);
-    vector3d_scale(camera.up, camera.up, .01);
-    vector3d_scale(camera.down, camera.down, .01);
 
 
     camera.view[3][0] = -vector3d_dot_product(xaxis, camera.position);
@@ -149,6 +149,8 @@ void gf3d_camera_update()
     
     //translation
 
+    
+    camera.time = SDL_GetTicks() / 1000.0;
 
 
     
