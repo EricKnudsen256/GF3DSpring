@@ -124,9 +124,9 @@ void gf3d_camera_update()
     Vector3D zaxis = vector3d(camera.view[0][2], camera.view[1][2], camera.view[2][2]);
 
     //getting wrong input from rotation values, need rotation to be based on actual degrees, use sin + cos for rotation amount
-    vector3d_angle_vectors(camera.rotation, &camera.forward, &camera.right, &camera.up);
+    gf3d_camera_angle_vectors(camera.rotation, &camera.forward, &camera.right, &camera.up);
 
-    camera.back = vector3d(-camera.forward.x, -camera.forward.y, -camera.forward.z);
+    camera.back = vector3d(-camera.forward.x, -camera.forward.y,-camera.forward.z);
     camera.left = vector3d(-camera.right.x, -camera.right.y, -camera.right.z);
     camera.down = vector3d(-camera.up.x, -camera.up.y, -camera.up.z);
 
@@ -217,6 +217,41 @@ void gf3d_camera_test2()
 {
     num1 -= .001;
     camera.view[2][2] = num1;
+}
+
+void gf3d_camera_angle_vectors(Vector3D angles, Vector3D *forward, Vector3D *right, Vector3D *up)
+{
+  float angle;
+  float sr, sp, sy, cr, cp, cy;
+  
+  angle = angles.z;
+  sy = sin(angle);
+  cy = cos(angle);
+  angle = angles.x;
+  sp = sin(angle);
+  cp = cos(angle);
+  angle = angles.y;
+  sr = sin(angle);
+  cr = cos(angle);
+  
+  if(forward)
+  {
+    forward->x = cp*sy;
+    forward->y = cy;
+    forward->z = 0;
+  }
+  if(right)
+  {
+    right->x = cy;
+    right->y = -1*sy*cp;
+    right->z = 0;
+  }
+  if(up)
+  {
+    up->x = 0;
+    up->y = 0;
+    up->z = 1;
+  }
 }
 
 /*eol@eof*/

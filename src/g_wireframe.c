@@ -145,7 +145,7 @@ void gf3d_wireframe_render(Wireframe* wireframe, VkCommandBuffer commandBuffer, 
 
     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipe->pipelineLayout, 0, 1, descriptorSet, 0, NULL);
 
-    vkCmdDraw(commandBuffer, wireframe->vertexCount * 3, 1, 0, 0, 0);
+    //vkCmdDraw(commandBuffer, wireframe->vertexCount * 3, 1, 0, 0, 0);
 }
 
 
