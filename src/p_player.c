@@ -102,7 +102,7 @@ void player_update(Entity* self)
     gf3d_camera_set_position(self->position);
     gf3d_camera_set_rotation(self->rotation);
 
-    slog("Rotation: x:%f, y:%f, z:%f", self->rotation.x, self->rotation.y, self->rotation.z);
+    //slog("Rotation: x:%f, y:%f, z:%f", self->rotation.x, self->rotation.y, self->rotation.z);
 }
 
 void player_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer, Entity* self)
