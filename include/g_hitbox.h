@@ -11,6 +11,8 @@ typedef struct
 {
 	Vector3D center;
 	Vector3D dimensions; 
+    
+    Vector3D offset;    //offset from center of model
 
 	Model *wireframe;
 
@@ -23,7 +25,7 @@ typedef struct
 * @params dimensions the width, height, and depth of the hitbox
 * @return the newly created hitbox, NULL on error
 */
-Hitbox* hitbox_new(Vector3D center, Vector3D dimensions);
+Hitbox* hitbox_new(Vector3D center, Vector3D dimensions, Vector3D offset);
 
 /**
 * @brief sets the position of the hitbox

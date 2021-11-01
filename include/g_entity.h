@@ -51,7 +51,7 @@ void entity_manager_free();
 
 Entity* entity_new();
 
-void entity_make_hitbox(Vector3D dimensions, Entity* self);
+void entity_make_hitbox(Vector3D dimensions, Vector3D offset, Entity* self);
 
 void entity_think(Entity *self);
 

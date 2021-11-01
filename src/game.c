@@ -71,12 +71,10 @@ int main(int argc,char *argv[])
 
     dino1->model = gf3d_model_load("dino");
     gfc_matrix_identity(dino1->modelMat);
-    gfc_matrix_make_translation(
-        dino1->modelMat,
-            vector3d(0,20,0)
-        );
+    dino1->position = vector3d(0,20,0);
+    
 
-    entity_make_hitbox(vector3d(10, 10, 10), dino1);
+    entity_make_hitbox(vector3d(10, 10, 10), vector3d(0, 0, 0), dino1);
 
     //SDL_ShowCursor(SDL_DISABLE);
     SDL_SetRelativeMouseMode(SDL_ENABLE);
@@ -136,7 +134,7 @@ int main(int argc,char *argv[])
 
             entity_manager_draw(bufferFrame, commandBuffer);
 
-            gf3d_command_rendering_end(commandBuffer, wireCommandBuffer);
+            gf3d_command_rendering_end(commandBuffer);
 
             gf3d_vgraphics_render_end(bufferFrame);
 
