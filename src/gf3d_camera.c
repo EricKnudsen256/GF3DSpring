@@ -48,56 +48,6 @@ void gf3d_camera_update()
     );
     
 
-
-
-    if (x != 0)
-    {
-        gf3d_rotate_camera(0.001 * x, 2);
-    }
-    if (y != 0)
-    {
-        gf3d_rotate_camera(0.001 * y, 0);
-    }
-
-
-    if (keys[SDL_SCANCODE_W])
-    {
-        gf3d_camera_move(camera.forward);
-    }
-    else if (keys[SDL_SCANCODE_S])
-    {
-        gf3d_camera_move(camera.back);
-    }
-
-    if (keys[SDL_SCANCODE_A])
-    {
-        gf3d_camera_move(camera.left);
-    }
-    else if (keys[SDL_SCANCODE_D])
-    {
-        gf3d_camera_move(camera.right);
-    }
-
-    if (keys[SDL_SCANCODE_SPACE])
-    {
-        gf3d_camera_move(camera.up);
-    }
-    else if (keys[SDL_SCANCODE_LSHIFT])
-    {
-        gf3d_camera_move(camera.down);
-    }
-    
-    
-    if(camera.rotation.x > .9)
-    {
-        camera.rotation.x = .9;
-    }
-    else if(camera.rotation.x < -.9)
-    {
-       camera.rotation.x = -.9;
-    }
-    
-
     gfc_matrix_rotate(
         camera.view,
         camera.view,
@@ -181,6 +131,13 @@ void gf3d_camera_set_position(Vector3D position)
     camera.position.z = position.z;
 }
 
+void gf3d_camera_set_rotation(Vector3D position)
+{
+    camera.rotation.x = position.x;
+    camera.rotation.y = position.y;
+    camera.rotation.z = position.z;
+}
+
 void gf3d_camera_move(Vector3D move)
 {
     camera.position.x += move.x;
@@ -252,6 +209,11 @@ void gf3d_camera_angle_vectors(Vector3D angles, Vector3D *forward, Vector3D *rig
     up->y = 0;
     up->z = 1;
   }
+}
+
+Camera gf3d_get_camera()
+{
+    return camera;
 }
 
 /*eol@eof*/

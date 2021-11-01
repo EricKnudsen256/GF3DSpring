@@ -105,7 +105,7 @@
     <ClInclude Include="..\include\g_hitbox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\g_wireframe.h">
+    <ClInclude Include="..\include\p_player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -206,7 +206,7 @@
     <ClCompile Include="..\src\g_hitbox.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\g_wireframe.c">
+    <ClCompile Include="..\src\p_player.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

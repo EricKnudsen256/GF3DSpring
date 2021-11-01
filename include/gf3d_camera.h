@@ -39,6 +39,8 @@ void gf3d_camera_look_at(
  */
 void gf3d_camera_set_position(Vector3D position);
 
+void gf3d_camera_set_rotation(Vector3D position);
+
 void gf3d_rotate_camera(float degrees, int axis);
 
 void gf3d_camera_make_rotation();
@@ -50,5 +52,7 @@ void gf3d_camera_make_rotation();
 void gf3d_camera_move(Vector3D move);
 
 void gf3d_camera_angle_vectors(Vector3D angles, Vector3D *forward, Vector3D *right, Vector3D *up);
+
+Camera gf3d_get_camera();
 
 #endif

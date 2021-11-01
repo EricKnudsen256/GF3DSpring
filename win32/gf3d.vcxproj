@@ -115,7 +115,7 @@
     <ClInclude Include="..\include\gf3d_vqueues.h" />
     <ClInclude Include="..\include\g_entity.h" />
     <ClInclude Include="..\include\g_hitbox.h" />
-    <ClInclude Include="..\include\g_wireframe.h" />
+    <ClInclude Include="..\include\p_player.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\gfc\simple_json\src\simple_json.c" />
@@ -150,7 +150,7 @@
     <ClCompile Include="..\src\gf3d_vqueues.c" />
     <ClCompile Include="..\src\g_entity.c" />
     <ClCompile Include="..\src\g_hitbox.c" />
-    <ClCompile Include="..\src\g_wireframe.c" />
+    <ClCompile Include="..\src\p_player.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -17,11 +17,17 @@ typedef struct Entity_s
     Vector3D scale;
     Matrix4 modelMat;
 
+    Vector3D forward, back;
+    Vector3D left, right;
+    Vector3D up, down;
+
     Hitbox *hitbox;
     
     void(*update)(struct Entity_s *self);
 	void(*think)(struct Entity_s *self);
 	void(*draw)(Uint32 bufferFrame, VkCommandBuffer commandBuffer, struct Entity_s *self);
+
+    void* parent;
     
 }Entity;
 
@@ -39,6 +45,8 @@ void entity_manager_update();
 
 void entity_manager_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer);
 
+void entity_manager_draw_hitboxes(Uint32 bufferFrame, VkCommandBuffer commandBuffer);
+
 void entity_manager_free();
 
 Entity* entity_new();
@@ -50,8 +58,6 @@ void entity_think(Entity *self);
 void entity_update(Entity* self);
 
 void entity_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer, Entity* self);
-
-void entity_manager_draw_hitboxes(Uint32 bufferFrame, VkCommandBuffer commandBuffer);
 
 void entity_free(Entity *self);
 

@@ -24,8 +24,6 @@
 #include "gf3d_commands.h"
 #include "gf3d_texture.h"
 
-#include "g_wireframe.h"
-
 
 typedef struct
 {
@@ -138,7 +136,6 @@ void gf3d_vgraphics_init(
     // swap chain!!!
     gf3d_swapchain_init(gf3d_vgraphics.gpu,gf3d_vgraphics.device,gf3d_vgraphics.surface,renderWidth,renderHeight);
     gf3d_mesh_init(1024);//TODO: pull this from a parameter
-    gf3d_wireframe_init(1024);//TODO: pull this from a parameter
     gf3d_texture_init(1024);
     gf3d_pipeline_init(10);// how many different rendering pipelines we need
     gf3d_vgraphics.pipe = gf3d_pipeline_basic_model_create(device,"shaders/vert.spv","shaders/frag.spv",gf3d_vgraphics_get_view_extent(),1024);

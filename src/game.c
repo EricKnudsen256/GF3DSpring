@@ -13,6 +13,8 @@
 
 #include "g_entity.h"
 
+#include "p_player.h"
+
 int main(int argc,char *argv[])
 {
     int done = 0;
@@ -26,10 +28,10 @@ int main(int argc,char *argv[])
     Model* model;
     Pipeline *pipe, *wirePipe;
 
+    Player* player;
+
     SDL_Event event;
     Bool drawWireframe = false;
-
-    float test = 0;
 
     int x, y;
 
@@ -61,8 +63,11 @@ int main(int argc,char *argv[])
     entity_manager_init(1000);
     gf3d_camera_init();
 
+    Vector3D playerSpawn = vector3d(0, 0, 0);
+
+    player = player_new(playerSpawn);
+
     dino1 = entity_new();
-    dino2 = entity_new();
 
     dino1->model = gf3d_model_load("dino");
     gfc_matrix_identity(dino1->modelMat);
@@ -85,18 +90,23 @@ int main(int argc,char *argv[])
         SDL_PumpEvents();   // update SDL's internal event structures
         keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
 
-        //update game things here
+
+        //think functions
+        entity_manager_think();
+
+
+        //update functions
+        entity_manager_update();
+
+
+
+        //camera update
+        gf3d_camera_update();
 
         pipe = gf3d_vgraphics_get_graphics_pipeline();
         wirePipe = gf3d_vgraphics_get_wireframe_pipeline();
-        
 
-       
-        gf3d_camera_update();
-        
-
-        // configure render command for graphics command pool
-        // for each mesh, get a command and configure it from the pool
+        //draw calls
         bufferFrame = gf3d_vgraphics_render_begin();
         gf3d_pipeline_reset_frame(pipe, wirePipe, bufferFrame);
     
@@ -124,15 +134,11 @@ int main(int argc,char *argv[])
                 entity_manager_draw_hitboxes(bufferFrame, commandBuffer);
             }
 
-            
+            entity_manager_draw(bufferFrame, commandBuffer);
 
-            entity_manager_draw(bufferFrame, commandBuffer); 
+            gf3d_command_rendering_end(commandBuffer, wireCommandBuffer);
 
-        gf3d_command_rendering_end(commandBuffer, wireCommandBuffer);
-
-        gf3d_vgraphics_render_end(bufferFrame);
-            
-        
+            gf3d_vgraphics_render_end(bufferFrame);
 
         if (keys[SDL_SCANCODE_ESCAPE])done = 1; // exit condition
     }    
