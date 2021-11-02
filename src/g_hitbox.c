@@ -22,8 +22,8 @@ Hitbox* hitbox_new(Vector3D center, Vector3D dimensions, Vector3D offset)
 	}
 
 	hitbox->dimensions = dimensions;
-    hitbox->offset = offset;
-    hitbox->center = vector3d(center.x - offset.x, center.y - offset.y, center.z - offset.z);
+	hitbox->offset = offset;
+    hitbox->center = center;
 
 	hitbox->wireframe = gf3d_model_from_hitbox(hitbox->dimensions);
 
@@ -39,7 +39,8 @@ void hitbox_set_pos(Vector3D position, Hitbox* hitbox)
 		return;
 	}
 
-	hitbox->center = vector3d(position.x - hitbox->offset.x, position.y - hitbox->offset.y, position.z - hitbox->offset.z);
+	hitbox->center = vector3d(position.x + hitbox->offset.x, position.y + hitbox->offset.y, position.z + hitbox->offset.z);
+	//slog("Center: x:%f, y:%f, z:%f", hitbox->center.x, hitbox->center.y, hitbox->center.z);
 }
 
 
@@ -55,9 +56,38 @@ void hitbox_free(Hitbox* hitbox)
 }
 
 
-Bool hitbox_check_collision(Hitbox* box1, Hitbox* box2)
+Bool hitbox_check_collision(Hitbox* box1, Hitbox* box2, Vector3D box1velocity)
 {
 	//todo later after hitbox drawing works properly
+
+	if (box1->center.x + (box1->dimensions.x / 2) + box1velocity.x <= box2->center.x - (box2->dimensions.x / 2))
+	{
+		return false;
+	}
+	if (box2->center.x + (box2->dimensions.x / 2) <= box1->center.x - (box1->dimensions.x / 2) + box1velocity.x)
+	{
+		return false;
+	}
+	if (box1->center.y + (box1->dimensions.y / 2) + box1velocity.y <= box2->center.y - (box2->dimensions.y / 2))
+	{
+		return false;
+	}
+	if (box2->center.y + (box2->dimensions.y / 2) <= box1->center.y - (box1->dimensions.y / 2) + box1velocity.y)
+	{
+		return false;
+	}
+	if (box1->center.z + (box1->dimensions.z / 2) + box1velocity.z <= box2->center.z - (box2->dimensions.z / 2))
+	{
+		return false;
+	}
+	if (box2->center.z + (box2->dimensions.z / 2) <= box1->center.z + box1velocity.z - (box1->dimensions.z / 2))
+	{
+		return false;
+	}
+
+	return true;
+
+
 }
 
 
@@ -65,21 +95,24 @@ void hitbox_draw(Hitbox* hitbox, Uint32 bufferFrame, VkCommandBuffer commandBuff
 {
 
     Matrix4 hitboxMat;
+
+	//slog("offset: %f, %f, %f", hitbox->offset.x, hitbox->offset.y, hitbox->offset.z);
     
     //gfc_matrix_copy(hitboxMat, modelMat);
     
     gfc_matrix_identity(hitboxMat);
-    
-    gfc_matrix_make_translation(
-        hitboxMat,
-            hitbox->center
-        );
-    
-        gfc_matrix_make_translation(
-        hitboxMat,
-            hitbox->offset
-        );
-        
+
+	hitboxMat[3][0] = modelMat[3][0];
+	hitboxMat[3][1] = modelMat[3][1];
+	hitboxMat[3][2] = modelMat[3][2];
+	
+	
+	hitboxMat[3][0] += hitbox->offset.x;
+	hitboxMat[3][1] += hitbox->offset.y;
+	hitboxMat[3][2] += hitbox->offset.z;
+	
+
+		
 	gf3d_model_draw(hitbox->wireframe, bufferFrame, commandBuffer, hitboxMat);
 
 }

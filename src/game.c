@@ -74,7 +74,7 @@ int main(int argc,char *argv[])
     dino1->position = vector3d(0,20,0);
     
 
-    entity_make_hitbox(vector3d(10, 10, 10), vector3d(0, 0, 0), dino1);
+    entity_make_hitbox(vector3d(10, 8, 10), vector3d(0, .5, -1.5), dino1);
 
     //SDL_ShowCursor(SDL_DISABLE);
     SDL_SetRelativeMouseMode(SDL_ENABLE);
@@ -91,6 +91,10 @@ int main(int argc,char *argv[])
 
         //think functions
         entity_manager_think();
+
+
+        //check collisions
+        entity_manager_check_collions();
 
 
         //update functions

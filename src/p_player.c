@@ -14,7 +14,7 @@ Player* player_new(Vector3D spawnPos)
     player->ent->update = player_update;
     player->ent->think = player_think;
     player->ent->draw = player_draw;
-    //entity_make_hitbox(vector3d(10, 10, 10), vector3d(0, 0, 0), player->ent);
+    entity_make_hitbox(vector3d(10, 10, 10), vector3d(0, 0, 0), player->ent);
 
     gfc_matrix_identity(player->ent->modelMat); //neded to draw the hitbox
     player->ent->parent = player;
@@ -24,7 +24,7 @@ Player* player_new(Vector3D spawnPos)
 
 void player_think(Entity* self)
 {
-
+    Bool moved = false;
     int x, y;
 
     const Uint8* keys = SDL_GetKeyboardState(NULL);
@@ -54,32 +54,40 @@ void player_think(Entity* self)
         player_rotate(0.001 * y, 0, self);
     }
 
+    self->velocity = vector3d(0, 0, 0);
+
 
     if (keys[SDL_SCANCODE_W])
     {
         player_move(self->forward, self);
+        moved = true;
     }
     else if (keys[SDL_SCANCODE_S])
     {
         player_move(self->back, self);
+        moved = true;
     }
 
     if (keys[SDL_SCANCODE_A])
     {
         player_move(self->left, self);
+        moved = true;
     }
     else if (keys[SDL_SCANCODE_D])
     {
         player_move(self->right, self);
+        moved = true;
     }
 
     if (keys[SDL_SCANCODE_SPACE])
     {
         player_move(self->up, self);
+        moved = true;
     }
     else if (keys[SDL_SCANCODE_LSHIFT])
     {
         player_move(self->down, self);
+        moved = true;
     }
 
 
@@ -99,10 +107,14 @@ void player_update(Entity* self)
 {
     Camera camera = gf3d_get_camera();
 
-    gf3d_camera_set_position(self->position);
-    gf3d_camera_set_rotation(self->rotation);
+    //gf3d_camera_set_position(self->position);
+    //gf3d_camera_set_rotation(self->rotation);
+
+    vector3d_add(self->position, self->position, self->velocity);
 
     //slog("Rotation: x:%f, y:%f, z:%f", self->rotation.x, self->rotation.y, self->rotation.z);
+
+    entity_update(self);
 }
 
 void player_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer, Entity* self)
@@ -117,9 +129,9 @@ void player_free(Entity* self)
 
 void player_move(Vector3D move, Entity* self)
 {
-    self->position.x += move.x;
-    self->position.y += move.y;
-    self->position.z += move.z;
+    self->velocity.x += move.x;
+    self->velocity.y += move.y;
+    self->velocity.z += move.z;
 }
 
 void player_rotate(float degrees, int axis, Entity* self)

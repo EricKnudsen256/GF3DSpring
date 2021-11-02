@@ -39,6 +39,7 @@ void entity_manager_think()
     for (int i = 0; i < entity_manager.max_entities; i++)
     {
         if (!entity_manager.entity_list[i]._inuse)continue;
+        if (!entity_manager.entity_list[i].think)continue;
 
         entity_manager.entity_list[i].think(&entity_manager.entity_list[i]);
 
@@ -55,6 +56,7 @@ void entity_manager_update()
     for (int i = 0; i < entity_manager.max_entities; i++)
     {
         if (!entity_manager.entity_list[i]._inuse)continue;
+        if (!entity_manager.entity_list[i].update)continue;
 
         entity_manager.entity_list[i].update(&entity_manager.entity_list[i]);
 
@@ -71,6 +73,7 @@ void entity_manager_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer)
     for (int i = 0; i < entity_manager.max_entities; i++)
     {
         if (!entity_manager.entity_list[i]._inuse)continue;
+        if (!entity_manager.entity_list[i].draw)continue;
 
         entity_manager.entity_list[i].draw(bufferFrame, commandBuffer, &entity_manager.entity_list[i]);
 
@@ -90,6 +93,23 @@ void entity_manager_draw_hitboxes(Uint32 bufferFrame, VkCommandBuffer commandBuf
         if (!entity_manager.entity_list[i].hitbox)continue;
 
         hitbox_draw(entity_manager.entity_list[i].hitbox, bufferFrame, commandBuffer, entity_manager.entity_list[i].modelMat);
+
+    }
+}
+
+void entity_manager_check_collions()
+{
+    if (!entity_manager.entity_list)
+    {
+        slog("Entity list not created, call entity_manager_init first");
+        return;
+    }
+    for (int i = 0; i < entity_manager.max_entities; i++)
+    {
+        if (!entity_manager.entity_list[i]._inuse)continue;
+        if (!entity_manager.entity_list[i].hitbox)continue;
+
+        entity_check_collisions(&entity_manager.entity_list[i]);
 
     }
 }
@@ -138,6 +158,7 @@ void entity_make_hitbox(Vector3D dimensions, Vector3D offset, Entity* self)
     }
 
     self->hitbox = hitbox_new(vector3d(0,0,0), dimensions, offset);
+    self->hitbox->parent = self;
 }
 
 void entity_think(Entity* self)
@@ -172,6 +193,100 @@ void entity_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer, Entity* self
     if (!self->modelMat) return;
 
     gf3d_model_draw(self->model, bufferFrame, commandBuffer, self->modelMat);
+
+}
+
+void entity_check_collisions(Entity* self)
+{
+    Entity* ent;
+    //go through list of entities, check for hitboxes
+
+    if (!self)
+    {
+        slog("No ent to check collisions of");
+        return;
+    }
+    if (!self->hitbox) return;
+
+    for (int i = 0; i < entity_manager.max_entities; i++)
+    {
+        ent = &entity_manager.entity_list[i];
+        if (!ent->_inuse)continue;
+        if (ent->_id == self->_id) continue;
+
+
+        //check x collision
+        if (hitbox_check_collision(self->hitbox, ent->hitbox, vector3d(self->velocity.x, 0, 0)))
+        {
+            slog("Collision: true");
+            if (self->velocity.x > 0)
+            {
+                //slog("Vel:x:%f", self->velocity.x);
+                self->position.x = (ent->hitbox->center.x) - (ent->hitbox->dimensions.x / 2) - (self->hitbox->dimensions.x / 2);
+                self->hitbox->center.x = (ent->hitbox->center.x) - (ent->hitbox->dimensions.x / 2) - (self->hitbox->dimensions.x / 2);
+
+                self->velocity.x = 0;
+            }
+            else if (self->velocity.x < 0)
+            {
+                //slog("Vel:x:%f", self->velocity.x);
+                self->position.x = (ent->hitbox->center.x) + (ent->hitbox->dimensions.x / 2) + (self->hitbox->dimensions.x / 2);
+                self->hitbox->center.x = (ent->hitbox->center.x) + (ent->hitbox->dimensions.x / 2) + (self->hitbox->dimensions.x / 2);
+
+                self->velocity.x = 0;
+            }
+
+
+        }
+
+        //check y collision
+        if (hitbox_check_collision(self->hitbox, ent->hitbox, vector3d(0, self->velocity.y, 0)))
+        {
+
+            if (self->velocity.y > 0)
+            {
+                //slog("Vel:x:%f", self->velocity.x);
+                self->position.y = (ent->hitbox->center.y) - (ent->hitbox->dimensions.y / 2) - (self->hitbox->dimensions.y / 2);
+                self->hitbox->center.y = (ent->hitbox->center.y) - (ent->hitbox->dimensions.y / 2) - (self->hitbox->dimensions.y / 2);
+
+                self->velocity.y = 0;
+            }
+            else if (self->velocity.y < 0)
+            {
+                //slog("Vel:x:%f", self->velocity.x);
+                self->position.y = (ent->hitbox->center.y) + (ent->hitbox->dimensions.y / 2) + (self->hitbox->dimensions.y / 2);
+                self->hitbox->center.y = (ent->hitbox->center.y) + (ent->hitbox->dimensions.y / 2) + (self->hitbox->dimensions.y / 2);
+
+                self->velocity.y = 0;
+            }
+        }
+
+        //check z collision
+        if (hitbox_check_collision(self->hitbox, ent->hitbox, vector3d(0, 0, self->velocity.z)))
+        {
+            if (self->velocity.z > 0)
+            {
+                //slog("Vel:x:%f", self->velocity.x);
+                self->position.z = (ent->hitbox->center.z) - (ent->hitbox->dimensions.z / 2) - (self->hitbox->dimensions.z / 2);
+                self->hitbox->center.z = (ent->hitbox->center.z) - (ent->hitbox->dimensions.z / 2) - (self->hitbox->dimensions.z / 2);
+
+                self->velocity.z = 0;
+            }
+            else if (self->velocity.z < 0)
+            {
+                //slog("Vel:x:%f", self->velocity.x);
+                self->position.z = (ent->hitbox->center.z) + (ent->hitbox->dimensions.z / 2) + (self->hitbox->dimensions.z / 2);
+                self->hitbox->center.z = (ent->hitbox->center.z) + (ent->hitbox->dimensions.z / 2) + (self->hitbox->dimensions.z / 2);
+
+                self->velocity.z = 0;
+            }
+        }
+
+
+    }
+
+    //then go through list of world objects to check for hitboxes
+
 
 }
 

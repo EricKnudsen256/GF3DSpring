@@ -7,14 +7,25 @@
 
 #include "gf3d_model.h"
 
+typedef enum
+{
+	HITBOX_UNDEFINED,
+	HITBOX_ENTITY,
+	HITBOX_WORLD
+
+}HitboxType;
+
 typedef struct
 {
-	Vector3D center;
-	Vector3D dimensions; 
+	Vector3D center;		/**center of the hitbox in world space */
+	Vector3D dimensions;	/**Size of hitbox in width, depth, height */
     
-    Vector3D offset;    //offset from center of model
+    Vector3D offset;		/**offset of hitbox from center of object it is attached to */
 
-	Model *wireframe;
+	Model *wireframe;		/**mesh to draw the wireframe of the hitbox */
+
+
+	void* parent;
 
 }Hitbox;
 
@@ -40,12 +51,12 @@ void hitbox_set_pos(Vector3D position, Hitbox* hitbox);
 void hitbox_free(Hitbox *hitbox);
 
 /**
-* @brief frees memeory of created hitboxes
+* @brief checks a singular collision to see if two hitboxes are colliding
 * @params box1 the first box to check
 * @params box2 the second box to check
 * @return true if collision is detected, false otherwise
 */
-Bool hitbox_check_collision(Hitbox *box1, Hitbox *box2);
+Bool hitbox_check_collision(Hitbox* box1, Hitbox* box2, Vector3D box1velocity);
 
 /**
 * @brief draws a hitbox wireframe
