@@ -114,7 +114,7 @@ void gf3d_vgraphics_init(
     );
     gfc_matrix_perspective(
         gf3d_vgraphics.ubo.proj,
-        45 * GFC_DEGTORAD,
+        90 * GFC_DEGTORAD,
         renderWidth/(float)renderHeight,
         0.1f,
         100

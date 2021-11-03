@@ -107,8 +107,8 @@ void player_update(Entity* self)
 {
     Camera camera = gf3d_get_camera();
 
-    //gf3d_camera_set_position(self->position);
-    //gf3d_camera_set_rotation(self->rotation);
+    gf3d_camera_set_position(self->position);
+    gf3d_camera_set_rotation(self->rotation);
 
     vector3d_add(self->position, self->position, self->velocity);
 
