@@ -116,6 +116,8 @@
     <ClInclude Include="..\include\g_entity.h" />
     <ClInclude Include="..\include\g_hitbox.h" />
     <ClInclude Include="..\include\p_player.h" />
+    <ClInclude Include="..\include\w_room.h" />
+    <ClInclude Include="..\include\w_world.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\gfc\simple_json\src\simple_json.c" />
@@ -151,6 +153,8 @@
     <ClCompile Include="..\src\g_entity.c" />
     <ClCompile Include="..\src\g_hitbox.c" />
     <ClCompile Include="..\src\p_player.c" />
+    <ClCompile Include="..\src\w_room.c" />
+    <ClCompile Include="..\src\w_world.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

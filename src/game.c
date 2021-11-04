@@ -15,6 +15,9 @@
 
 #include "p_player.h"
 
+#include "w_world.h"
+#include "w_room.h"
+
 int main(int argc,char *argv[])
 {
     int done = 0;
@@ -51,7 +54,7 @@ int main(int argc,char *argv[])
         1920,                   //screen width
         1080,                    //screen height
         vector4d(0.51,0.75,1,1),//background color
-        true,                      //fullscreen
+        false,                      //fullscreen
         validate                //validation
     );
 	slog_sync();
@@ -62,6 +65,8 @@ int main(int argc,char *argv[])
 
     entity_manager_init(1000);
     gf3d_camera_init();
+    world_init(100);
+
 
     Vector3D playerSpawn = vector3d(0, 0, 0);
 
@@ -71,15 +76,18 @@ int main(int argc,char *argv[])
 
     dino1->model = gf3d_model_load("dino");
     gfc_matrix_identity(dino1->modelMat);
-    dino1->position = vector3d(0,20,0);
+    dino1->position = vector3d(20,20,0);
+
+    Room* testRoom = world_new_room();
+    testRoom->model = gf3d_model_load("room1");
+    room_make_hitboxs(testRoom);
+    room_set_position(vector3d(0, 50, 0), testRoom);
     
 
     entity_make_hitbox(vector3d(10, 8, 10), vector3d(0, .5, -1.5), dino1);
 
     //SDL_ShowCursor(SDL_DISABLE);
     SDL_SetRelativeMouseMode(SDL_ENABLE);
-
-    //gf3d_vgraphics_rotate_camera(0, 2);
 
     
 
@@ -134,9 +142,11 @@ int main(int argc,char *argv[])
                 gf3d_command_rendering_next_pipeline(bufferFrame, commandBuffer, wirePipe);
 
                 entity_manager_draw_hitboxes(bufferFrame, commandBuffer);
+                world_draw_hitboxes(bufferFrame, commandBuffer);
             }
 
             entity_manager_draw(bufferFrame, commandBuffer);
+            world_draw(bufferFrame, commandBuffer);
 
             gf3d_command_rendering_end(commandBuffer);
 

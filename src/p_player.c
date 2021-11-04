@@ -14,7 +14,7 @@ Player* player_new(Vector3D spawnPos)
     player->ent->update = player_update;
     player->ent->think = player_think;
     player->ent->draw = player_draw;
-    entity_make_hitbox(vector3d(10, 10, 10), vector3d(0, 0, 0), player->ent);
+    entity_make_hitbox(vector3d(10, 10, 20), vector3d(0, 0, 0), player->ent);
 
     gfc_matrix_identity(player->ent->modelMat); //neded to draw the hitbox
     player->ent->parent = player;
@@ -107,7 +107,7 @@ void player_update(Entity* self)
 {
     Camera camera = gf3d_get_camera();
 
-    gf3d_camera_set_position(self->position);
+    gf3d_camera_set_position(vector3d(self->position.x, self->position.y, self->position.z + 5));
     gf3d_camera_set_rotation(self->rotation);
 
     vector3d_add(self->position, self->position, self->velocity);

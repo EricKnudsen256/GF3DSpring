@@ -58,7 +58,6 @@ void hitbox_free(Hitbox* hitbox)
 
 Bool hitbox_check_collision(Hitbox* box1, Hitbox* box2, Vector3D box1velocity)
 {
-	//todo later after hitbox drawing works properly
 
 	if (box1->center.x + (box1->dimensions.x / 2) + box1velocity.x <= box2->center.x - (box2->dimensions.x / 2))
 	{

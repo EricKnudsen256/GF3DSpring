@@ -1,6 +1,7 @@
 #include "simple_logger.h"
 
 #include "g_entity.h"
+#include "w_world.h"
 
 EntityManager entity_manager = {0};
 
@@ -281,11 +282,93 @@ void entity_check_collisions(Entity* self)
                 self->velocity.z = 0;
             }
         }
-
-
     }
 
     //then go through list of world objects to check for hitboxes
+
+    World world = world_get();
+
+    for (int i = 0; i < world.max_rooms; i++)
+    {
+        if (world.room_list[i]._inuse)
+        {
+            for (int j = 0; j < world.room_list[i].hitbox_max; j++)
+            {
+                //slog("test");
+                if (world.room_list[i].hitbox_list[j])
+                {
+                    Hitbox* hitbox = world.room_list[i].hitbox_list[j];
+                    //check x collision
+                    if (hitbox_check_collision(self->hitbox, hitbox, vector3d(self->velocity.x, 0, 0)))
+                    {
+                        //slog("Collision: true");
+                        if (self->velocity.x > 0)
+                        {
+                            //slog("Vel:x:%f", self->velocity.x);
+                            self->position.x = (hitbox->center.x) - (hitbox->dimensions.x / 2) - (self->hitbox->dimensions.x / 2);
+                            self->hitbox->center.x = (hitbox->center.x) - (hitbox->dimensions.x / 2) - (self->hitbox->dimensions.x / 2);
+
+                            self->velocity.x = 0;
+                        }
+                        else if (self->velocity.x < 0)
+                        {
+                            //slog("Vel:x:%f", self->velocity.x);
+                            self->position.x = (hitbox->center.x) + (hitbox->dimensions.x / 2) + (self->hitbox->dimensions.x / 2);
+                            self->hitbox->center.x = (hitbox->center.x) + (hitbox->dimensions.x / 2) + (self->hitbox->dimensions.x / 2);
+
+                            self->velocity.x = 0;
+                        }
+
+
+                    }
+
+                    //check y collision
+                    if (hitbox_check_collision(self->hitbox, hitbox, vector3d(0, self->velocity.y, 0)))
+                    {
+
+                        if (self->velocity.y > 0)
+                        {
+                            //slog("Vel:x:%f", self->velocity.x);
+                            self->position.y = (hitbox->center.y) - (hitbox->dimensions.y / 2) - (self->hitbox->dimensions.y / 2);
+                            self->hitbox->center.y = (hitbox->center.y) - (hitbox->dimensions.y / 2) - (self->hitbox->dimensions.y / 2);
+
+                            self->velocity.y = 0;
+                        }
+                        else if (self->velocity.y < 0)
+                        {
+                            //slog("Vel:x:%f", self->velocity.x);
+                            self->position.y = (hitbox->center.y) + (hitbox->dimensions.y / 2) + (self->hitbox->dimensions.y / 2);
+                            self->hitbox->center.y = (hitbox->center.y) + (hitbox->dimensions.y / 2) + (self->hitbox->dimensions.y / 2);
+
+                            self->velocity.y = 0;
+                        }
+                    }
+
+                    //check z collision
+                    if (hitbox_check_collision(self->hitbox, hitbox, vector3d(0, 0, self->velocity.z)))
+                    {
+                        if (self->velocity.z > 0)
+                        {
+                            //slog("Vel:x:%f", self->velocity.x);
+                            self->position.z = (hitbox->center.z) - (hitbox->dimensions.z / 2) - (self->hitbox->dimensions.z / 2);
+                            self->hitbox->center.z = (hitbox->center.z) - (hitbox->dimensions.z / 2) - (self->hitbox->dimensions.z / 2);
+
+                            self->velocity.z = 0;
+                        }
+                        else if (self->velocity.z < 0)
+                        {
+                            //slog("Vel:x:%f", self->velocity.x);
+                            self->position.z = (hitbox->center.z) + (hitbox->dimensions.z / 2) + (self->hitbox->dimensions.z / 2);
+                            self->hitbox->center.z = (hitbox->center.z) + (hitbox->dimensions.z / 2) + (self->hitbox->dimensions.z / 2);
+
+                            self->velocity.z = 0;
+                        }
+                    }
+
+                }
+            }
+        }
+    }
 
 
 }
