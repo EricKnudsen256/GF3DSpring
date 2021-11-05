@@ -7,6 +7,8 @@ typedef struct
 {
     Room *room_list; 
     Uint32 max_rooms;
+
+    Uint32 totalRooms;
     
 }World;
 
@@ -21,6 +23,8 @@ void world_free();
 Room* world_new_room();
 
 void world_layout_rooms();
+
+Bool world_check_for_room(Vector3D pos);
 
 World world_get();
 

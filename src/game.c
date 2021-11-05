@@ -12,6 +12,7 @@
 #include "gf3d_texture.h"
 
 #include "g_entity.h"
+#include "g_random.h"
 
 #include "p_player.h"
 
@@ -66,9 +67,10 @@ int main(int argc,char *argv[])
     entity_manager_init(1000);
     gf3d_camera_init();
     world_init(100);
+    init_random();
 
 
-    Vector3D playerSpawn = vector3d(0, 0, 0);
+    Vector3D playerSpawn = vector3d(0, 0, -5);
 
     player = player_new(playerSpawn);
 
@@ -78,10 +80,7 @@ int main(int argc,char *argv[])
     gfc_matrix_identity(dino1->modelMat);
     dino1->position = vector3d(20,20,0);
 
-    Room* testRoom = world_new_room();
-    testRoom->model = gf3d_model_load("room1");
-    room_make_hitboxs(testRoom);
-    room_set_position(vector3d(0, 50, 0), testRoom);
+    world_layout_rooms();
     
 
     entity_make_hitbox(vector3d(10, 8, 10), vector3d(0, .5, -1.5), dino1);

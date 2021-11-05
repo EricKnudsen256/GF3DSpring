@@ -18,7 +18,17 @@ typedef enum
 
 typedef struct
 {
+    Bool _inuse;
     Vector3D center;
+    DoorType type;
+    Bool connected;
+    Bool locked;
+
+    Model* model;
+    Matrix4 modelMat;
+
+    Vector3D dimensions; //assuming this is a rectangular room
+    Vector3D rotation;
     
 }Door;
 
@@ -28,8 +38,8 @@ typedef struct
     Uint32 _id;
     Model *model;
     Vector3D position;
+    Vector3D dimensions; //assuming this is a rectangular room
     Vector3D rotation;
-    Vector3D velocity;
     Vector3D scale;
     Matrix4 modelMat;
 
@@ -47,6 +57,10 @@ void room_make_hitboxs(Room* room);
 
 void room_set_position(Vector3D pos, Room *room);
 
+Door* room_new_door(DoorType type, Room* room);
 
+void room_draw_doors(Uint32 bufferFrame, VkCommandBuffer commandBuffer, Room* room);
+
+void room_setup_doors(Room* room);
 
 #endif

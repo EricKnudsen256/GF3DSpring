@@ -114,6 +114,9 @@
     <ClInclude Include="..\include\w_world.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\g_random.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\gfc\simple_json\src\simple_json.c">
@@ -219,6 +222,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\w_world.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\g_random.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

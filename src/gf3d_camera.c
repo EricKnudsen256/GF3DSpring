@@ -160,14 +160,14 @@ void gf3d_camera_angle_vectors(Vector3D angles, Vector3D *forward, Vector3D *rig
   
   if(forward)
   {
-    forward->x = cp*sy;
+    forward->x = sy;
     forward->y = cy;
     forward->z = 0;
   }
   if(right)
   {
     right->x = cy;
-    right->y = -1*sy*cp;
+    right->y = -1*sy;
     right->z = 0;
   }
   if(up)
