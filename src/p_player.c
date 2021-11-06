@@ -16,6 +16,8 @@ Player* player_new(Vector3D spawnPos)
     player->ent->update = player_update;
     player->ent->think = player_think;
     player->ent->draw = player_draw;
+    player->ent->free = player_free;
+    player->ent->kill = player_kill;
     player->ent->position = spawnPos;
     entity_make_hitbox(vector3d(8, 8, 20), vector3d(0, 0, 0), player->ent);
 
@@ -23,9 +25,14 @@ Player* player_new(Vector3D spawnPos)
     player->ent->parent = player;
 
     player->camOffset = 5;
+    player->ent->dead = false;
     player->ent->health = 100;
 
     player->ent->_inuse = 1;
+    player->ent->type = ENT_PLAYER;
+
+    player->cloaked = false;
+    player->cloaksLeft = 2;
 
     return player;
 }
@@ -82,6 +89,20 @@ void player_think(Entity* self)
         vector3d_scale(self->left, self->left, deltaTime * 40);
         vector3d_scale(self->up, self->up, deltaTime * 40);
         vector3d_scale(self->down, self->down, deltaTime * 40);
+    }
+
+
+    if (keys[SDL_SCANCODE_C] && player->cloaksLeft > 0)
+    {
+        player->cloaksLeft--;
+
+        player->cloakTime = get_current_time() + 10000;
+        player->cloaked = true;
+    }
+
+    if (player->cloakTime < get_current_time())
+    {
+        player->cloaked = false;
     }
 
 
@@ -153,13 +174,16 @@ void player_update(Entity* self)
     gf3d_camera_set_position(vector3d(self->position.x, self->position.y, self->position.z + player->camOffset));
     gf3d_camera_set_rotation(self->rotation);
 
-    //vector3d_add(self->velocity, self->velocity, vector3d(0, 0, -.01 * get_delta_time()));
+    if (!self->dead)
+    {
 
-    vector3d_add(self->position, self->position, self->velocity);
+        vector3d_add(self->position, self->position, self->velocity);
 
-    //slog("Rotation: x:%f, y:%f, z:%f", self->rotation.x, self->rotation.y, self->rotation.z);
 
-    entity_update(self);
+        entity_update(self);
+    }
+
+
 }
 
 void player_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer, Entity* self)
@@ -169,7 +193,19 @@ void player_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer, Entity* self
 
 void player_free(Entity* self)
 {
+    if (!self)
+    {
+        return;
+    }
+    if (!self->parent)
+    {
+        return;
+    }
 
+    Player* player = self->parent;
+    entity_free(self);
+
+    free(player);
 }
 
 void player_move(Vector3D move, Entity* self)
@@ -190,3 +226,13 @@ void player_rotate(float degrees, int axis, Entity* self)
         self->rotation.z += degrees;
     }
 }
+void player_kill(Entity* self)
+{
+    Player* player = self->parent;
+
+    if (!player->cloaked)
+    {
+        player->ent->dead = true;
+    }
+}
+

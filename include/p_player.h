@@ -11,6 +11,9 @@ typedef struct
 	Entity* ent;
 	int camOffset;
 	Bool crouched;
+	Bool cloaked;
+	int cloaksLeft;
+	Uint32 cloakTime;
 
 }Player;
 
@@ -23,6 +26,8 @@ void player_update(Entity* self);
 void player_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer, Entity* self);
 
 void player_free(Entity* self);
+
+void player_kill(Entity* self);
 
 void player_move(Vector3D move, Entity* self);
 

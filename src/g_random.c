@@ -33,5 +33,5 @@ int random_int_range(int min, int max)
 
 float random_float(float Min, float Max)
 {
-	return ((rand() / RAND_MAX) * (Max - Min)) + Min;
+	return (((float)rand() / (float)RAND_MAX) * (Max - Min)) + Min;
 }

@@ -117,6 +117,27 @@ void entity_manager_check_collions()
     }
 }
 
+Entity* entity_manager_get_player()
+{
+    if (!entity_manager.entity_list)
+    {
+        slog("Entity list not created, call entity_manager_init first");
+        return;
+    }
+    for (int i = 0; i < entity_manager.max_entities; i++)
+    {
+        if (!entity_manager.entity_list[i]._inuse)continue;
+        
+        if (entity_manager.entity_list[i].type == ENT_PLAYER)
+        {
+            //slog("Found Player");
+            return &entity_manager.entity_list[i];
+        }
+    }
+
+    return NULL;
+}
+
 void entity_manager_free()
 {
     if (entity_manager.entity_list)
@@ -145,6 +166,7 @@ Entity* entity_new()
         entity_manager.entity_list[i].think = entity_think;
         entity_manager.entity_list[i].update = entity_update;
         entity_manager.entity_list[i].draw = entity_draw;
+        entity_manager.entity_list[i].free = entity_free;
         return &entity_manager.entity_list[i];
         
     }
@@ -216,8 +238,21 @@ void entity_check_collisions(Entity* self)
         ent = &entity_manager.entity_list[i];
         if (!ent->_inuse)continue;
         if (ent->_id == self->_id) continue;
+        if (!ent->hitbox) continue;
 
         if (!vector3d_distance_between_less_than(self->hitbox->center, ent->hitbox->center, 100)) continue;
+
+        if (self->type == ENT_PLAYER && ent->type == ENT_MONSTER)
+        {
+            if (hitbox_check_collision(self->hitbox, ent->hitbox, self->velocity) && self->kill)
+            {
+                self->kill(self);
+                
+            }
+            continue;
+        }
+
+        if (self->type == ENT_MONSTER && ent->type == ENT_PLAYER)continue;
 
         //check x collision
         if (hitbox_check_collision(self->hitbox, ent->hitbox, vector3d(self->velocity.x, 0, 0)))
@@ -386,4 +421,5 @@ void entity_free(Entity *self)
         slog("No entity given");
         return;
     }
+    memset(&entity_manager.entity_list[self->_id], 0, sizeof(Entity));
 }

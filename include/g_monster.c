@@ -4,6 +4,8 @@
 #include "g_random.h"
 #include "g_time.h"
 
+#include "p_player.h"
+
 #include "w_world.h"
 
 Monster* monster_new()
@@ -30,14 +32,14 @@ Monster* monster_new()
 
         if (world.room_list[rnd]._inuse)
         {
-            spawnPos = vector3d(world.room_list[rnd].position.x, world.room_list[rnd].position.y, world.room_list[rnd].position.z);
+            spawnPos = vector3d(world.room_list[rnd].position.x, world.room_list[rnd].position.y, -8);
             spawned = true;
         }
     }
 
     monster->ent->position = spawnPos;
 
-    //entity_make_hitbox(vector3d(8, 8, 20), vector3d(0, 0, 0), monster->ent);
+    entity_make_hitbox(vector3d(8, 8, 13), vector3d(0, 0, 0), monster->ent);
 
     monster->ent->model = gf3d_model_load("dino");
 
@@ -45,6 +47,13 @@ Monster* monster_new()
     monster->ent->parent = monster;
 
     monster->ent->_inuse = 1;
+    monster->ent->velocity = vector3d(0, 0, 0);
+
+    monster->moveTime = get_current_time() + 3000;
+    monster->movedir = vector3d(0, 0, 0);
+
+    monster->ent->type = ENT_MONSTER;
+
 
     return monster;
 }
@@ -52,20 +61,68 @@ Monster* monster_new()
 void monster_think(Entity* self)
 {
     Monster* monster = self->parent;
+    float deltaTime = (float)get_delta_time() / 1000.0000;
 
-    if (monster->moveTime > get_current_time())
+    Entity* player = entity_manager_get_player();
+    Player* p = player->parent;
+
+    Vector3D playerDir;
+
+    if(((vector3d_distance_between_less_than(player->position, monster->ent->position, 100) && !p->crouched) || 
+        (vector3d_distance_between_less_than(player->position, monster->ent->position, 50) && p->crouched)) &&
+       !player->dead && !p->cloaked)
     {
+        vector3d_sub(playerDir, player->position, monster->ent->position);
+        playerDir = vector3d(playerDir.x, playerDir.y, 0);
+
+        vector3d_normalize(&playerDir);
+
+        if (deltaTime == 0.000)
+        {
+            deltaTime = 0.001;
+        }
+
+        vector3d_scale(playerDir, playerDir, deltaTime * 20);
+
+        monster->ent->velocity = playerDir;
+        monster->movedir = playerDir;
+
+        //slog("playerDir: x:%f, y:%f", playerDir.x, playerDir.y);
+    }
+    
+    else if (monster->moveTime < get_current_time())
+    {
+        //slog("Change dir");
+
         monster->moveTime = get_current_time() + random_int_range(5000, 10000);
         monster->movedir = vector3d(random_float(-1, 1), random_float(-1, 1), 0);
 
-        vector3d_normalize(&monster->movedir);
-
         monster->ent->velocity = monster->movedir;
+
+        vector3d_normalize(&monster->ent->velocity);
+
+        vector3d_scale(monster->ent->velocity, monster->ent->velocity, deltaTime * 20);
+        //slog("MOVEDIR: X:%f, Y:%f", monster->movedir.x, monster->movedir.y);
+
+        
     }
+    
+    
 }
 
 void monster_update(Entity* self)
 {
+    Monster* monster = self->parent;
+    Entity* player = entity_manager_get_player();
+
+    float deltaTime = (float)get_delta_time() / 1000.0000;
+
+    float deltaY, deltaX, angle;
+
+    deltaY = self->position.y - (self->position.y + self->velocity.y);
+    deltaX = self->position.x - (self->position.x + self->velocity.x);
+    angle = atan2(deltaY, deltaX) - M_PI / 2;
+
     vector3d_add(self->position, self->position, self->velocity);
 
     gfc_matrix_identity(self->modelMat);
@@ -74,6 +131,10 @@ void monster_update(Entity* self)
         self->modelMat,
         self->position
     );
+    slog("VEL TAN: %f, X: %f, Y: %f, DELTATIME: %f ", angle, self->velocity.x, self->velocity.y, deltaTime);
+
+    gfc_matrix_rotate(self->modelMat, self->modelMat, angle, vector3d(0, 0, 1));
+
 
     if (self->hitbox)
     {
@@ -83,7 +144,7 @@ void monster_update(Entity* self)
 
 void monster_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer, Entity* self)
 {
-    slog("DRAW: x:%f, y:%f, z:%f", self->position.x, self->position.y, self->position.z);
+    //slog("DRAW: x:%f, y:%f, z:%f", self->position.x, self->position.y, self->position.z);
 
     entity_draw(bufferFrame, commandBuffer, self);
 }

@@ -7,6 +7,7 @@ Uint32 deltaTime = 0;
 void init_time()
 {
 	lastTime = SDL_GetTicks();
+	deltaTime = 0;
 }
 
 void update_time()

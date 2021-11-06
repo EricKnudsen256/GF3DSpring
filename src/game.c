@@ -83,6 +83,11 @@ int main(int argc,char *argv[])
     //SDL_ShowCursor(SDL_DISABLE);
     SDL_SetRelativeMouseMode(SDL_ENABLE);
 
+    entity_manager_think();
+
+    //update functions
+    entity_manager_update();
+
     
 
     while(!done)

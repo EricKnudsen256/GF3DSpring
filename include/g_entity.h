@@ -6,6 +6,14 @@
 
 #include "g_hitbox.h"
 
+typedef enum 
+{
+    ENT_UNDEFINED,
+    ENT_PLAYER,
+    ENT_MONSTER
+
+}EntType;
+
 typedef struct Entity_s
 {
     Uint8 _inuse;           /**boolean flag to check if an entity is used in the entity list */
@@ -24,10 +32,16 @@ typedef struct Entity_s
     Hitbox *hitbox;         /**rectangular hitbox for entity collision */
 
     Uint32 health;
+
+    Bool dead;
+
+    EntType type;
     
     void(*update)(struct Entity_s* self);   /**void function to update entity values and position */
 	void(*think)(struct Entity_s *self);    /**void function for entity logic */
 	void(*draw)(Uint32 bufferFrame, VkCommandBuffer commandBuffer, struct Entity_s *self);  /**draw function for the entity */
+    void(*free)(struct Entity_s* self);  
+    void(*kill)(struct Entity_s* self);  /**draw function for the entity */
 
     void* parent;           /**void pointer to the parent object that created this entity */
     
@@ -78,6 +92,8 @@ void entity_manager_draw_hitboxes(Uint32 bufferFrame, VkCommandBuffer commandBuf
 * @param ent the entity to check for collisions
 */
 void entity_manager_check_collions();
+
+Entity* entity_manager_get_player();
 
 /**
 * @brief frees the entity manager subsystem
