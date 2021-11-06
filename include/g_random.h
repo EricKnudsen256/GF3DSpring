@@ -22,5 +22,7 @@ float random();
 */
 int random_int_range(int min, int max);
 
+float random_float(float Min, float Max);
+
 
 #endif

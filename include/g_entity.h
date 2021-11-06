@@ -22,6 +22,8 @@ typedef struct Entity_s
     Vector3D up, down;      /**up and down vectors for the entity populated every frame */
 
     Hitbox *hitbox;         /**rectangular hitbox for entity collision */
+
+    Uint32 health;
     
     void(*update)(struct Entity_s* self);   /**void function to update entity values and position */
 	void(*think)(struct Entity_s *self);    /**void function for entity logic */

@@ -2,6 +2,8 @@
 
 #include "gfc_matrix.h"
 
+#include "g_time.h"
+
 #include "p_player.h"
 
 
@@ -20,6 +22,11 @@ Player* player_new(Vector3D spawnPos)
     gfc_matrix_identity(player->ent->modelMat); //neded to draw the hitbox
     player->ent->parent = player;
 
+    player->camOffset = 5;
+    player->ent->health = 100;
+
+    player->ent->_inuse = 1;
+
     return player;
 }
 
@@ -28,7 +35,12 @@ void player_think(Entity* self)
     Bool moved = false;
     int x, y;
 
+    Player* player = self->parent;
+
     const Uint8* keys = SDL_GetKeyboardState(NULL);
+    float deltaTime = (float)get_delta_time() / 1000.0;
+
+    //slog("DeltaTime: %f", deltaTime);
 
     SDL_GetRelativeMouseState(&x, &y);
 
@@ -38,21 +50,48 @@ void player_think(Entity* self)
     self->left = vector3d(-self->right.x, -self->right.y, -self->right.z);
     self->down = vector3d(-self->up.x, -self->up.y, -self->up.z);
 
+    player->camOffset = 5;
+    player->crouched = false;
 
-    vector3d_scale(self->forward, self->forward, .01);
-    vector3d_scale(self->back, self->back, .01);
-    vector3d_scale(self->right, self->right, .01);
-    vector3d_scale(self->left, self->left, .01);
-    vector3d_scale(self->up, self->up, .01);
-    vector3d_scale(self->down, self->down, .01);
+    if (keys[SDL_SCANCODE_LSHIFT])
+    {
+        vector3d_scale(self->forward, self->forward, deltaTime * 60);
+        vector3d_scale(self->back, self->back, deltaTime * 60);
+        vector3d_scale(self->right, self->right, deltaTime * 60);
+        vector3d_scale(self->left, self->left, deltaTime * 60);
+        vector3d_scale(self->up, self->up, deltaTime * 60);
+        vector3d_scale(self->down, self->down, deltaTime * 60);
+    }
+    else if (keys[SDL_SCANCODE_LCTRL])
+    {
+        player->camOffset = -3;
+        player->crouched = true;
+
+        vector3d_scale(self->forward, self->forward, deltaTime * 20);
+        vector3d_scale(self->back, self->back, deltaTime * 20);
+        vector3d_scale(self->right, self->right, deltaTime * 20);
+        vector3d_scale(self->left, self->left, deltaTime * 20);
+        vector3d_scale(self->up, self->up, deltaTime * 20);
+        vector3d_scale(self->down, self->down, deltaTime * 20);
+    }
+    else
+    {
+        vector3d_scale(self->forward, self->forward, deltaTime * 40);
+        vector3d_scale(self->back, self->back, deltaTime * 40);
+        vector3d_scale(self->right, self->right, deltaTime * 40);
+        vector3d_scale(self->left, self->left, deltaTime * 40);
+        vector3d_scale(self->up, self->up, deltaTime * 40);
+        vector3d_scale(self->down, self->down, deltaTime * 40);
+    }
+
 
     if (x != 0)
     {
-        player_rotate(0.001 * x, 2, self);
+        player_rotate(.7 * deltaTime * x, 2, self);
     }
     if (y != 0)
     {
-        player_rotate(0.001 * y, 0, self);
+        player_rotate(.7 * deltaTime * y, 0, self);
     }
 
     self->velocity = vector3d(0, 0, 0);
@@ -85,7 +124,8 @@ void player_think(Entity* self)
         player_move(self->up, self);
         moved = true;
     }
-    else if (keys[SDL_SCANCODE_LSHIFT])
+
+    else if (keys[SDL_SCANCODE_Z])
     {
         player_move(self->down, self);
         moved = true;
@@ -108,8 +148,12 @@ void player_update(Entity* self)
 {
     Camera camera = gf3d_get_camera();
 
-    gf3d_camera_set_position(vector3d(self->position.x, self->position.y, self->position.z + 5));
+    Player* player = self->parent;
+
+    gf3d_camera_set_position(vector3d(self->position.x, self->position.y, self->position.z + player->camOffset));
     gf3d_camera_set_rotation(self->rotation);
+
+    //vector3d_add(self->velocity, self->velocity, vector3d(0, 0, -.01 * get_delta_time()));
 
     vector3d_add(self->position, self->position, self->velocity);
 

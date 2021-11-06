@@ -310,7 +310,7 @@ Mesh* gf3d_mesh_from_hitbox(Vector3D dimensions)
 
     gf3d_obj_get_counts_from_file(obj, file);
 
-    slog("Didn't Fucking Crash");
+    //slog("Didn't Fucking Crash");
 
     obj->vertices = (Vector3D*)gfc_allocate_array(sizeof(Vector3D), obj->vertex_count);
     obj->normals = (Vector3D*)gfc_allocate_array(sizeof(Vector3D), obj->normal_count);

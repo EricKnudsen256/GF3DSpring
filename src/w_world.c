@@ -87,7 +87,7 @@ Room* world_new_room()
         game_world.room_list[i].door_list = gfc_allocate_array(sizeof(Door), 4);
         game_world.room_list[i].max_doors = 4;
 
-        room_setup_doors(&game_world.room_list[i]);
+        //room_setup_doors(&game_world.room_list[i]);
 
         game_world.totalRooms++;
         return &game_world.room_list[i];
@@ -103,10 +103,14 @@ void world_layout_rooms()
     startingRoom->model = gf3d_model_load("room1");
     room_make_hitboxs(startingRoom);
     room_set_position(vector3d(0, 0, 0), startingRoom);
+    room_setup_doors(startingRoom);
+
+    int total = 0;
 
     while (game_world.totalRooms < game_world.max_rooms - 20)
     {
-
+        //total += 1;
+        //slog("Total:%i", total);
         for (int i = 0; i < game_world.max_rooms; i++)
         {
             if (!game_world.room_list[i]._inuse)continue;
@@ -116,6 +120,7 @@ void world_layout_rooms()
 
             if (placeDoor < .5)
             {
+                //slog("r:%f", placeDoor);
                 //place new room
                 randomDoor = random_int_range(0, 3);
                 DoorType type;
@@ -138,22 +143,22 @@ void world_layout_rooms()
 
                 for (int door = 0; door < game_world.room_list[i].max_doors; door++)
                 {
-                    if (game_world.room_list[i].door_list[door].type == type || game_world.room_list[i].door_list[door].connected == false)
+                    if (game_world.room_list[i].door_list[door].type == type && game_world.room_list[i].door_list[door].connected == false)
                     {
+                        //slog("type:%i", type);
                         Vector3D newPos;
-
-                        switch (randomDoor)
+                        switch (type)
                         {
-                        case 0:
+                        case DOOR_NEG_X:
                             newPos = vector3d(game_world.room_list[i].position.x - game_world.room_list[i].dimensions.x, game_world.room_list[i].position.y, game_world.room_list[i].position.z);
                             break;
-                        case 1:
+                        case DOOR_POS_X:
                             newPos = vector3d(game_world.room_list[i].position.x + game_world.room_list[i].dimensions.x, game_world.room_list[i].position.y, game_world.room_list[i].position.z);
                             break;
-                        case 2:
+                        case DOOR_NEG_Y:
                             newPos = vector3d(game_world.room_list[i].position.x, game_world.room_list[i].position.y - game_world.room_list[i].dimensions.y, game_world.room_list[i].position.z);
                             break;
-                        case 3:
+                        case DOOR_POS_Y:
                             newPos = vector3d(game_world.room_list[i].position.x, game_world.room_list[i].position.y + game_world.room_list[i].dimensions.y, game_world.room_list[i].position.z);
                             break;
                         }
@@ -163,17 +168,38 @@ void world_layout_rooms()
                         if (world_check_for_room(newPos) == false)
                         {
                             Room* newRoom = world_new_room();
+
+                            if (!newRoom)
+                            {
+                                break;
+                            }
+
                             newRoom->model = gf3d_model_load("room1");
                             room_make_hitboxs(newRoom);
                             room_set_position(newPos, newRoom);
+                            room_setup_doors(newRoom);
 
-                            door -= 2;
+                            DoorType type2;
 
-                            if (door < 0) door += 4;
+                            switch (type)
+                            {
+                            case DOOR_NEG_X:
+                                type2 = DOOR_POS_X;
+                                break;
+                            case DOOR_POS_X:
+                                type2 = DOOR_NEG_X;
+                                break;
+                            case DOOR_NEG_Y:
+                                type2 = DOOR_POS_Y;
+                                break;
+                            case DOOR_POS_Y:
+                                type2 = DOOR_NEG_Y;
+                                break;
+                            }
 
+                            door_set_connected(type2, newRoom);
+                            door_set_connected(type, &game_world.room_list[i]);
 
-                            newRoom->door_list[door].connected = true;
-                            game_world.room_list[i].door_list[door].connected = true;
 
                             break;
                         }
@@ -181,74 +207,6 @@ void world_layout_rooms()
                 }
 
             }
-            if (placeDoor < .1)
-            {
-                //place second room
-
-                randomDoor = random_int_range(0, 3);
-                DoorType type;
-
-                switch (randomDoor)
-                {
-                case 0:
-                    type = DOOR_NEG_X;
-                    break;
-                case 1:
-                    type = DOOR_POS_X;
-                    break;
-                case 2:
-                    type = DOOR_NEG_Y;
-                    break;
-                case 3:
-                    type = DOOR_POS_Y;
-                    break;
-                }
-
-                for (int door = 0; door < game_world.room_list[i].max_doors; door++)
-                {
-                    if (game_world.room_list[i].door_list[door].type == type || game_world.room_list[i].door_list[door].connected == false)
-                    {
-                        Vector3D newPos;
-
-                        switch (randomDoor)
-                        {
-                        case 0:
-                            newPos = vector3d(game_world.room_list[i].position.x - game_world.room_list[i].dimensions.x, game_world.room_list[i].position.y, game_world.room_list[i].position.z);
-                            break;
-                        case 1:
-                            newPos = vector3d(game_world.room_list[i].position.x + game_world.room_list[i].dimensions.x, game_world.room_list[i].position.y, game_world.room_list[i].position.z);
-                            break;
-                        case 2:
-                            newPos = vector3d(game_world.room_list[i].position.x, game_world.room_list[i].position.y - game_world.room_list[i].dimensions.y, game_world.room_list[i].position.z);
-                            break;
-                        case 3:
-                            newPos = vector3d(game_world.room_list[i].position.x, game_world.room_list[i].position.y + game_world.room_list[i].dimensions.y, game_world.room_list[i].position.z);
-                            break;
-                        }
-
-
-
-                        if (world_check_for_room(newPos) == false)
-                        {
-                            Room* newRoom = world_new_room();
-                            newRoom->model = gf3d_model_load("room1");
-                            room_make_hitboxs(newRoom);
-                            room_set_position(newPos, newRoom);
-
-                            door -= 2;
-
-                            if (door < 0) door += 4;
-
-
-                            newRoom->door_list[door].connected = true;
-                            game_world.room_list[i].door_list[door].connected = true;
-
-                            break;
-                        }
-                    }
-                }
-            }
-
         }
         
     }
@@ -257,66 +215,114 @@ void world_layout_rooms()
 
     for (int i = 0; i < game_world.max_rooms; i++)
     {
+        Vector3D testPos;
+        Bool xnegcon;
+        Bool xposcon;
+        Bool ynegcon;
+        Bool yposcon;
+
+        if (!game_world.room_list[i]._inuse) continue;
+
+        //check all sides to see if room exists
+        testPos = vector3d(game_world.room_list[i].position.x - game_world.room_list[i].dimensions.x, game_world.room_list[i].position.y, game_world.room_list[i].position.z);
+        xnegcon = world_check_for_room(testPos);
+
+        testPos = vector3d(game_world.room_list[i].position.x + game_world.room_list[i].dimensions.x, game_world.room_list[i].position.y, game_world.room_list[i].position.z);
+        xposcon = world_check_for_room(testPos);
+
+        testPos = vector3d(game_world.room_list[i].position.x, game_world.room_list[i].position.y - game_world.room_list[i].dimensions.y, game_world.room_list[i].position.z);
+        ynegcon = world_check_for_room(testPos);
+
+        testPos = vector3d(game_world.room_list[i].position.x, game_world.room_list[i].position.y + game_world.room_list[i].dimensions.y, game_world.room_list[i].position.z);
+        yposcon = world_check_for_room(testPos);
+
+        
 
         for (int door = 0; door < game_world.room_list[i].max_doors; door++)
         {
+            
             if (game_world.room_list[i].door_list[door].connected == false)
-            {
+            { 
                 game_world.room_list[i].door_list[door].model = gf3d_model_load("door");
-                
-                for (int box = 0; box < game_world.room_list[i].hitbox_max; box++)
-                {
-                    if (!game_world.room_list[i].hitbox_list[box])
-                    {
+               
+               
+                        slog("Type:%i", game_world.room_list[i].door_list[door].type);
                         switch (game_world.room_list[i].door_list[door].type)
                         {
+                            
                             case DOOR_NEG_X:
-                                game_world.room_list[i].hitbox_list[box] = hitbox_new(game_world.room_list[i].door_list[door].center,
+                                game_world.room_list[i].hitbox_list[5] = hitbox_new(game_world.room_list[i].door_list[door].center,
                                     vector3d(1, game_world.room_list[i].dimensions.y - 8, 20),
                                     vector3d(0, 0, 0));
+
                                 break;
 
                             case DOOR_POS_X:
-                                game_world.room_list[i].hitbox_list[box] = hitbox_new(game_world.room_list[i].door_list[door].center,
+                                game_world.room_list[i].hitbox_list[6] = hitbox_new(game_world.room_list[i].door_list[door].center,
                                     vector3d(1, game_world.room_list[i].dimensions.y - 8, 20),
                                     vector3d(0, 0, 0));
                                 break;
 
                             case DOOR_NEG_Y:
-                                game_world.room_list[i].hitbox_list[box] = hitbox_new(game_world.room_list[i].door_list[door].center,
+                                game_world.room_list[i].hitbox_list[7] = hitbox_new(game_world.room_list[i].door_list[door].center,
                                     vector3d(game_world.room_list[i].dimensions.x - 8, 1, 20),
                                     vector3d(0, 0, 0));
                                 break;
 
                             case DOOR_POS_Y:
-                                game_world.room_list[i].hitbox_list[box] = hitbox_new(game_world.room_list[i].door_list[door].center,
+                                game_world.room_list[i].hitbox_list[8] = hitbox_new(game_world.room_list[i].door_list[door].center,
                                     vector3d(game_world.room_list[i].dimensions.x - 8, 1, 20),
                                     vector3d(0, 0, 0));
                                 break;
 
+                                
+
                         }
-                    }
-                }
             }
+            
         }
 
     }
 
-
+    
 
 }
 
 Bool world_check_for_room(Vector3D pos)
 {
+    float xMin, xMax;
+    float yMin, yMax;
+    Vector3D testPos;
+
     for (int i = 0; i < game_world.max_rooms; i++)
     {
         if (!game_world.room_list[i]._inuse)continue;
 
-        if (game_world.room_list[i].position.x == pos.x && game_world.room_list[i].position.y == pos.y && game_world.room_list[i].position.z == pos.z)
+
+        xMin = game_world.room_list[i].position.x - game_world.room_list[i].dimensions.x / 2;
+        xMax = game_world.room_list[i].position.x + game_world.room_list[i].dimensions.x / 2;
+
+        yMin = game_world.room_list[i].position.y - game_world.room_list[i].dimensions.y / 2;
+        yMax = game_world.room_list[i].position.y + game_world.room_list[i].dimensions.y / 2;
+
+        testPos = pos;
+
+        if (testPos.x > xMin && testPos.x < xMax && testPos.y > yMin && testPos.y < yMax)
         {
+            /*
+            slog("xMIN:%f, xMax:%f, yMin:%f, yMax:%f", xMin, xMax, yMin, yMax);
+            slog("Pos: x:%f, y:%f, z:%f", testPos.x, testPos.y, testPos.z);
+            slog("Return:%i", true);
+            */
             return true;
         }
     }
+    /*
+    slog("xMIN:%f, xMax:%f, yMin:%f, yMax:%f", xMin, xMax, yMin, yMax);
+    slog("Pos: x:%f, y:%f, z:%f", testPos.x, testPos.y, testPos.z);
+    slog("Return:%i", false);
+    */
+
     return false;
 }
 

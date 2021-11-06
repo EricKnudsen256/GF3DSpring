@@ -115,7 +115,9 @@
     <ClInclude Include="..\include\gf3d_vqueues.h" />
     <ClInclude Include="..\include\g_entity.h" />
     <ClInclude Include="..\include\g_hitbox.h" />
+    <ClInclude Include="..\include\g_monster.h" />
     <ClInclude Include="..\include\g_random.h" />
+    <ClInclude Include="..\include\g_time.h" />
     <ClInclude Include="..\include\p_player.h" />
     <ClInclude Include="..\include\w_room.h" />
     <ClInclude Include="..\include\w_world.h" />
@@ -137,6 +139,7 @@
     <ClCompile Include="..\gfc\src\gfc_text.c" />
     <ClCompile Include="..\gfc\src\gfc_types.c" />
     <ClCompile Include="..\gfc\src\gfc_vector.c" />
+    <ClCompile Include="..\include\g_monster.c" />
     <ClCompile Include="..\src\game.c" />
     <ClCompile Include="..\src\gf3d_camera.c" />
     <ClCompile Include="..\src\gf3d_commands.c" />
@@ -154,6 +157,7 @@
     <ClCompile Include="..\src\g_entity.c" />
     <ClCompile Include="..\src\g_hitbox.c" />
     <ClCompile Include="..\src\g_random.c" />
+    <ClCompile Include="..\src\g_time.c" />
     <ClCompile Include="..\src\p_player.c" />
     <ClCompile Include="..\src\w_room.c" />
     <ClCompile Include="..\src\w_world.c" />

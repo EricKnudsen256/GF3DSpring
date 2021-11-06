@@ -98,6 +98,9 @@ void hitbox_draw(Hitbox* hitbox, Uint32 bufferFrame, VkCommandBuffer commandBuff
 	//slog("offset: %f, %f, %f", hitbox->offset.x, hitbox->offset.y, hitbox->offset.z);
     
     //gfc_matrix_copy(hitboxMat, modelMat);
+
+	if (!hitbox) return;
+	if (!hitbox->wireframe) return;
     
     gfc_matrix_identity(hitboxMat);
 

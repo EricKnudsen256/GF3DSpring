@@ -17,6 +17,7 @@ typedef enum
 
 typedef struct
 {
+
 	Vector3D center;		/**center of the hitbox in world space */
 	Vector3D dimensions;	/**Size of hitbox in width, depth, height */
     

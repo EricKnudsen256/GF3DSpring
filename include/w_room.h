@@ -63,4 +63,6 @@ void room_draw_doors(Uint32 bufferFrame, VkCommandBuffer commandBuffer, Room* ro
 
 void room_setup_doors(Room* room);
 
+void door_set_connected(DoorType type, Room* room);
+
 #endif

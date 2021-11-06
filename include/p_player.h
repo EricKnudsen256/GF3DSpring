@@ -9,7 +9,8 @@
 typedef struct
 {
 	Entity* ent;
-	//Camera* camera;
+	int camOffset;
+	Bool crouched;
 
 }Player;
 

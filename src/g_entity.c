@@ -1,6 +1,8 @@
 #include "simple_logger.h"
 
 #include "g_entity.h"
+#include "g_time.h"
+
 #include "w_world.h"
 
 EntityManager entity_manager = {0};
@@ -164,7 +166,7 @@ void entity_make_hitbox(Vector3D dimensions, Vector3D offset, Entity* self)
 
 void entity_think(Entity* self)
 {
-
+    //self->velocity.z -= .5 * get_delta_time();
 }
 
 void entity_update(Entity* self)
@@ -215,11 +217,12 @@ void entity_check_collisions(Entity* self)
         if (!ent->_inuse)continue;
         if (ent->_id == self->_id) continue;
 
+        if (!vector3d_distance_between_less_than(self->hitbox->center, ent->hitbox->center, 100)) continue;
 
         //check x collision
         if (hitbox_check_collision(self->hitbox, ent->hitbox, vector3d(self->velocity.x, 0, 0)))
         {
-            slog("Collision: true");
+            //slog("Collision: true");
             if (self->velocity.x > 0)
             {
                 //slog("Vel:x:%f", self->velocity.x);
@@ -298,6 +301,9 @@ void entity_check_collisions(Entity* self)
                 if (world.room_list[i].hitbox_list[j])
                 {
                     Hitbox* hitbox = world.room_list[i].hitbox_list[j];
+
+                    if (!vector3d_distance_between_less_than(self->hitbox->center, hitbox->center, 100)) continue;
+
                     //check x collision
                     if (hitbox_check_collision(self->hitbox, hitbox, vector3d(self->velocity.x, 0, 0)))
                     {

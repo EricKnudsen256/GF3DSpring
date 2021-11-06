@@ -13,6 +13,8 @@
 
 #include "g_entity.h"
 #include "g_random.h"
+#include "g_time.h"
+#include "g_monster.h"
 
 #include "p_player.h"
 
@@ -33,6 +35,7 @@ int main(int argc,char *argv[])
     Pipeline *pipe, *wirePipe;
 
     Player* player;
+    Monster* monster;
 
     SDL_Event event;
     Bool drawWireframe = false;
@@ -66,24 +69,16 @@ int main(int argc,char *argv[])
 
     entity_manager_init(1000);
     gf3d_camera_init();
-    world_init(100);
+    world_init(60);
     init_random();
+    init_time();
 
 
     Vector3D playerSpawn = vector3d(0, 0, -5);
-
     player = player_new(playerSpawn);
 
-    dino1 = entity_new();
-
-    dino1->model = gf3d_model_load("dino");
-    gfc_matrix_identity(dino1->modelMat);
-    dino1->position = vector3d(20,20,0);
-
     world_layout_rooms();
-    
-
-    entity_make_hitbox(vector3d(10, 8, 10), vector3d(0, .5, -1.5), dino1);
+    monster = monster_new();
 
     //SDL_ShowCursor(SDL_DISABLE);
     SDL_SetRelativeMouseMode(SDL_ENABLE);
@@ -94,6 +89,8 @@ int main(int argc,char *argv[])
     {
         SDL_PumpEvents();   // update SDL's internal event structures
         keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
+
+        update_time();
 
 
         //think functions
@@ -144,12 +141,13 @@ int main(int argc,char *argv[])
                 world_draw_hitboxes(bufferFrame, commandBuffer);
             }
 
+
             entity_manager_draw(bufferFrame, commandBuffer);
             world_draw(bufferFrame, commandBuffer);
 
             gf3d_command_rendering_end(commandBuffer);
 
-            gf3d_vgraphics_render_end(bufferFrame);
+            gf3d_vgraphics_render_end(bufferFrame);           
 
         if (keys[SDL_SCANCODE_ESCAPE])done = 1; // exit condition
     }    

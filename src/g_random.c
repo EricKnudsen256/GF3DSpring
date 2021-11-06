@@ -30,3 +30,8 @@ int random_int_range(int min, int max)
 
 	return min + (r / buckets);
 }
+
+float random_float(float Min, float Max)
+{
+	return ((rand() / RAND_MAX) * (Max - Min)) + Min;
+}
