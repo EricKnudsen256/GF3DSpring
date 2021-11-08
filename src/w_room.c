@@ -126,6 +126,10 @@ Door* room_new_door(DoorType type, Room* room)
             room->door_list[i].rotation = vector3d(0, 0, 0);
             room->door_list[i].type = DOOR_POS_Y;
             break;
+
+        case DOOR_UNDEFINED:
+            slog("Door type undefined, expect a crash");
+            break;
     }
 
     //slog("Center: x:%f, y:%f, z:%f", room->door_list[i].center.x, room->door_list[i].center.y, room->door_list[i].center.z);

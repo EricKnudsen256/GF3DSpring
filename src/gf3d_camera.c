@@ -146,7 +146,7 @@ void gf3d_camera_test2()
 void gf3d_camera_angle_vectors(Vector3D angles, Vector3D *forward, Vector3D *right, Vector3D *up)
 {
   float angle;
-  float sr, sp, sy, cr, cp, cy;
+  float sy, cy;
   
   angle = angles.z;
   sy = sin(angle);

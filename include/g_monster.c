@@ -112,8 +112,6 @@ void monster_think(Entity* self)
 
 void monster_update(Entity* self)
 {
-    //Monster* monster = self->parent;
-    //Entity* player = entity_manager_get_player();
 
     float deltaTime = (float)get_delta_time() / 1000.0000;
 

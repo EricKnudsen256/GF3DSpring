@@ -224,7 +224,6 @@ void world_layout_rooms()
 
     for (int i = 0; i < game_world.max_rooms; i++)
     {
-        Vector3D testPos;
 
         if (!game_world.room_list[i]._inuse) continue;
 

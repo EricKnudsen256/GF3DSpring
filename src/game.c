@@ -29,7 +29,6 @@ int main(int argc,char *argv[])
     const Uint8 * keys;
     Uint32 bufferFrame = 0;
     VkCommandBuffer commandBuffer;
-    Model* model;
     Pipeline *pipe, *wirePipe;
 
     Player* player;
