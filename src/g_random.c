@@ -6,7 +6,7 @@ void init_random()
 	srand((unsigned)time(0));
 }
 
-float random()
+float g_random()
 {
 	return (float)rand() / (float)RAND_MAX;
 }

@@ -115,7 +115,7 @@ void world_layout_rooms()
         {
             if (!game_world.room_list[i]._inuse)continue;
 
-            float placeDoor = random();
+            float placeDoor = g_random();
             int randomDoor;
 
             if (placeDoor < .5)
