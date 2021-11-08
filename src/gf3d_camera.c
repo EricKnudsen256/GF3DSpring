@@ -152,11 +152,11 @@ void gf3d_camera_angle_vectors(Vector3D angles, Vector3D *forward, Vector3D *rig
   sy = sin(angle);
   cy = cos(angle);
   angle = angles.x;
-  sp = sin(angle);
-  cp = cos(angle);
+  //sp = sin(angle);
+  //cp = cos(angle);
   angle = angles.y;
-  sr = sin(angle);
-  cr = cos(angle);
+  //sr = sin(angle);
+  //cr = cos(angle);
   
   if(forward)
   {

@@ -28,9 +28,7 @@ int main(int argc,char *argv[])
     Uint8 validate = 0;
     const Uint8 * keys;
     Uint32 bufferFrame = 0;
-    VkCommandBuffer commandBuffer, wireCommandBuffer;
-    Entity* dino1;
-    Entity* dino2;
+    VkCommandBuffer commandBuffer;
     Model* model;
     Pipeline *pipe, *wirePipe;
 
@@ -40,7 +38,7 @@ int main(int argc,char *argv[])
     SDL_Event event;
     Bool drawWireframe = false;
 
-    int x, y;
+    //int x, y;
 
     
     for (a = 1; a < argc;a++)

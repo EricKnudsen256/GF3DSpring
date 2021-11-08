@@ -112,8 +112,8 @@ void monster_think(Entity* self)
 
 void monster_update(Entity* self)
 {
-    Monster* monster = self->parent;
-    Entity* player = entity_manager_get_player();
+    //Monster* monster = self->parent;
+    //Entity* player = entity_manager_get_player();
 
     float deltaTime = (float)get_delta_time() / 1000.0000;
 
@@ -131,7 +131,7 @@ void monster_update(Entity* self)
         self->modelMat,
         self->position
     );
-    slog("VEL TAN: %f, X: %f, Y: %f, DELTATIME: %f ", angle, self->velocity.x, self->velocity.y, deltaTime);
+   //slog("VEL TAN: %f, X: %f, Y: %f, DELTATIME: %f ", angle, self->velocity.x, self->velocity.y, deltaTime);
 
     gfc_matrix_rotate(self->modelMat, self->modelMat, angle, vector3d(0, 0, 1));
 

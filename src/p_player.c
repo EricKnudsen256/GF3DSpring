@@ -39,7 +39,7 @@ Player* player_new(Vector3D spawnPos)
 
 void player_think(Entity* self)
 {
-    Bool moved = false;
+    //Bool moved = false;
     int x, y;
 
     Player* player = self->parent;
@@ -121,35 +121,35 @@ void player_think(Entity* self)
     if (keys[SDL_SCANCODE_W])
     {
         player_move(self->forward, self);
-        moved = true;
+        //moved = true;
     }
     else if (keys[SDL_SCANCODE_S])
     {
         player_move(self->back, self);
-        moved = true;
+        //moved = true;
     }
 
     if (keys[SDL_SCANCODE_A])
     {
         player_move(self->left, self);
-        moved = true;
+        //moved = true;
     }
     else if (keys[SDL_SCANCODE_D])
     {
         player_move(self->right, self);
-        moved = true;
+        //moved = true;
     }
 
     if (keys[SDL_SCANCODE_SPACE])
     {
         player_move(self->up, self);
-        moved = true;
+        //moved = true;
     }
 
     else if (keys[SDL_SCANCODE_Z])
     {
         player_move(self->down, self);
-        moved = true;
+        //moved = true;
     }
 
 
@@ -167,7 +167,7 @@ void player_think(Entity* self)
 
 void player_update(Entity* self)
 {
-    Camera camera = gf3d_get_camera();
+    //Camera camera = gf3d_get_camera();
 
     Player* player = self->parent;
 

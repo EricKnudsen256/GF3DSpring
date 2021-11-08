@@ -18,7 +18,7 @@ void world_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer)
     if (!game_world.room_list)
     {
         slog("World not initialized");
-        return NULL;
+        return;
     }
     for (int i = 0; i < game_world.max_rooms; i++)
     {
@@ -58,7 +58,7 @@ void world_free()
     if (!game_world.room_list)
     {
         slog("World not initialized");
-        return NULL;
+        return;
     }
     for (int i = 0; i < game_world.max_rooms; i++)
     {
@@ -105,7 +105,6 @@ void world_layout_rooms()
     room_set_position(vector3d(0, 0, 0), startingRoom);
     room_setup_doors(startingRoom);
 
-    int total = 0;
 
     while (game_world.totalRooms < game_world.max_rooms - 20)
     {
@@ -141,6 +140,7 @@ void world_layout_rooms()
                     break;
                 }
 
+
                 for (int door = 0; door < game_world.room_list[i].max_doors; door++)
                 {
                     if (game_world.room_list[i].door_list[door].type == type && game_world.room_list[i].door_list[door].connected == false)
@@ -161,7 +161,12 @@ void world_layout_rooms()
                         case DOOR_POS_Y:
                             newPos = vector3d(game_world.room_list[i].position.x, game_world.room_list[i].position.y + game_world.room_list[i].dimensions.y, game_world.room_list[i].position.z);
                             break;
+
+                        case DOOR_UNDEFINED:
+                            slog("Door type undefined, expect a crash");
+                            break;
                         }
+
 
 
 
@@ -195,6 +200,10 @@ void world_layout_rooms()
                             case DOOR_POS_Y:
                                 type2 = DOOR_NEG_Y;
                                 break;
+
+                            case DOOR_UNDEFINED:
+                                slog("Door type undefined, expect a crash");
+                                break;
                             }
 
                             door_set_connected(type2, newRoom);
@@ -216,25 +225,10 @@ void world_layout_rooms()
     for (int i = 0; i < game_world.max_rooms; i++)
     {
         Vector3D testPos;
-        Bool xnegcon;
-        Bool xposcon;
-        Bool ynegcon;
-        Bool yposcon;
 
         if (!game_world.room_list[i]._inuse) continue;
 
         //check all sides to see if room exists
-        testPos = vector3d(game_world.room_list[i].position.x - game_world.room_list[i].dimensions.x, game_world.room_list[i].position.y, game_world.room_list[i].position.z);
-        xnegcon = world_check_for_room(testPos);
-
-        testPos = vector3d(game_world.room_list[i].position.x + game_world.room_list[i].dimensions.x, game_world.room_list[i].position.y, game_world.room_list[i].position.z);
-        xposcon = world_check_for_room(testPos);
-
-        testPos = vector3d(game_world.room_list[i].position.x, game_world.room_list[i].position.y - game_world.room_list[i].dimensions.y, game_world.room_list[i].position.z);
-        ynegcon = world_check_for_room(testPos);
-
-        testPos = vector3d(game_world.room_list[i].position.x, game_world.room_list[i].position.y + game_world.room_list[i].dimensions.y, game_world.room_list[i].position.z);
-        yposcon = world_check_for_room(testPos);
 
         
 
@@ -273,6 +267,10 @@ void world_layout_rooms()
                                 game_world.room_list[i].hitbox_list[8] = hitbox_new(game_world.room_list[i].door_list[door].center,
                                     vector3d(game_world.room_list[i].dimensions.x - 8, 1, 20),
                                     vector3d(0, 0, 0));
+                                break;
+
+                            case DOOR_UNDEFINED:
+                                slog("Door type undefined, expect a crash");
                                 break;
 
                                 

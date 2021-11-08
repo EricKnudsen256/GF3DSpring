@@ -122,7 +122,7 @@ Entity* entity_manager_get_player()
     if (!entity_manager.entity_list)
     {
         slog("Entity list not created, call entity_manager_init first");
-        return;
+        return NULL;
     }
     for (int i = 0; i < entity_manager.max_entities; i++)
     {

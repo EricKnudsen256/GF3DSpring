@@ -80,12 +80,12 @@ Door* room_new_door(DoorType type, Room* room)
     if (!room)
     {
         slog("No room given");
-        return;
+        return NULL;
     }
     if (!room->door_list)
     {
         slog("No door list for room");
-        return;
+        return NULL;
     }
 
     for (i = 0; i < room->max_doors; i++)
@@ -98,7 +98,7 @@ Door* room_new_door(DoorType type, Room* room)
     if (i == room->max_doors)
     {
         slog("No free doors in door");
-        return;
+        return NULL;
     }
 
     room->door_list[i]._inuse = true;
