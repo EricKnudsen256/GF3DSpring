@@ -54,8 +54,8 @@ void gf3d_model_manager_init(Uint32 max_models,Uint32 chain_length,VkDevice devi
     gf3d_model.model_list = (Model *)gfc_allocate_array(sizeof(Model),max_models);
     gf3d_model.max_models = max_models;
     gf3d_model.device = device;
-    gf3d_model.pipe = gf3d_vgraphics_get_graphics_pipeline();
-    gf3d_model.wireframePipe = gf3d_vgraphics_get_wireframe_pipeline();
+    gf3d_model.pipe = gf3d_vgraphics_get_graphics_model_pipeline();
+    gf3d_model.wireframePipe = gf3d_vgraphics_get_graphics_wire_pipeline();
     
     slog("model manager initiliazed");
     atexit(gf3d_model_manager_close);
@@ -128,15 +128,21 @@ void gf3d_model_delete(Model *model)
     gf3d_texture_free(model->texture);
 }
 
-void gf3d_model_draw(Model *model,Uint32 bufferFrame, VkCommandBuffer commandBuffer,Matrix4 modelMat)
+void gf3d_model_draw(Model *model, Matrix4 modelMat)
 {
-    VkDescriptorSet *descriptorSet = NULL;
+    VkDescriptorSet* descriptorSet = NULL;
+    VkCommandBuffer commandBuffer;
+    Uint32 bufferFrame;
+
     if (!model)
     {
         slog("cannot render a NULL model");
         return;
     }
+    commandBuffer = gf3d_vgraphics_get_current_command_model_buffer();
+    bufferFrame = gf3d_vgraphics_get_current_buffer_frame();
     descriptorSet = gf3d_pipeline_get_descriptor_set(gf3d_model.pipe, bufferFrame);
+
     if (descriptorSet == NULL)
     {
         slog("failed to get a free descriptor Set for model rendering");
@@ -144,6 +150,30 @@ void gf3d_model_draw(Model *model,Uint32 bufferFrame, VkCommandBuffer commandBuf
     }
     gf3d_model_update_basic_model_descriptor_set(model,*descriptorSet,bufferFrame,modelMat);
     gf3d_mesh_render(model->mesh,commandBuffer,descriptorSet);
+}
+
+void gf3d_wireframe_draw(Model* model, Matrix4 modelMat)
+{
+    VkDescriptorSet* descriptorSet = NULL;
+    VkCommandBuffer commandBuffer;
+    Uint32 bufferFrame;
+
+    if (!model)
+    {
+        slog("cannot render a NULL model");
+        return;
+    }
+    commandBuffer = gf3d_vgraphics_get_current_command_model_buffer();
+    bufferFrame = gf3d_vgraphics_get_current_buffer_frame();
+    descriptorSet = gf3d_pipeline_get_descriptor_set(gf3d_model.wireframePipe, bufferFrame);
+
+    if (descriptorSet == NULL)
+    {
+        slog("failed to get a free descriptor Set for model rendering");
+        return;
+    }
+    gf3d_model_update_basic_model_descriptor_set(model, *descriptorSet, bufferFrame, modelMat);
+    gf3d_mesh_render(model->mesh, commandBuffer, descriptorSet);
 }
 
 void gf3d_model_update_basic_model_descriptor_set(Model *model,VkDescriptorSet descriptorSet,Uint32 chainIndex,Matrix4 modelMat)

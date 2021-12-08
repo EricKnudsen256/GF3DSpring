@@ -109,7 +109,9 @@
     <ClInclude Include="..\include\gf3d_model.h" />
     <ClInclude Include="..\include\gf3d_pipeline.h" />
     <ClInclude Include="..\include\gf3d_shaders.h" />
+    <ClInclude Include="..\include\gf3d_sprite.h" />
     <ClInclude Include="..\include\gf3d_swapchain.h" />
+    <ClInclude Include="..\include\gf3d_texture.h" />
     <ClInclude Include="..\include\gf3d_validation.h" />
     <ClInclude Include="..\include\gf3d_vgraphics.h" />
     <ClInclude Include="..\include\gf3d_vqueues.h" />
@@ -149,6 +151,7 @@
     <ClCompile Include="..\src\gf3d_obj_load.c" />
     <ClCompile Include="..\src\gf3d_pipeline.c" />
     <ClCompile Include="..\src\gf3d_shaders.c" />
+    <ClCompile Include="..\src\gf3d_sprite.c" />
     <ClCompile Include="..\src\gf3d_swapchain.c" />
     <ClCompile Include="..\src\gf3d_texture.c" />
     <ClCompile Include="..\src\gf3d_validation.c" />

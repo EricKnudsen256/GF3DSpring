@@ -59,7 +59,9 @@ Model* gf3d_model_from_hitbox(Vector3D dimensions);
  * @param commandBuffer the command used to send this render request
  * @param modelMat the model matrix (MVP)
  */
-void gf3d_model_draw(Model *model,Uint32 bufferFrame,VkCommandBuffer commandBuffer,Matrix4 modelMat);
+void gf3d_model_draw(Model *model, Matrix4 modelMat);
+void gf3d_wireframe_draw(Model* model, Matrix4 modelMat);
+
 void gf3d_model_free(Model *model);
 
 /**

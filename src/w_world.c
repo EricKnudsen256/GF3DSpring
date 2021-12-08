@@ -13,7 +13,7 @@ void world_init(Uint32 max_rooms)
 
 }
 
-void world_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer)
+void world_draw()
 {
     if (!game_world.room_list)
     {
@@ -24,13 +24,13 @@ void world_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer)
     {
         if (game_world.room_list[i]._inuse)
         {
-            room_draw(bufferFrame, commandBuffer, &game_world.room_list[i]);
+            room_draw(&game_world.room_list[i]);
         }
 
     }
 }
 
-void world_draw_hitboxes(Uint32 bufferFrame, VkCommandBuffer commandBuffer)
+void world_draw_hitboxes()
 {
     if (!game_world.room_list)
     {
@@ -46,7 +46,7 @@ void world_draw_hitboxes(Uint32 bufferFrame, VkCommandBuffer commandBuffer)
                 //slog("test");
                 if (game_world.room_list[i].hitbox_list[j])
                 {
-                    hitbox_draw(game_world.room_list[i].hitbox_list[j], bufferFrame, commandBuffer, game_world.room_list[i].modelMat);
+                    hitbox_draw(game_world.room_list[i].hitbox_list[j], game_world.room_list[i].modelMat);
                 }
             }
         }

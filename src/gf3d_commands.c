@@ -86,37 +86,37 @@ void gf3d_command_free(Command *com)
 }
 
 
-Command * gf3d_command_graphics_pool_setup(Uint32 count,Pipeline *pipe)
+Command* gf3d_command_graphics_pool_setup(Uint32 count)
 {
-    Command *com;
-    VkCommandPoolCreateInfo poolInfo = {0};
-    VkCommandBufferAllocateInfo allocInfo = {0};
-    
+    Command* com;
+    VkCommandPoolCreateInfo poolInfo = { 0 };
+    VkCommandBufferAllocateInfo allocInfo = { 0 };
+
     com = gf3d_command_pool_new();
-    
+
     if (!com)
     {
         return NULL;
     }
-    
+
     poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
     poolInfo.queueFamilyIndex = gf3d_vqueues_get_graphics_queue_family();
     poolInfo.flags = 0; // Optional    
-    
+
     if (vkCreateCommandPool(gf3d_commands.device, &poolInfo, NULL, &com->commandPool) != VK_SUCCESS)
     {
         slog("failed to create command pool!");
         return NULL;
     }
-    
-    com->commandBuffers = (VkCommandBuffer*)gfc_allocate_array(sizeof(VkCommandBuffer),count);
+
+    com->commandBuffers = (VkCommandBuffer*)gfc_allocate_array(sizeof(VkCommandBuffer), count);
     if (!com->commandBuffers)
     {
         slog("failed to allocate command buffer array");
         gf3d_command_free(com);
         return NULL;
     }
-    
+
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     allocInfo.commandPool = com->commandPool;
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
@@ -129,10 +129,11 @@ Command * gf3d_command_graphics_pool_setup(Uint32 count,Pipeline *pipe)
         gf3d_command_free(com);
         return NULL;
     }
-    
+
     slog("created command buffer pool");
     return com;
 }
+
 
 VkCommandBuffer * gf3d_command_pool_get_used_buffers(Command *com)
 {
@@ -168,7 +169,7 @@ void gf3d_command_configure_render_pass_end(VkCommandBuffer commandBuffer)
     vkCmdEndRenderPass(commandBuffer);
 }
 
-VkCommandBuffer gf3d_command_rendering_begin(Uint32 index, Pipeline* pipe, Pipeline* wirePipe)
+VkCommandBuffer gf3d_command_rendering_begin(Uint32 index, Pipeline* pipe)
 {
     VkCommandBuffer commandBuffer;
     
@@ -180,15 +181,6 @@ VkCommandBuffer gf3d_command_rendering_begin(Uint32 index, Pipeline* pipe, Pipel
             gf3d_swapchain_get_frame_buffer_by_index(index),
             pipe->pipeline,
             pipe->pipelineLayout);
-
-    /*
-    gf3d_command_configure_render_pass(
-            commandBuffer,
-            wirePipe->renderPass,
-            gf3d_swapchain_get_frame_buffer_by_index(index),
-            wirePipe->pipeline,
-            wirePipe->pipelineLayout);
-            */
     
     return commandBuffer;
 }

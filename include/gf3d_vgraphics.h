@@ -33,8 +33,20 @@ VkExtent2D gf3d_vgraphics_get_view_extent();
 
 void gf3d_vgraphics_clear();
 
+void gf3d_vgraphics_render_start();
+
 Uint32 gf3d_vgraphics_render_begin();
-void gf3d_vgraphics_render_end(Uint32 imageIndex);
+
+void gf3d_vgraphics_render_end();
+
+
+VkCommandBuffer gf3d_vgraphics_get_current_command_model_buffer();
+
+VkCommandBuffer gf3d_vgraphics_get_current_command_overlay_buffer();
+
+VkCommandBuffer gf3d_vgraphics_get_current_command_light_buffer();
+
+VkCommandBuffer gf3d_vgraphics_get_current_command_wire_buffer();
 
 int gf3d_vgraphics_create_buffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer * buffer, VkDeviceMemory * bufferMemory);
 
@@ -53,9 +65,14 @@ VkBuffer gf3d_vgraphics_get_uniform_buffer_by_index(Uint32 index);
 
 UniformBufferObject gf3d_vgraphics_get_uniform_buffer_object();
 
-Pipeline *gf3d_vgraphics_get_graphics_pipeline();
+Pipeline* gf3d_vgraphics_get_graphics_model_pipeline();
 
-Pipeline *gf3d_vgraphics_get_wireframe_pipeline();
+Pipeline* gf3d_vgraphics_get_graphics_overlay_pipeline();
+
+Pipeline* gf3d_vgraphics_get_graphics_light_pipeline();
+
+Pipeline* gf3d_vgraphics_get_graphics_wire_pipeline();
+
 
 Command *gf3d_vgraphics_get_graphics_command_pool();
 

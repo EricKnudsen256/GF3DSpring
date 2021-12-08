@@ -59,6 +59,9 @@ Pipeline *gf3d_pipeline_graphics_load(VkDevice device,char *vertFile,char *fragF
  */
 Pipeline *gf3d_pipeline_basic_model_create(VkDevice device,char *vertFile,char *fragFile,VkExtent2D extent,Uint32 descriptorCount);
 
+
+Pipeline* gf3d_pipeline_basic_sprite_create(VkDevice device, char* vertFile, char* fragFile, VkExtent2D extent, Uint32 descriptorCount);
+
 /**
  * @brief get a descriptor set to be used for the pipeline.  Provide the swap chain rendering frame.
  * @param pipe the pipeline to get a descriptSet for
@@ -71,7 +74,7 @@ VkDescriptorSet * gf3d_pipeline_get_descriptor_set(Pipeline *pipe, Uint32 frame)
  * @param pipe the pipeline to reset
  * @param frame the swap chain rendering frame to reset the cursor for
  */
-void gf3d_pipeline_reset_frame(Pipeline* pipe, Pipeline* wirePipe, Uint32 frame);
+void gf3d_pipeline_reset_frame(Pipeline* pipe, Uint32 frame);
 
 VkFormat gf3d_pipeline_find_depth_format();
 

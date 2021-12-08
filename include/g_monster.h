@@ -20,7 +20,7 @@ void monster_think(Entity* self);
 
 void monster_update(Entity* self);
 
-void monster_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer, Entity* self);
+void monster_draw(Entity* self);
 
 void monster_free(Entity* self);
 

@@ -3,6 +3,7 @@
 
 # Object files
 *.ko
+*.o
 *.elf
 
 # Linker output
@@ -51,3 +52,5 @@ dkms.conf
 makefile.dep
 gf3d
 *.log
+
+/win32/Release

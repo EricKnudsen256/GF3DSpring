@@ -14,9 +14,9 @@ typedef struct
 
 void world_init(Uint32 max_rooms);
 
-void world_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer);
+void world_draw();
 
-void world_draw_hitboxes(Uint32 bufferFrame, VkCommandBuffer commandBuffer);
+void world_draw_hitboxes();
 
 void world_free();
 

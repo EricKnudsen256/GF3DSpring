@@ -2,7 +2,7 @@
 
 #include "w_room.h"
 
-void room_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer, Room *room)
+void room_draw(Room *room)
 {
     if (!room)
     {
@@ -13,8 +13,8 @@ void room_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer, Room *room)
     if (!room->model) return;
     if (!room->modelMat) return;
 
-    gf3d_model_draw(room->model, bufferFrame, commandBuffer, room->modelMat);
-    room_draw_doors(bufferFrame, commandBuffer, room);
+    gf3d_model_draw(room->model, room->modelMat);
+    room_draw_doors(room);
 }
 
 void room_make_hitboxs(Room* room)
@@ -137,7 +137,7 @@ Door* room_new_door(DoorType type, Room* room)
     return &room->door_list[i];
 }
 
-void room_draw_doors(Uint32 bufferFrame, VkCommandBuffer commandBuffer, Room* room)
+void room_draw_doors(Room* room)
 {
     if (!room)
     {
@@ -157,7 +157,7 @@ void room_draw_doors(Uint32 bufferFrame, VkCommandBuffer commandBuffer, Room* ro
         gfc_matrix_make_translation(room->door_list[i].modelMat, room->door_list[i].center);
         gfc_matrix_rotate(room->door_list[i].modelMat, room->door_list[i].modelMat, room->door_list[i].rotation.x, vector3d(0, 0, 1));
 
-        gf3d_model_draw(room->door_list[i].model, bufferFrame, commandBuffer, room->door_list[i].modelMat);
+        gf3d_model_draw(room->door_list[i].model, room->door_list[i].modelMat);
 
     }
 }

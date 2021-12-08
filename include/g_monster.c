@@ -140,11 +140,11 @@ void monster_update(Entity* self)
     }
 }
 
-void monster_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer, Entity* self)
+void monster_draw(Entity* self)
 {
     //slog("DRAW: x:%f, y:%f, z:%f", self->position.x, self->position.y, self->position.z);
 
-    entity_draw(bufferFrame, commandBuffer, self);
+    entity_draw(self);
 }
 
 void monster_free(Entity* self)

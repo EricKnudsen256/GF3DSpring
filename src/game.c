@@ -10,6 +10,7 @@
 #include "gf3d_model.h"
 #include "gf3d_camera.h"
 #include "gf3d_texture.h"
+#include "gf3d_sprite.h"
 
 #include "g_entity.h"
 #include "g_random.h"
@@ -28,8 +29,6 @@ int main(int argc,char *argv[])
     Uint8 validate = 0;
     const Uint8 * keys;
     Uint32 bufferFrame = 0;
-    VkCommandBuffer commandBuffer;
-    Pipeline *pipe, *wirePipe;
 
     Player* player;
     Monster* monster;
@@ -111,14 +110,10 @@ int main(int argc,char *argv[])
         //camera update
         gf3d_camera_update();
 
-        pipe = gf3d_vgraphics_get_graphics_pipeline();
-        wirePipe = gf3d_vgraphics_get_wireframe_pipeline();
 
         //draw calls
-        bufferFrame = gf3d_vgraphics_render_begin();
-        gf3d_pipeline_reset_frame(pipe, wirePipe, bufferFrame);
+        gf3d_vgraphics_render_start();
     
-            commandBuffer = gf3d_command_rendering_begin(bufferFrame, pipe, wirePipe);
 
             while (SDL_PollEvent(&event))
             {
@@ -135,21 +130,22 @@ int main(int argc,char *argv[])
                 }
             }
             
+            /*
             if (drawWireframe)
             {
                 gf3d_command_rendering_next_pipeline(bufferFrame, commandBuffer, wirePipe);
 
-                entity_manager_draw_hitboxes(bufferFrame, commandBuffer);
-                world_draw_hitboxes(bufferFrame, commandBuffer);
+                entity_manager_draw_hitboxes();
+                world_draw_hitboxes();
             }
+            */
+            
 
 
-            entity_manager_draw(bufferFrame, commandBuffer);
-            world_draw(bufferFrame, commandBuffer);
+            entity_manager_draw();
+            world_draw();
 
-            gf3d_command_rendering_end(commandBuffer);
-
-            gf3d_vgraphics_render_end(bufferFrame);           
+            gf3d_vgraphics_render_end();           
 
         if (keys[SDL_SCANCODE_ESCAPE])done = 1; // exit condition
     }    

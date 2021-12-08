@@ -63,6 +63,6 @@ Bool hitbox_check_collision(Hitbox* box1, Hitbox* box2, Vector3D box1velocity);
 * @brief draws a hitbox wireframe
 * @params self the hitbox to draw
 */
-void hitbox_draw(Hitbox* hitbox, Uint32 bufferFrame, VkCommandBuffer commandBuffer, Matrix4 modelMat);
+void hitbox_draw(Hitbox* hitbox, Matrix4 modelMat);
 
 #endif

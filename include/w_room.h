@@ -51,7 +51,7 @@ typedef struct
     
 }Room;
 
-void room_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer, Room *room);
+void room_draw(Room *room);
 
 void room_make_hitboxs(Room* room);
 
@@ -59,7 +59,7 @@ void room_set_position(Vector3D pos, Room *room);
 
 Door* room_new_door(DoorType type, Room* room);
 
-void room_draw_doors(Uint32 bufferFrame, VkCommandBuffer commandBuffer, Room* room);
+void room_draw_doors(Room* room);
 
 void room_setup_doors(Room* room);
 

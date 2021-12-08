@@ -39,7 +39,7 @@ typedef struct Entity_s
     
     void(*update)(struct Entity_s* self);   /**void function to update entity values and position */
 	void(*think)(struct Entity_s *self);    /**void function for entity logic */
-	void(*draw)(Uint32 bufferFrame, VkCommandBuffer commandBuffer, struct Entity_s *self);  /**draw function for the entity */
+	void(*draw)(struct Entity_s *self);  /**draw function for the entity */
     void(*free)(struct Entity_s* self);  
     void(*kill)(struct Entity_s* self);  /**draw function for the entity */
 
@@ -78,14 +78,14 @@ void entity_manager_update();
 * @params bufferFrame the currently active bufferframe to draw to
 * @params commandBuffer the command buffer to write the draw commands to
 */
-void entity_manager_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer);
+void entity_manager_draw();
 
 /**
 * @brief if the entity has a hitbox, will call the relevant draw command to show it
 * @params bufferFrame the currently active bufferframe to draw to
 * @params commandBuffer the command buffer to write the draw commands to
 */
-void entity_manager_draw_hitboxes(Uint32 bufferFrame, VkCommandBuffer commandBuffer);
+void entity_manager_draw_hitboxes();
 
 /**
 * @brief checks collions on all entities in the entity manager
@@ -133,7 +133,7 @@ void entity_update(Entity* self);
 * @params commandBuffer the command buffer to write the draw commands to
 * @params self the entity to update
 */
-void entity_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer, Entity* self);
+void entity_draw(Entity* self);
 
 /**
 * @brief checks collions on entities against all tiles, adjusts

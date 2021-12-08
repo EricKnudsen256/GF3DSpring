@@ -66,7 +66,7 @@ void entity_manager_update()
     }
 }
 
-void entity_manager_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer)
+void entity_manager_draw()
 {
     if (!entity_manager.entity_list)
     {
@@ -78,12 +78,12 @@ void entity_manager_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer)
         if (!entity_manager.entity_list[i]._inuse)continue;
         if (!entity_manager.entity_list[i].draw)continue;
 
-        entity_manager.entity_list[i].draw(bufferFrame, commandBuffer, &entity_manager.entity_list[i]);
+        entity_manager.entity_list[i].draw(&entity_manager.entity_list[i]);
 
     }
 }
 
-void entity_manager_draw_hitboxes(Uint32 bufferFrame, VkCommandBuffer commandBuffer)
+void entity_manager_draw_hitboxes()
 {
     if (!entity_manager.entity_list)
     {
@@ -95,7 +95,7 @@ void entity_manager_draw_hitboxes(Uint32 bufferFrame, VkCommandBuffer commandBuf
         if (!entity_manager.entity_list[i]._inuse)continue;
         if (!entity_manager.entity_list[i].hitbox)continue;
 
-        hitbox_draw(entity_manager.entity_list[i].hitbox, bufferFrame, commandBuffer, entity_manager.entity_list[i].modelMat);
+        hitbox_draw(entity_manager.entity_list[i].hitbox, entity_manager.entity_list[i].modelMat);
 
     }
 }
@@ -206,7 +206,7 @@ void entity_update(Entity* self)
     }
 }
 
-void entity_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer, Entity* self)
+void entity_draw(Entity* self)
 {
     if (!self)
     {
@@ -217,7 +217,7 @@ void entity_draw(Uint32 bufferFrame, VkCommandBuffer commandBuffer, Entity* self
     if (!self->model) return;
     if (!self->modelMat) return;
 
-    gf3d_model_draw(self->model, bufferFrame, commandBuffer, self->modelMat);
+    gf3d_model_draw(self->model, self->modelMat);
 
 }
 

@@ -181,13 +181,13 @@ void gf3d_mesh_render(Mesh *mesh,VkCommandBuffer commandBuffer, VkDescriptorSet 
 
     if (mesh->type == MESH_WIREFRAME)
     {
-        pipe = gf3d_vgraphics_get_graphics_pipeline();
+        pipe = gf3d_vgraphics_get_graphics_wire_pipeline();
     }
 
 
     else
     {
-        pipe = gf3d_vgraphics_get_wireframe_pipeline();
+        pipe = gf3d_vgraphics_get_graphics_model_pipeline();
     }
 
 

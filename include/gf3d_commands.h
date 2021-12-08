@@ -28,7 +28,7 @@ void gf3d_command_system_init(Uint32 max_commands,VkDevice defaultDevice);
  * @param pipe the pointer to the graphics pipeline to use
  * @return NULL on error or a pointer to a setup command pool
  */
-Command * gf3d_command_graphics_pool_setup(Uint32 count,Pipeline *pipe);
+Command * gf3d_command_graphics_pool_setup(Uint32 count);
 
 VkCommandBuffer gf3d_command_begin_single_time(Command *com);
 
@@ -45,7 +45,7 @@ VkCommandBuffer * gf3d_command_pool_get_used_buffers(Command *com);
  * @param index the rendering frame to use
  * @return the command buffer used for this drawing pass.
  */
-VkCommandBuffer gf3d_command_rendering_begin(Uint32 index, Pipeline *pipe, Pipeline* wirePipe);
+VkCommandBuffer gf3d_command_rendering_begin(Uint32 index);
 
 void gf3d_command_rendering_next_pipeline(Uint32 index, VkCommandBuffer commandBuffer, Pipeline* wirePipe);
 
