@@ -242,10 +242,10 @@
     <ClCompile Include="..\src\g_time.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\include\g_monster.c">
+    <ClCompile Include="..\src\gf3d_sprite.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\gf3d_sprite.c">
+    <ClCompile Include="..\src\g_monster.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

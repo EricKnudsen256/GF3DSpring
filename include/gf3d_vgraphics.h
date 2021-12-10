@@ -65,6 +65,8 @@ VkBuffer gf3d_vgraphics_get_uniform_buffer_by_index(Uint32 index);
 
 UniformBufferObject gf3d_vgraphics_get_uniform_buffer_object();
 
+Uint32 gf3d_vgraphics_get_current_buffer_frame();
+
 Pipeline* gf3d_vgraphics_get_graphics_model_pipeline();
 
 Pipeline* gf3d_vgraphics_get_graphics_overlay_pipeline();

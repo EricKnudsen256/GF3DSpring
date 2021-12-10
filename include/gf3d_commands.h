@@ -48,8 +48,6 @@ VkCommandBuffer * gf3d_command_pool_get_used_buffers(Command *com);
 
 VkCommandBuffer gf3d_command_rendering_begin(Uint32 index, Pipeline* pipe);
 
-void gf3d_command_rendering_next_pipeline(Uint32 index, VkCommandBuffer commandBuffer, Pipeline* wirePipe);
-
 void gf3d_command_rendering_end(VkCommandBuffer commandBuffer);
 
 void gf3d_command_configure_render_pass_end(VkCommandBuffer commandBuffer);

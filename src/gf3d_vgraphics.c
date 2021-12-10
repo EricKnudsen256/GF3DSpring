@@ -444,20 +444,20 @@ void gf3d_vgraphics_render_start()
     gf3d_vgraphics.bufferFrame = gf3d_vgraphics_render_begin();
 
     gf3d_pipeline_reset_frame(gf3d_vgraphics_get_graphics_model_pipeline(), gf3d_vgraphics.bufferFrame);
-    //gf3d_pipeline_reset_frame(gf3d_vgraphics_get_graphics_overlay_pipeline(), gf3d_vgraphics.bufferFrame);
+    gf3d_pipeline_reset_frame(gf3d_vgraphics_get_graphics_overlay_pipeline(), gf3d_vgraphics.bufferFrame);
     //gf3d_pipeline_reset_frame(gf3d_vgraphics_get_graphics_light_pipeline(), gf3d_vgraphics.bufferFrame);
-   // gf3d_pipeline_reset_frame(gf3d_vgraphics_get_graphics_wire_pipeline(), gf3d_vgraphics.bufferFrame);
+    //gf3d_pipeline_reset_frame(gf3d_vgraphics_get_graphics_wire_pipeline(), gf3d_vgraphics.bufferFrame);
 
 
     gf3d_vgraphics.commandModelBuffer = gf3d_command_rendering_begin(
         gf3d_vgraphics.bufferFrame,
         gf3d_vgraphics_get_graphics_model_pipeline());
 
-    /*
+    
     gf3d_vgraphics.commandOverlayBuffer = gf3d_command_rendering_begin(
         gf3d_vgraphics.bufferFrame,
         gf3d_vgraphics_get_graphics_overlay_pipeline());
-
+    /*
     gf3d_vgraphics.commandLightingBuffer = gf3d_command_rendering_begin(
         gf3d_vgraphics.bufferFrame,
         gf3d_vgraphics_get_graphics_light_pipeline());
@@ -468,7 +468,7 @@ void gf3d_vgraphics_render_start()
         */
 }
 
-Uint32  gf3d_vgraphics_get_current_buffer_frame()
+Uint32 gf3d_vgraphics_get_current_buffer_frame()
 {
     return gf3d_vgraphics.bufferFrame;
 }
@@ -504,7 +504,7 @@ void gf3d_vgraphics_render_end()
 
 
     gf3d_command_rendering_end(gf3d_vgraphics.commandModelBuffer);
-    //gf3d_command_rendering_end(gf3d_vgraphics.commandOverlayBuffer);
+    gf3d_command_rendering_end(gf3d_vgraphics.commandOverlayBuffer);
     //gf3d_command_rendering_end(gf3d_vgraphics.commandLightingBuffer);
     //gf3d_command_rendering_end(gf3d_vgraphics.commandWireframeBuffer);
 
@@ -542,6 +542,7 @@ void gf3d_vgraphics_render_end()
 
     vkQueuePresentKHR(gf3d_vqueues_get_present_queue(), &presentInfo);
 }
+
 
 /**
  * VULKAN DEVEICE SUPPORT

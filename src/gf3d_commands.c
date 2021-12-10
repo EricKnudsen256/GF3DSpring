@@ -185,21 +185,6 @@ VkCommandBuffer gf3d_command_rendering_begin(Uint32 index, Pipeline* pipe)
     return commandBuffer;
 }
 
-void gf3d_command_rendering_next_pipeline(Uint32 index, VkCommandBuffer commandBuffer, Pipeline* wirePipe)
-{
-    VkSubmitInfo submitInfo = { 0 };
-
-    gf3d_command_configure_render_pass_end(commandBuffer);
-    //gf3d_command_end_single_time(gf3d_vgraphics_get_graphics_command_pool(), commandBuffer);
-
-
-    gf3d_command_configure_render_pass(
-        commandBuffer,
-        wirePipe->renderPass,
-        gf3d_swapchain_get_frame_buffer_by_index(index),
-        wirePipe->pipeline,
-        wirePipe->pipelineLayout);
-}
 
 void gf3d_command_rendering_end(VkCommandBuffer commandBuffer)
 {
@@ -209,12 +194,12 @@ void gf3d_command_rendering_end(VkCommandBuffer commandBuffer)
 
 void gf3d_command_configure_render_pass(VkCommandBuffer commandBuffer, VkRenderPass renderPass,VkFramebuffer framebuffer,VkPipeline graphicsPipeline,VkPipelineLayout pipelineLayout)
 {
-    VkClearValue clearValues[2] = {0};
-    VkRenderPassBeginInfo renderPassInfo = {0};
-    
+    VkClearValue clearValues[2] = { 0 };
+    VkRenderPassBeginInfo renderPassInfo = { 0 };
+
     clearValues[0].color.float32[3] = 1.0;
     clearValues[1].depthStencil.depth = 1.0f;
-    
+
     renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
     renderPassInfo.renderPass = renderPass;
     renderPassInfo.framebuffer = framebuffer;
@@ -223,7 +208,7 @@ void gf3d_command_configure_render_pass(VkCommandBuffer commandBuffer, VkRenderP
     renderPassInfo.renderArea.extent = gf3d_swapchain_get_extent();
     renderPassInfo.clearValueCount = 2;
     renderPassInfo.pClearValues = clearValues;
-    
+
     vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
     vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 }

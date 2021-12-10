@@ -36,6 +36,8 @@ int main(int argc,char *argv[])
     SDL_Event event;
     Bool drawWireframe = false;
 
+    Sprite* test;
+
     //int x, y;
 
     
@@ -46,7 +48,9 @@ int main(int argc,char *argv[])
             validate = 0;
         }
     }
-    
+
+
+
     init_logger("gf3d.log");    
     slog("gf3d begin");
     gf3d_vgraphics_init(
@@ -84,7 +88,7 @@ int main(int argc,char *argv[])
     //update functions
     entity_manager_update();
 
-    
+    test = gf3d_sprite_load("images/slime.png", 64, 64, 1);
 
     while(!done)
     {
@@ -144,6 +148,8 @@ int main(int argc,char *argv[])
 
             entity_manager_draw();
             world_draw();
+
+            //gf3d_sprite_draw(test, vector2d(100, 100), vector2d(1, 1), 0);
 
             gf3d_vgraphics_render_end();           
 
