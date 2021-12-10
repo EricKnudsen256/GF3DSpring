@@ -179,16 +179,9 @@ void gf3d_mesh_render(Mesh *mesh,VkCommandBuffer commandBuffer, VkDescriptorSet 
         return;
     }
 
-    if (mesh->type == MESH_WIREFRAME)
-    {
-        pipe = gf3d_vgraphics_get_graphics_wire_pipeline();
-    }
 
+    pipe = gf3d_vgraphics_get_graphics_model_pipeline();
 
-    else
-    {
-        pipe = gf3d_vgraphics_get_graphics_model_pipeline();
-    }
 
 
     vkCmdBindVertexBuffers(commandBuffer, 0, 1, &mesh->buffer, offsets);
@@ -197,6 +190,29 @@ void gf3d_mesh_render(Mesh *mesh,VkCommandBuffer commandBuffer, VkDescriptorSet 
     
     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipe->pipelineLayout, 0, 1, descriptorSet, 0, NULL);
     
+    vkCmdDrawIndexed(commandBuffer, mesh->faceCount * 3, 1, 0, 0, 0);
+}
+
+void gf3d_mesh_render_wireframe(Mesh* mesh, VkCommandBuffer commandBuffer, VkDescriptorSet* descriptorSet)
+{
+    VkDeviceSize offsets[] = { 0 };
+    Pipeline* pipe;
+    if (!mesh)
+    {
+        slog("cannot render a NULL mesh");
+        return;
+    }
+
+    pipe = gf3d_vgraphics_get_graphics_wire_pipeline();
+
+
+
+    vkCmdBindVertexBuffers(commandBuffer, 0, 1, &mesh->buffer, offsets);
+
+    vkCmdBindIndexBuffer(commandBuffer, mesh->faceBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipe->pipelineLayout, 0, 1, descriptorSet, 0, NULL);
+
     vkCmdDrawIndexed(commandBuffer, mesh->faceCount * 3, 1, 0, 0, 0);
 }
 

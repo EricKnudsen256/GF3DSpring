@@ -3,6 +3,7 @@
 #include "simple_logger.h"
 #include "gfc_vector.h"
 #include "gfc_matrix.h"
+#include "gfc_audio.h"
 
 #include "gf3d_vgraphics.h"
 #include "gf3d_pipeline.h"
@@ -38,6 +39,8 @@ int main(int argc,char *argv[])
 
     Sprite* test;
 
+    Sound* bgMusic;
+
     //int x, y;
 
     
@@ -72,6 +75,7 @@ int main(int argc,char *argv[])
     world_init(60);
     init_random();
     init_time();
+    gfc_audio_init(32, 6, 4, 8, true, false);
 
 
     Vector3D playerSpawn = vector3d(0, 0, -5);
@@ -89,6 +93,9 @@ int main(int argc,char *argv[])
     entity_manager_update();
 
     test = gf3d_sprite_load("images/slime.png", 64, 64, 1);
+
+    //bgMusic = gfc_sound_load("audio/Condemned_ Criminal Origins Unofficial ST - Stray.wav", 1, 1);
+    //gfc_sound_play(bgMusic, -1, .07, -1, -1);
 
     while(!done)
     {
@@ -134,22 +141,20 @@ int main(int argc,char *argv[])
                 }
             }
             
-            /*
+            
             if (drawWireframe)
             {
-                gf3d_command_rendering_next_pipeline(bufferFrame, commandBuffer, wirePipe);
-
                 entity_manager_draw_hitboxes();
                 world_draw_hitboxes();
             }
-            */
-            
 
+
+            
 
             entity_manager_draw();
             world_draw();
 
-            //gf3d_sprite_draw(test, vector2d(100, 100), vector2d(1, 1), 0);
+            gf3d_sprite_draw(test, vector2d(100, 100), vector2d(1, 1), 0);
 
             gf3d_vgraphics_render_end();           
 

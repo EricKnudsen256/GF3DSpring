@@ -62,6 +62,9 @@ Pipeline *gf3d_pipeline_basic_model_create(VkDevice device,char *vertFile,char *
 
 Pipeline* gf3d_pipeline_basic_sprite_create(VkDevice device, char* vertFile, char* fragFile, VkExtent2D extent, Uint32 descriptorCount);
 
+
+Pipeline* gf3d_pipeline_basic_wireframe_create(VkDevice device, char* vertFile, char* fragFile, VkExtent2D extent, Uint32 descriptorCount);
+
 /**
  * @brief get a descriptor set to be used for the pipeline.  Provide the swap chain rendering frame.
  * @param pipe the pipeline to get a descriptSet for

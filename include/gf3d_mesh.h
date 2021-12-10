@@ -78,6 +78,8 @@ void gf3d_mesh_free(Mesh *mesh);
  */
 void gf3d_mesh_render(Mesh *mesh,VkCommandBuffer commandBuffer, VkDescriptorSet * descriptorSet);
 
+void gf3d_mesh_render_wireframe(Mesh* mesh, VkCommandBuffer commandBuffer, VkDescriptorSet* descriptorSet);
+
 /**
  * @brief create a mesh's internal buffers based on vertices
  * @param mesh the mesh handle to populate
