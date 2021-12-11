@@ -96,8 +96,8 @@ int main(int argc,char *argv[])
 
     test = gf3d_sprite_load("images/slime.png", 64, 64, 1);
 
-    //bgMusic = gfc_sound_load("audio/Condemned_ Criminal Origins Unofficial ST - Stray.wav", 1, 1);
-    //gfc_sound_play(bgMusic, -1, .07, -1, -1);
+    bgMusic = gfc_sound_load("audio/Condemned_ Criminal Origins Unofficial ST - Stray.wav", 1, 1);
+    gfc_sound_play(bgMusic, -1, .07, -1, -1);
 
     while(!done)
     {
