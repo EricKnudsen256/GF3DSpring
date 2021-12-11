@@ -23,6 +23,9 @@ void gf3d_pipeline_create_basic_model_descriptor_pool(Pipeline *pipe);
 void gf3d_pipeline_create_basic_model_descriptor_set_layout(Pipeline *pipe);
 void gf3d_pipeline_create_descriptor_sets(Pipeline *pipe);
 
+void gf3d_pipeline_create_basic_model_lighting_descriptor_pool(Pipeline* pipe);
+void gf3d_pipeline_create_basic_model_lighting_descriptor_set_layout(Pipeline* pipe);
+
 void gf3d_pipeline_init(Uint32 max_pipelines)
 {
     if (max_pipelines == 0)
@@ -420,8 +423,8 @@ Pipeline* gf3d_pipeline_basic_model_create(VkDevice device, char* vertFile, char
     colorBlending.blendConstants[2] = 0.0f; // Optional
     colorBlending.blendConstants[3] = 0.0f; // Optional
 
-    gf3d_pipeline_create_basic_model_descriptor_pool(pipe);
-    gf3d_pipeline_create_basic_model_descriptor_set_layout(pipe);
+    gf3d_pipeline_create_basic_model_lighting_descriptor_pool(pipe);
+    gf3d_pipeline_create_basic_model_lighting_descriptor_set_layout(pipe);
     gf3d_pipeline_create_descriptor_sets(pipe);
 
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -894,6 +897,42 @@ void gf3d_pipeline_create_basic_model_descriptor_pool(Pipeline *pipe)
     pipe->descriptorPoolCount = gf3d_pipeline.chainLength;
 }
 
+void gf3d_pipeline_create_basic_model_lighting_descriptor_pool(Pipeline* pipe)
+{
+    int i;
+    VkDescriptorPoolSize poolSize[3] = { 0 };
+    VkDescriptorPoolCreateInfo poolInfo = { 0 };
+
+    if (!pipe)
+    {
+        slog("no pipeline provided");
+        return;
+    }
+    slog("attempting to make %i descriptor pools of size %i", gf3d_pipeline.chainLength, pipe->descriptorSetCount);
+    poolSize[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    poolSize[0].descriptorCount = pipe->descriptorSetCount;
+    poolSize[1].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    poolSize[1].descriptorCount = pipe->descriptorSetCount;
+    poolSize[2].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    poolSize[2].descriptorCount = pipe->descriptorSetCount;
+
+    poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+    poolInfo.poolSizeCount = 3;
+    poolInfo.pPoolSizes = poolSize;
+    poolInfo.maxSets = pipe->descriptorSetCount;
+    pipe->descriptorPool = (VkDescriptorPool*)gfc_allocate_array(sizeof(VkDescriptorPool), gf3d_pipeline.chainLength);
+
+    for (i = 0; i < gf3d_pipeline.chainLength; i++)
+    {
+        if (vkCreateDescriptorPool(pipe->device, &poolInfo, NULL, &pipe->descriptorPool[i]) != VK_SUCCESS)
+        {
+            slog("failed to create descriptor pool!");
+            return;
+        }
+    }
+    pipe->descriptorPoolCount = gf3d_pipeline.chainLength;
+}
+
 void gf3d_pipeline_reset_frame(Pipeline* pipe, Uint32 frame)
 {
     if (!pipe)return;
@@ -985,27 +1024,36 @@ void gf3d_pipeline_create_basic_model_lighting_descriptor_set_layout(Pipeline* p
     VkDescriptorSetLayoutCreateInfo layoutInfo = { 0 };
     VkDescriptorSetLayoutBinding uboLayoutBinding = { 0 };
     VkDescriptorSetLayoutBinding samplerLayoutBinding = { 0 };
+    VkDescriptorSetLayoutBinding lightLayoutBinding = { 0 };
 
-    VkDescriptorSetLayoutBinding bindings[2];
+    VkDescriptorSetLayoutBinding bindings[3];
 
-    samplerLayoutBinding.binding = 1;
+    samplerLayoutBinding.binding = 2;
     samplerLayoutBinding.descriptorCount = 1;
     samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
     samplerLayoutBinding.pImmutableSamplers = NULL;
     samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
-    memcpy(&bindings[1], &samplerLayoutBinding, sizeof(VkDescriptorSetLayoutBinding));
+    memcpy(&bindings[2], &samplerLayoutBinding, sizeof(VkDescriptorSetLayoutBinding));
 
     uboLayoutBinding.binding = 0;
     uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     uboLayoutBinding.descriptorCount = 1;
-    uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    uboLayoutBinding.stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS;
     uboLayoutBinding.pImmutableSamplers = NULL; // Optional
 
     memcpy(&bindings[0], &uboLayoutBinding, sizeof(VkDescriptorSetLayoutBinding));
 
+    lightLayoutBinding.binding = 1;
+    lightLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    lightLayoutBinding.descriptorCount = 1;
+    lightLayoutBinding.stageFlags = VK_SHADER_STAGE_ALL_GRAPHICS;
+    lightLayoutBinding.pImmutableSamplers = NULL; // Optional
+
+    memcpy(&bindings[1], &lightLayoutBinding, sizeof(VkDescriptorSetLayoutBinding));
+
     layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-    layoutInfo.bindingCount = 2;
+    layoutInfo.bindingCount = 3;
     layoutInfo.pBindings = bindings;
 
     if (vkCreateDescriptorSetLayout(pipe->device, &layoutInfo, NULL, &pipe->descriptorSetLayout) != VK_SUCCESS)

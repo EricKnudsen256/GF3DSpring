@@ -4,6 +4,7 @@
 
 #include "g_time.h"
 
+
 #include "p_player.h"
 
 
@@ -33,6 +34,11 @@ Player* player_new(Vector3D spawnPos)
 
     player->cloaked = false;
     player->cloaksLeft = 2;
+
+    player->light = light_new(player->ent->position);
+
+    light_set_color(vector4d(1.0, .9, .6, .02), player->light);
+    light_set_ambient_color(vector4d(1.0, 0, 0, 1.0), player->light);
 
     return player;
 }
@@ -182,6 +188,8 @@ void player_update(Entity* self)
 
         entity_update(self);
     }
+
+    light_set_pos(vector3d(self->position.x, self->position.y, self->position.z + 4), player->light);
 
 
 }

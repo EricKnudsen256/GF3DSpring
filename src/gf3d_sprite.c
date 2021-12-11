@@ -264,7 +264,7 @@ void gf3d_sprite_draw(Sprite* sprite, Vector2D position, Vector2D scale, Uint32 
         modelMat,
         vector3d(position.x * 2 / (float)extent.width, position.y * 2 / (float)extent.height, 0));
 
-    slog("Buffer frame: %i", buffer_frame);
+    //slog("Buffer frame: %i", buffer_frame);
 
     gf3d_sprite_update_basic_descriptor_set(sprite, *descriptorSet, buffer_frame, modelMat, frame);
     gf3d_sprite_render(sprite, commandBuffer, descriptorSet);

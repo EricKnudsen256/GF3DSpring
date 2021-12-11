@@ -7,6 +7,8 @@
 #include "gf3d_vgraphics.h"
 #include "gf3d_obj_load.h"
 
+#include "g_light.h"
+
 typedef struct
 {
     Model               *   model_list;
@@ -22,10 +24,12 @@ static ModelManager gf3d_model = {0};
 void gf3d_model_delete(Model *model);
 
 void gf3d_model_create_uniform_buffer(Model *model);
+void gf3d_model_create_light_uniform_buffer(Model* model);
 void gf3d_model_create_descriptor_pool(Model *model);
 void gf3d_model_create_descriptor_sets(Model *model);
 void gf3d_model_create_descriptor_set_layout();
 void gf3d_model_update_uniform_buffer(Model *model,uint32_t currentImage,Matrix4 modelMat);
+void gf3d_model_update_lighting_uniform_buffer(Model* model, uint32_t currentImage, Matrix4 modelMat);
 VkDescriptorSetLayout * gf3d_model_get_descriptor_set_layout();
 
 void gf3d_model_manager_close()
@@ -71,6 +75,7 @@ Model * gf3d_model_new()
             gf3d_model_delete(&gf3d_model.model_list[i]);
             gf3d_model.model_list[i]._inuse = 1;
             gf3d_model_create_uniform_buffer(&gf3d_model.model_list[i]);
+            gf3d_model_create_light_uniform_buffer(&gf3d_model.model_list[i]);
             return &gf3d_model.model_list[i];
         }
     }
@@ -148,7 +153,7 @@ void gf3d_model_draw(Model *model, Matrix4 modelMat)
         slog("failed to get a free descriptor Set for model rendering");
         return;
     }
-    gf3d_model_update_basic_model_descriptor_set(model,*descriptorSet,bufferFrame,modelMat);
+    gf3d_model_update_basic_model_lighting_descriptor_set(model,*descriptorSet,bufferFrame,modelMat);
     gf3d_mesh_render(model->mesh,commandBuffer,descriptorSet);
 }
 
@@ -224,6 +229,71 @@ void gf3d_model_update_basic_model_descriptor_set(Model *model,VkDescriptorSet d
     vkUpdateDescriptorSets(gf3d_model.device, 2, descriptorWrite, 0, NULL);
 }
 
+void gf3d_model_update_basic_model_lighting_descriptor_set(Model* model, VkDescriptorSet descriptorSet, Uint32 chainIndex, Matrix4 modelMat)
+{
+    VkDescriptorImageInfo imageInfo = { 0 };
+    VkWriteDescriptorSet descriptorWrite[3] = { 0 };
+    VkDescriptorBufferInfo bufferInfo = { 0 };
+    VkDescriptorBufferInfo lightingInfo = { 0 };
+
+    if (!model)
+    {
+        slog("no model provided for descriptor set update");
+        return;
+    }
+    if (descriptorSet == VK_NULL_HANDLE)
+    {
+        slog("null handle provided for descriptorSet");
+        return;
+    }
+
+    imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+    imageInfo.imageView = model->texture->textureImageView;
+    imageInfo.sampler = model->texture->textureSampler;
+
+    gf3d_model_update_uniform_buffer(model, chainIndex, modelMat);
+    bufferInfo.buffer = model->uniformBuffers[chainIndex];
+    bufferInfo.offset = 0;
+    bufferInfo.range = sizeof(UniformBufferObject);
+
+    
+    gf3d_model_update_lighting_uniform_buffer(model, chainIndex, modelMat);
+    lightingInfo.buffer = model->lightUniformBuffers[chainIndex];
+    lightingInfo.offset = 0;
+    lightingInfo.range = sizeof(LightUBO);
+    
+
+    descriptorWrite[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrite[0].dstSet = descriptorSet;
+    descriptorWrite[0].dstBinding = 0;
+    descriptorWrite[0].dstArrayElement = 0;
+    descriptorWrite[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrite[0].descriptorCount = 1;
+    descriptorWrite[0].pBufferInfo = &bufferInfo;
+   
+    descriptorWrite[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrite[1].dstSet = descriptorSet;
+    descriptorWrite[1].dstBinding = 1;
+    descriptorWrite[1].dstArrayElement = 0;
+    descriptorWrite[1].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrite[1].descriptorCount = 1;
+    descriptorWrite[1].pBufferInfo = &lightingInfo;
+
+    descriptorWrite[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrite[2].dstSet = descriptorSet;
+    descriptorWrite[2].dstBinding = 2;
+    descriptorWrite[2].dstArrayElement = 0;
+    descriptorWrite[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrite[2].descriptorCount = 1;
+    descriptorWrite[2].pImageInfo = &imageInfo;
+    descriptorWrite[2].pTexelBufferView = NULL; // Optional
+
+
+    
+
+    vkUpdateDescriptorSets(gf3d_model.device, 3, descriptorWrite, 0, NULL);
+}
+
 void gf3d_model_update_uniform_buffer(Model *model,uint32_t currentImage,Matrix4 modelMat)
 {
     void* data;
@@ -235,6 +305,31 @@ void gf3d_model_update_uniform_buffer(Model *model,uint32_t currentImage,Matrix4
         memcpy(data, &ubo, sizeof(UniformBufferObject));
 
     vkUnmapMemory(gf3d_model.device, model->uniformBuffersMemory[currentImage]);
+}
+
+void gf3d_model_update_lighting_uniform_buffer(Model* model, uint32_t currentImage, Matrix4 modelMat)
+{
+    void* data;
+    LightUBO ubo;
+    Light *testLight = lighting_manager_get_closest_light(vector3d(modelMat[3][0], modelMat[3][1], modelMat[3][2]));
+
+    if (testLight)
+    {
+        ubo = light_create_ubo_from_light(testLight);
+    }
+    else
+    {
+        ubo.pos = vector4d(0, 0, 0, 0);
+        ubo.lightColor = vector4d(0, 0, 0, 0);
+        ubo.ambientLightColor = vector4d(0, 0, 0, 0);
+    }
+    
+
+    vkMapMemory(gf3d_model.device, model->lightUniformBuffersMemory[currentImage], 0, sizeof(LightUBO), 0, &data);
+
+    memcpy(data, &ubo, sizeof(LightUBO));
+
+    vkUnmapMemory(gf3d_model.device, model->lightUniformBuffersMemory[currentImage]);
 }
 
 
@@ -251,6 +346,22 @@ void gf3d_model_create_uniform_buffer(Model *model)
     for (i = 0; i < buffercount; i++)
     {
         gf3d_vgraphics_create_buffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &model->uniformBuffers[i], &model->uniformBuffersMemory[i]);
+    }
+}
+
+void gf3d_model_create_light_uniform_buffer(Model* model)
+{
+    int i;
+    Uint32 buffercount = gf3d_model.chain_length;
+    VkDeviceSize bufferSize = sizeof(LightUBO);
+
+    model->lightUniformBuffers = (VkBuffer*)gfc_allocate_array(sizeof(VkBuffer), buffercount);
+    model->lightUniformBuffersMemory = (VkDeviceMemory*)gfc_allocate_array(sizeof(VkDeviceMemory), buffercount);
+    model->lightUniformBufferCount = buffercount;
+
+    for (i = 0; i < buffercount; i++)
+    {
+        gf3d_vgraphics_create_buffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &model->lightUniformBuffers[i], &model->lightUniformBuffersMemory[i]);
     }
 }
 

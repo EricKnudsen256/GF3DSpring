@@ -1,9 +1,10 @@
 #version 450
 #extension GL_ARB_separate_shader_objects : enable
 
-layout(binding = 1) uniform sampler2D texSampler;
+layout(binding = 2) uniform sampler2D texSampler;
 layout(location = 0) in vec3 fragNormal;
 layout(location = 1) in vec2 fragTexCoord;
+layout(location = 2) in vec4 position;
 
 layout(location = 0) out vec4 outColor;
 
@@ -13,12 +14,35 @@ layout(binding = 0) uniform UniformBufferObject {
     mat4 proj;
 } ubo;
 
+layout(binding = 1) uniform LightUBO {
+    vec3 pos;
+    vec4 lightColor;
+    vec4 ambientLightColor;
+} light;
+
 
 void main()
 {
-    vec3 lightVector = vec3(0.3,0,.7);
-    float cosTheta = dot( fragNormal,lightVector );
+	vec3 posfix = vec3(position.x, position.z, position.y);
+
+	vec3 normalWorldSpace = normalize(mat3(ubo.view) * fragNormal);
+
+	vec3 directionToLight = light.pos - position.xyz;
+	float attenuation = 1.0 / dot(directionToLight, directionToLight); // distance squared
+
+
+	float dist = 1 - distance(position.xyz, light.pos) * light.lightColor.w;
+
+	vec3 lightColor = light.lightColor.xyz * dist;
+	vec3 ambientLight = light.ambientLightColor.xyz * light.ambientLightColor.w;
+	vec3 diffuseLight = lightColor * max(dot(normalWorldSpace, normalize(directionToLight)), 0);
+	
+	
     vec4 baseColor = texture(texSampler, fragTexCoord);
-    outColor = baseColor + baseColor * cosTheta;
-    outColor.w = baseColor.w;
+    outColor.x = lightColor.x * baseColor.x;
+	outColor.y = lightColor.y * baseColor.y;
+	outColor.z = lightColor.z * baseColor.z;
+	outColor.w = baseColor.w;
+	
+
 }

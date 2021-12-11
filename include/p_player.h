@@ -4,6 +4,7 @@
 #include "gf3d_camera.h"
 
 #include "g_entity.h"
+#include "g_light.h"
 
 
 typedef struct
@@ -14,6 +15,8 @@ typedef struct
 	Bool cloaked;
 	int cloaksLeft;
 	Uint32 cloakTime;
+
+	Light* light;
 
 }Player;
 

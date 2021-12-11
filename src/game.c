@@ -17,6 +17,7 @@
 #include "g_random.h"
 #include "g_time.h"
 #include "g_monster.h"
+#include "g_light.h"
 
 #include "p_player.h"
 
@@ -71,6 +72,7 @@ int main(int argc,char *argv[])
 	slog_sync();
 
     entity_manager_init(1000);
+    lighting_manager_init(200);
     gf3d_camera_init();
     world_init(60);
     init_random();

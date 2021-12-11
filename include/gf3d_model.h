@@ -44,6 +44,10 @@ typedef struct
     VkBuffer                   *uniformBuffers;
     VkDeviceMemory             *uniformBuffersMemory;
     Uint32                      uniformBufferCount;
+
+    VkBuffer                   *lightUniformBuffers;
+    VkDeviceMemory             *lightUniformBuffersMemory;
+    Uint32                      lightUniformBufferCount;
 }Model;
 
 
@@ -72,6 +76,8 @@ void gf3d_model_free(Model *model);
  * @param modelMat the matrix to transform the model by
  */
 void gf3d_model_update_basic_model_descriptor_set(Model *model,VkDescriptorSet descriptorSet,Uint32 chainIndex,Matrix4 modelMat);
+
+void gf3d_model_update_basic_model_lighting_descriptor_set(Model* model, VkDescriptorSet descriptorSet, Uint32 chainIndex, Matrix4 modelMat);
 
 
 #endif

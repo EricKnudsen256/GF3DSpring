@@ -26,12 +26,19 @@ Monster* monster_new()
 
     World world = world_get();
 
+    Entity* player = entity_manager_get_player();
+
     while (!spawned)
     {
         int rnd = random_int_range(0, world.max_rooms);
 
         if (world.room_list[rnd]._inuse)
         {
+            if (pow(world.room_list[rnd].position.x - player->position.x, 2) + pow(world.room_list[rnd].position.y - player->position.y, 2) + pow(world.room_list[rnd].position.z - player->position.z, 2) < 30)
+            {
+                continue;
+            }
+
             spawnPos = vector3d(world.room_list[rnd].position.x, world.room_list[rnd].position.y, -8);
             spawned = true;
         }
