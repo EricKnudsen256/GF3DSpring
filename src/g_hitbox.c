@@ -118,3 +118,32 @@ void hitbox_draw(Hitbox* hitbox, Matrix4 modelMat)
 	gf3d_wireframe_draw(hitbox->wireframe, hitboxMat);
 
 }
+
+void hitbox_draw_door(Hitbox* hitbox, Matrix4 modelMat)
+{
+
+	Matrix4 hitboxMat;
+
+	//slog("offset: %f, %f, %f", hitbox->offset.x, hitbox->offset.y, hitbox->offset.z);
+
+	//gfc_matrix_copy(hitboxMat, modelMat);
+
+	if (!hitbox) return;
+	if (!hitbox->wireframe) return;
+
+	gfc_matrix_identity(hitboxMat);
+
+	hitboxMat[3][0] = hitbox->center.x;
+	hitboxMat[3][1] = hitbox->center.y;
+	hitboxMat[3][2] = hitbox->center.z;
+
+
+	hitboxMat[3][0] += hitbox->offset.x;
+	hitboxMat[3][1] += hitbox->offset.y;
+	hitboxMat[3][2] += hitbox->offset.z;
+
+
+
+	gf3d_wireframe_draw(hitbox->wireframe, hitboxMat);
+
+}

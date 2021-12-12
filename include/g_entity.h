@@ -18,6 +18,8 @@ typedef struct Entity_s
 {
     Uint8 _inuse;           /**boolean flag to check if an entity is used in the entity list */
     Uint32 _id;             /**interger ID of entity in the entity manager list */
+    Bool _lockmovement;
+
     Model *model;           /**model to draw for the entity. Not required */
     Vector3D position;      /**xyz position of the entity in the world.  */
     Vector3D rotation;      /**yaw, roll, pitch values for the entity */
@@ -95,6 +97,9 @@ void entity_manager_check_collions();
 
 Entity* entity_manager_get_player();
 
+
+Entity* entity_manager_get_monster();
+
 /**
 * @brief frees the entity manager subsystem
 */
@@ -133,7 +138,7 @@ void entity_update(Entity* self);
 * @params commandBuffer the command buffer to write the draw commands to
 * @params self the entity to update
 */
-void entity_draw(Entity* self);
+void entity_draw(Entity* self, Uint32 frame);
 
 /**
 * @brief checks collions on entities against all tiles, adjusts

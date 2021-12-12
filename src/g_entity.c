@@ -138,6 +138,27 @@ Entity* entity_manager_get_player()
     return NULL;
 }
 
+Entity* entity_manager_get_monster()
+{
+    if (!entity_manager.entity_list)
+    {
+        slog("Entity list not created, call entity_manager_init first");
+        return NULL;
+    }
+    for (int i = 0; i < entity_manager.max_entities; i++)
+    {
+        if (!entity_manager.entity_list[i]._inuse)continue;
+
+        if (entity_manager.entity_list[i].type == ENT_MONSTER)
+        {
+            //slog("Found Player");
+            return &entity_manager.entity_list[i];
+        }
+    }
+
+    return NULL;
+}
+
 void entity_manager_free()
 {
     if (entity_manager.entity_list)
@@ -206,7 +227,7 @@ void entity_update(Entity* self)
     }
 }
 
-void entity_draw(Entity* self)
+void entity_draw(Entity* self, Uint32 frame)
 {
     if (!self)
     {
@@ -217,7 +238,7 @@ void entity_draw(Entity* self)
     if (!self->model) return;
     if (!self->modelMat) return;
 
-    gf3d_model_draw(self->model, self->modelMat);
+    gf3d_model_draw(self->model, self->modelMat, frame);
 
 }
 

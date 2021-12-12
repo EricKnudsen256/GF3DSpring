@@ -12,6 +12,12 @@ typedef struct
 	Vector3D movedir;
 	Uint32 moveTime;
 
+	Bool attacking;
+
+	Uint32 currentFrame;
+	Uint32 lastFrame;
+	Uint32 frameRate;
+
 }Monster;
 
 Monster* monster_new();

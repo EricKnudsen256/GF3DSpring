@@ -6,6 +6,7 @@
 
 
 #include "p_player.h"
+#include "g_monster.h"
 
 
 Player* player_new(Vector3D spawnPos)
@@ -38,7 +39,7 @@ Player* player_new(Vector3D spawnPos)
     player->light = light_new(player->ent->position);
 
     light_set_color(vector4d(1.0, .9, .6, .02), player->light);
-    light_set_ambient_color(vector4d(1.0, 0, 0, 1.0), player->light);
+    light_set_ambient_color(vector4d(0, 0, 0, 0), player->light);
 
     return player;
 }
@@ -177,11 +178,13 @@ void player_update(Entity* self)
 
     Player* player = self->parent;
 
-    gf3d_camera_set_position(vector3d(self->position.x, self->position.y, self->position.z + player->camOffset));
-    gf3d_camera_set_rotation(self->rotation);
 
-    if (!self->dead)
+
+    if (!player->ent->dead)
     {
+
+        gf3d_camera_set_position(vector3d(self->position.x, self->position.y, self->position.z + player->camOffset));
+        gf3d_camera_set_rotation(self->rotation);
 
         vector3d_add(self->position, self->position, self->velocity);
 
@@ -237,10 +240,36 @@ void player_rotate(float degrees, int axis, Entity* self)
 void player_kill(Entity* self)
 {
     Player* player = self->parent;
+    Entity* m = entity_manager_get_monster();
+
+    Monster* monster = m->parent;
+
+    if (player->ent->dead)
+    {
+        return;
+    }
 
     if (!player->cloaked)
     {
         player->ent->dead = true;
+
+        player->ent->rotation.x = 0;
+        gf3d_camera_set_rotation(self->rotation);
+        monster->ent->_lockmovement = 1;
+
+        //play death anim
+
+        Vector3D normalForward = player->ent->forward;
+
+        vector3d_normalize(&normalForward);
+
+        slog("Z:%f", player->ent->rotation.z);
+
+        monster->ent->position = vector3d(player->ent->position.x + normalForward.x * 7, player->ent->position.y + normalForward.y * 7, monster->ent->position.z + 5);
+        monster->attacking = true;
+        monster->lastFrame = get_current_time();
+     
+
     }
 }
 

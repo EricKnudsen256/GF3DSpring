@@ -83,18 +83,53 @@ Model * gf3d_model_new()
     return NULL;
 }
 
+Model* gf3d_model_load_animated(char* filename, Uint32 startFrame, Uint32 endFrame)
+{
+    TextLine assetname;
+    Model* model;
+    model = gf3d_model_new();
+    int i, count;
+    if (!model)return NULL;
+    count = endFrame - startFrame;
+    if (count <= 0)
+    {
+        gf3d_model_free(model);
+        slog("frameRange is zero or negative: %i", count);
+        return NULL;
+    }
+    model->frameCount = count;
+    model->mesh = (Mesh**)gfc_allocate_array(sizeof(Mesh*), count);
+    if (!model->mesh)
+    {
+        gf3d_model_free(model);
+        return NULL;
+    }
+    for (i = 0; i < count; i++)
+    {
+        snprintf(assetname, GFCLINELEN, "models/%s_%i.obj", filename, startFrame + i);
+        model->mesh[i] = gf3d_mesh_load(assetname);
+    }
+
+    snprintf(assetname, GFCLINELEN, "images/%s.png", filename);
+    model->texture = gf3d_texture_load(assetname);
+
+    return model;
+}
+
 Model * gf3d_model_load(char * filename)
 {
     TextLine assetname;
-    Model *model;
+    Model* model;
     model = gf3d_model_new();
     if (!model)return NULL;
-    snprintf(assetname,GFCLINELEN,"models/%s.obj",filename);
-    model->mesh = gf3d_mesh_load(assetname);
+    snprintf(assetname, GFCLINELEN, "models/%s.obj", filename);
+    model->mesh = (Mesh**)gfc_allocate_array(sizeof(Mesh*), 1);
+    model->mesh[0] = gf3d_mesh_load(assetname);
+    model->frameCount = 1;
 
-    snprintf(assetname,GFCLINELEN,"images/%s.png",filename);
+    snprintf(assetname, GFCLINELEN, "images/%s.png", filename);
     model->texture = gf3d_texture_load(assetname);
-    
+
     return model;
 }
 
@@ -122,18 +157,26 @@ void gf3d_model_delete(Model *model)
 {
     int i;
     if (!model)return;
-    
+
     for (i = 0; i < model->uniformBufferCount; i++)
     {
         vkDestroyBuffer(gf3d_model.device, model->uniformBuffers[i], NULL);
         vkFreeMemory(gf3d_model.device, model->uniformBuffersMemory[i], NULL);
     }
 
-    gf3d_mesh_free(model->mesh);
+    for (i = 0; i < model->frameCount; i++)
+    {
+        gf3d_mesh_free(model->mesh[i]);
+    }
+    if (model->mesh)
+    {
+        memset(model->mesh, 0, sizeof(model->mesh));
+;       //free(model->mesh);
+    }
     gf3d_texture_free(model->texture);
 }
 
-void gf3d_model_draw(Model *model, Matrix4 modelMat)
+void gf3d_model_draw(Model *model, Matrix4 modelMat, Uint32 frame)
 {
     VkDescriptorSet* descriptorSet = NULL;
     VkCommandBuffer commandBuffer;
@@ -144,6 +187,13 @@ void gf3d_model_draw(Model *model, Matrix4 modelMat)
         slog("cannot render a NULL model");
         return;
     }
+
+    if (frame >= model->frameCount)
+    {
+        slog("cannot render model frame %i, greater than frameCount", frame);
+        return;
+    }
+
     commandBuffer = gf3d_vgraphics_get_current_command_model_buffer();
     bufferFrame = gf3d_vgraphics_get_current_buffer_frame();
     descriptorSet = gf3d_pipeline_get_descriptor_set(gf3d_model.pipe, bufferFrame);
@@ -154,7 +204,7 @@ void gf3d_model_draw(Model *model, Matrix4 modelMat)
         return;
     }
     gf3d_model_update_basic_model_lighting_descriptor_set(model,*descriptorSet,bufferFrame,modelMat);
-    gf3d_mesh_render(model->mesh,commandBuffer,descriptorSet);
+    gf3d_mesh_render(model->mesh[frame],commandBuffer,descriptorSet);
 }
 
 void gf3d_wireframe_draw(Model* model, Matrix4 modelMat)
@@ -168,6 +218,7 @@ void gf3d_wireframe_draw(Model* model, Matrix4 modelMat)
         slog("cannot render a NULL model");
         return;
     }
+
     commandBuffer = gf3d_vgraphics_get_current_command_wire_buffer();
     bufferFrame = gf3d_vgraphics_get_current_buffer_frame();
     descriptorSet = gf3d_pipeline_get_descriptor_set(gf3d_model.wireframePipe, bufferFrame);

@@ -46,7 +46,15 @@ void world_draw_hitboxes()
                 //slog("test");
                 if (game_world.room_list[i].hitbox_list[j])
                 {
-                    hitbox_draw(game_world.room_list[i].hitbox_list[j], game_world.room_list[i].modelMat);
+                    if (game_world.room_list[i].hitbox_list[j]->type == HITBOX_WORLD)
+                    {
+                        hitbox_draw(game_world.room_list[i].hitbox_list[j], game_world.room_list[i].modelMat);
+                    }
+                    else if (game_world.room_list[i].hitbox_list[j]->type == HITBOX_DOOR)
+                    {
+                        hitbox_draw_door(game_world.room_list[i].hitbox_list[j], game_world.room_list[i].modelMat);
+                    }
+                    
                 }
             }
         }
@@ -80,7 +88,7 @@ Room* world_new_room()
         memset(&game_world.room_list[i], 0, sizeof(Room));
         game_world.room_list[i]._inuse = true;
         game_world.room_list[i]._id = i;
-        game_world.room_list[i].dimensions = vector3d(33.725, 33.725, 33.725);
+        game_world.room_list[i].dimensions = vector3d(60, 60, 60);
         gfc_matrix_identity(game_world.room_list[i].modelMat);
 
         //NOTE: currently hard coding this value, change if more/less doors are wanted
@@ -100,7 +108,7 @@ Room* world_new_room()
 void world_layout_rooms()
 {
     Room* startingRoom = world_new_room();
-    startingRoom->model = gf3d_model_load("room1");
+    startingRoom->model = gf3d_model_load("roomLarge");
     room_make_hitboxs(startingRoom);
     room_set_position(vector3d(0, 0, 0), startingRoom);
     room_setup_doors(startingRoom);
@@ -179,7 +187,7 @@ void world_layout_rooms()
                                 break;
                             }
 
-                            newRoom->model = gf3d_model_load("room1");
+                            newRoom->model = gf3d_model_load("roomLarge");
                             room_make_hitboxs(newRoom);
                             room_set_position(newPos, newRoom);
                             room_setup_doors(newRoom);
@@ -247,6 +255,7 @@ void world_layout_rooms()
                                 game_world.room_list[i].hitbox_list[5] = hitbox_new(game_world.room_list[i].door_list[door].center,
                                     vector3d(1, game_world.room_list[i].dimensions.y - 8, 20),
                                     vector3d(0, 0, 0));
+                                game_world.room_list[i].hitbox_list[5]->type = HITBOX_DOOR;
 
                                 break;
 
@@ -254,18 +263,21 @@ void world_layout_rooms()
                                 game_world.room_list[i].hitbox_list[6] = hitbox_new(game_world.room_list[i].door_list[door].center,
                                     vector3d(1, game_world.room_list[i].dimensions.y - 8, 20),
                                     vector3d(0, 0, 0));
+                                game_world.room_list[i].hitbox_list[6]->type = HITBOX_DOOR;
                                 break;
 
                             case DOOR_NEG_Y:
                                 game_world.room_list[i].hitbox_list[7] = hitbox_new(game_world.room_list[i].door_list[door].center,
                                     vector3d(game_world.room_list[i].dimensions.x - 8, 1, 20),
                                     vector3d(0, 0, 0));
+                                game_world.room_list[i].hitbox_list[7]->type = HITBOX_DOOR;
                                 break;
 
                             case DOOR_POS_Y:
                                 game_world.room_list[i].hitbox_list[8] = hitbox_new(game_world.room_list[i].door_list[door].center,
                                     vector3d(game_world.room_list[i].dimensions.x - 8, 1, 20),
                                     vector3d(0, 0, 0));
+                                game_world.room_list[i].hitbox_list[8]->type = HITBOX_DOOR;
                                 break;
 
                             case DOOR_UNDEFINED:

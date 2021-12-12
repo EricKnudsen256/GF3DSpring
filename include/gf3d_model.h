@@ -38,7 +38,8 @@ typedef struct
 {
     Uint8                       _inuse;
     TextLine                    filename;
-    Mesh                    *   mesh;
+    Uint32                      frameCount;
+    Mesh                    **   mesh;
     Texture                 *   texture;
     VkDescriptorSet         *   descriptorSet;
     VkBuffer                   *uniformBuffers;
@@ -55,6 +56,7 @@ void gf3d_model_manager_init(Uint32 max_models,Uint32 chain_length,VkDevice devi
 
 Model * gf3d_model_load(char * filename);
 Model * gf3d_model_new();
+Model* gf3d_model_load_animated(char* filename, Uint32 startFrame, Uint32 endFrame);
 Model* gf3d_model_from_hitbox(Vector3D dimensions);
 /**
  * @brief queue up a model for rendering
@@ -63,7 +65,7 @@ Model* gf3d_model_from_hitbox(Vector3D dimensions);
  * @param commandBuffer the command used to send this render request
  * @param modelMat the model matrix (MVP)
  */
-void gf3d_model_draw(Model *model, Matrix4 modelMat);
+void gf3d_model_draw(Model *model, Matrix4 modelMat, Uint32 frame);
 void gf3d_wireframe_draw(Model* model, Matrix4 modelMat);
 
 void gf3d_model_free(Model *model);

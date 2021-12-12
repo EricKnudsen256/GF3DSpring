@@ -13,7 +13,7 @@ void room_draw(Room *room)
     if (!room->model) return;
     if (!room->modelMat) return;
 
-    gf3d_model_draw(room->model, room->modelMat);
+    gf3d_model_draw(room->model, room->modelMat, 0);
     room_draw_doors(room);
 }
 
@@ -29,19 +29,24 @@ void room_make_hitboxs(Room* room)
     room->hitbox_max = 10;
 
     //test room hitbox to see if scale is right
-    room->hitbox_list[0] = hitbox_new(vector3d(0, 0, 0), vector3d(33.725, 33.725, 1), vector3d(0, 0, -33.725/2));
+    room->hitbox_list[0] = hitbox_new(vector3d(0, 0, 0), vector3d(60, 60, 1), vector3d(0, 0, -60/2));
+    room->hitbox_list[0]->type = HITBOX_WORLD;
     room->hitbox_list[0]->parent = room;
 
-    room->hitbox_list[1] = hitbox_new(vector3d(0, 0, 0), vector3d(6, 6, 33.725), vector3d(33.725 / 2 - 3, 33.725 / 2 - 3, 0));
+    room->hitbox_list[1] = hitbox_new(vector3d(0, 0, 0), vector3d(6, 6, 60), vector3d(60 / 2 - 3, 60 / 2 - 3, 0));
+    room->hitbox_list[1]->type = HITBOX_WORLD;
     room->hitbox_list[1]->parent = room;
 
-    room->hitbox_list[2] = hitbox_new(vector3d(0, 0, 0), vector3d(6, 6, 33.725), vector3d(-(33.725 / 2 - 3), 33.725 / 2 - 3, 0));
+    room->hitbox_list[2] = hitbox_new(vector3d(0, 0, 0), vector3d(6, 6, 60), vector3d(-(60 / 2 - 3), 60 / 2 - 3, 0));
+    room->hitbox_list[2]->type = HITBOX_WORLD;
     room->hitbox_list[2]->parent = room;
 
-    room->hitbox_list[3] = hitbox_new(vector3d(0, 0, 0), vector3d(6, 6, 33.725), vector3d(-(33.725 / 2 - 3), -(33.725 / 2 - 3), 0));
+    room->hitbox_list[3] = hitbox_new(vector3d(0, 0, 0), vector3d(6, 6, 60), vector3d(-(60 / 2 - 3), -(60 / 2 - 3), 0));
+    room->hitbox_list[3]->type = HITBOX_WORLD;
     room->hitbox_list[3]->parent = room;
 
-    room->hitbox_list[4] = hitbox_new(vector3d(0, 0, 0), vector3d(6, 6, 33.725), vector3d(33.725 / 2 - 3, -(33.725 / 2 - 3), 0));
+    room->hitbox_list[4] = hitbox_new(vector3d(0, 0, 0), vector3d(6, 6, 60), vector3d(60 / 2 - 3, -(60 / 2 - 3), 0));
+    room->hitbox_list[4]->type = HITBOX_WORLD;
     room->hitbox_list[4]->parent = room;
     //slog("made room hitboxes");
 }
@@ -107,22 +112,22 @@ Door* room_new_door(DoorType type, Room* room)
     switch (type)
     {
         case DOOR_NEG_X:
-            room->door_list[i].center = vector3d(room->position.x - room->dimensions.x / 2, room->position.y, room->position.z - 4);
+            room->door_list[i].center = vector3d(room->position.x - room->dimensions.x / 2, room->position.y, room->position.z - 18);
             room->door_list[i].rotation = vector3d(M_PI / 2, 0, 0);
             room->door_list[i].type = DOOR_NEG_X;
             break;
         case DOOR_POS_X:
-            room->door_list[i].center = vector3d(room->position.x + room->dimensions.x / 2, room->position.y, room->position.z - 4);
+            room->door_list[i].center = vector3d(room->position.x + room->dimensions.x / 2, room->position.y, room->position.z - 18);
             room->door_list[i].rotation = vector3d(M_PI / 2, 0, 0);
             room->door_list[i].type = DOOR_POS_X;
             break;
         case DOOR_NEG_Y:
-            room->door_list[i].center = vector3d(room->position.x, room->position.y - room->dimensions.y / 2, room->position.z - 4);
+            room->door_list[i].center = vector3d(room->position.x, room->position.y - room->dimensions.y / 2, room->position.z - 18);
             room->door_list[i].rotation = vector3d(0, 0, 0);
             room->door_list[i].type = DOOR_NEG_Y;
             break;
         case DOOR_POS_Y:
-            room->door_list[i].center = vector3d(room->position.x, room->position.y + room->dimensions.y / 2, room->position.z - 4);
+            room->door_list[i].center = vector3d(room->position.x, room->position.y + room->dimensions.y / 2, room->position.z - 18);
             room->door_list[i].rotation = vector3d(0, 0, 0);
             room->door_list[i].type = DOOR_POS_Y;
             break;
@@ -157,7 +162,7 @@ void room_draw_doors(Room* room)
         gfc_matrix_make_translation(room->door_list[i].modelMat, room->door_list[i].center);
         gfc_matrix_rotate(room->door_list[i].modelMat, room->door_list[i].modelMat, room->door_list[i].rotation.x, vector3d(0, 0, 1));
 
-        gf3d_model_draw(room->door_list[i].model, room->door_list[i].modelMat);
+        gf3d_model_draw(room->door_list[i].model, room->door_list[i].modelMat, 0);
 
     }
 }

@@ -11,7 +11,8 @@ typedef enum
 {
 	HITBOX_UNDEFINED,
 	HITBOX_ENTITY,
-	HITBOX_WORLD
+	HITBOX_WORLD,
+	HITBOX_DOOR
 
 }HitboxType;
 
@@ -23,7 +24,9 @@ typedef struct
     
     Vector3D offset;		/**offset of hitbox from center of object it is attached to */
 
-	Model *wireframe;		/**mesh to draw the wireframe of the hitbox */
+	Model* wireframe;		/**mesh to draw the wireframe of the hitbox */
+
+	HitboxType type;
 
 
 	void* parent;
@@ -65,4 +68,6 @@ Bool hitbox_check_collision(Hitbox* box1, Hitbox* box2, Vector3D box1velocity);
 */
 void hitbox_draw(Hitbox* hitbox, Matrix4 modelMat);
 
+
+void hitbox_draw_door(Hitbox* hitbox, Matrix4 modelMat);
 #endif

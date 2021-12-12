@@ -39,9 +39,9 @@ void main()
 	
 	
     vec4 baseColor = texture(texSampler, fragTexCoord);
-    outColor.x = lightColor.x * baseColor.x;
-	outColor.y = lightColor.y * baseColor.y;
-	outColor.z = lightColor.z * baseColor.z;
+    outColor.x = max(lightColor.x * baseColor.x, ambientLight.x * baseColor.x);
+	outColor.y = max(lightColor.y * baseColor.y, ambientLight.y * baseColor.y);
+	outColor.z = max(lightColor.z * baseColor.z, ambientLight.z * baseColor.z);
 	outColor.w = baseColor.w;
 	
 

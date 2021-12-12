@@ -32,13 +32,16 @@ int main(int argc,char *argv[])
     const Uint8 * keys;
     Uint32 bufferFrame = 0;
 
+    int editor = 1;
+    int game = 1;
+
     Player* player;
     Monster* monster;
 
     SDL_Event event;
     Bool drawWireframe = false;
 
-    Sprite* test;
+    Sprite* test, *mainMenuIcon, * gameOverIcon;
 
     Sound* bgMusic;
 
@@ -79,27 +82,16 @@ int main(int argc,char *argv[])
     init_time();
     gfc_audio_init(32, 6, 4, 8, true, false);
 
-
-    Vector3D playerSpawn = vector3d(0, 0, -5);
-    player = player_new(playerSpawn);
-
-    world_layout_rooms();
-    monster = monster_new();
-
-    //SDL_ShowCursor(SDL_DISABLE);
     SDL_SetRelativeMouseMode(SDL_ENABLE);
 
-    entity_manager_think();
+    mainMenuIcon = gf3d_sprite_load("images/Mainscreen.png", 3840, 2160, 1);
+    gameOverIcon = gf3d_sprite_load("images/gameOver.png", 3840, 2160, 1);
 
-    //update functions
-    entity_manager_update();
 
-    test = gf3d_sprite_load("images/slime.png", 64, 64, 1);
+    Vector3D playerSpawn = vector3d(0, 0, -19);
+    player = player_new(playerSpawn);
 
-    bgMusic = gfc_sound_load("audio/Condemned_ Criminal Origins Unofficial ST - Stray.wav", 1, 1);
-    gfc_sound_play(bgMusic, -1, .07, -1, -1);
-
-    while(!done)
+    while (!done)
     {
         SDL_PumpEvents();   // update SDL's internal event structures
         keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
@@ -107,26 +99,78 @@ int main(int argc,char *argv[])
         update_time();
 
 
-        //think functions
+        gf3d_camera_update();
+
+        gf3d_vgraphics_render_start();
+
+        gf3d_sprite_draw(mainMenuIcon, vector2d(0, 0), vector2d(1, 1), 0);
+
+        gf3d_vgraphics_render_end();
+
+        if (keys[SDL_SCANCODE_ESCAPE])done = 1; // exit condition
+        if (keys[SDL_SCANCODE_L])
+        {
+            done = 1;
+            editor = 0;
+        }
+        else
+        {
+            for (int i = 0; i < 322; i++)
+            {
+                if (keys[i])
+                {
+                    done = 1;
+                    game = 0;
+                    break;
+                }
+            }
+        }
+
+    }
+
+    if (!game)
+    {
+        world_layout_rooms();
+        monster = monster_new();
+
+        //SDL_ShowCursor(SDL_DISABLE)
+
         entity_manager_think();
-
-
-        //check collisions
-        entity_manager_check_collions();
-
 
         //update functions
         entity_manager_update();
 
+        bgMusic = gfc_sound_load("audio/Condemned_ Criminal Origins Unofficial ST - Stray.wav", 1, 1);
+        gfc_sound_play(bgMusic, -1, .05, -1, -1);
+
+        while (!game)
+        {
+            SDL_PumpEvents();   // update SDL's internal event structures
+            keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
+
+            update_time();
 
 
-        //camera update
-        gf3d_camera_update();
+            //think functions
+            entity_manager_think();
 
 
-        //draw calls
-        gf3d_vgraphics_render_start();
-    
+            //check collisions
+            entity_manager_check_collions();
+
+
+            //update functions
+            entity_manager_update();
+
+
+
+            //camera update
+            gf3d_camera_update();
+
+
+            //draw calls
+            gf3d_vgraphics_render_start();
+
 
             while (SDL_PollEvent(&event))
             {
@@ -142,8 +186,8 @@ int main(int argc,char *argv[])
                     }
                 }
             }
-            
-            
+
+
             if (drawWireframe)
             {
                 entity_manager_draw_hitboxes();
@@ -151,19 +195,25 @@ int main(int argc,char *argv[])
             }
 
 
-            
+
 
             entity_manager_draw();
             world_draw();
 
-            gf3d_sprite_draw(test, vector2d(100, 100), vector2d(1, 1), 0);
+            if (player->ent->dead && !monster->attacking)
+            {
+                gf3d_sprite_draw(gameOverIcon, vector2d(0, 0), vector2d(1, 1), 0);
+            }
 
-            gf3d_vgraphics_render_end();           
 
-        if (keys[SDL_SCANCODE_ESCAPE])done = 1; // exit condition
-    }    
-    
-    vkDeviceWaitIdle(gf3d_vgraphics_get_default_logical_device());    
+            gf3d_vgraphics_render_end();
+
+            if (keys[SDL_SCANCODE_ESCAPE])game = 1; // exit condition
+        }
+
+        vkDeviceWaitIdle(gf3d_vgraphics_get_default_logical_device());
+    }
+       
     //cleanup
     slog("gf3d program end");
     slog_sync();
