@@ -57,7 +57,7 @@ Monster* monster_new()
     monster->moveTime = get_current_time() + 3000;
     monster->movedir = vector3d(0, 0, 0);
 
-    monster->frameRate = 30;
+    monster->frameRate = 60;
 
     monster->ent->type = ENT_MONSTER;
 
@@ -142,7 +142,7 @@ void monster_update(Entity* self)
         angle = atan2(deltaY, deltaX) - M_PI / 2;
     }
 
-    slog("MONSTER: X:%f, Y:%f, Z:%f", self->position.x, self->position.y, self->position.z);
+    //slog("MONSTER: X:%f, Y:%f, Z:%f", self->position.x, self->position.y, self->position.z);
     
 
     gfc_matrix_identity(self->modelMat);

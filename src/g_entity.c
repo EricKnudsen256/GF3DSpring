@@ -2,6 +2,7 @@
 
 #include "g_entity.h"
 #include "g_time.h"
+#include "p_player.h"
 
 #include "w_world.h"
 
@@ -275,6 +276,7 @@ void entity_check_collisions(Entity* self)
 
         if (self->type == ENT_MONSTER && ent->type == ENT_PLAYER)continue;
 
+
         //check x collision
         if (hitbox_check_collision(self->hitbox, ent->hitbox, vector3d(self->velocity.x, 0, 0)))
         {
@@ -357,6 +359,22 @@ void entity_check_collisions(Entity* self)
                 if (world.room_list[i].hitbox_list[j])
                 {
                     Hitbox* hitbox = world.room_list[i].hitbox_list[j];
+
+                    if (hitbox->type == HITBOX_INTERACT && self->type == ENT_PLAYER)
+                    {
+                        Player* player = self->parent;
+
+                        if(hitbox_check_collision(self->hitbox, hitbox, vector3d(0, 0, 0)) && player->checkInteract == true)
+                        {
+                            //run interact function?
+                            slog("Interact Detected!");
+                        }
+                    }
+
+                    if (hitbox->type == HITBOX_INTERACT)
+                    {
+                        continue;
+                    }
 
                     if (!vector3d_distance_between_less_than(self->hitbox->center, hitbox->center, 100)) continue;
 

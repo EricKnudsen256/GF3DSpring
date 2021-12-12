@@ -121,6 +121,10 @@
     <ClInclude Include="..\include\g_monster.h" />
     <ClInclude Include="..\include\g_random.h" />
     <ClInclude Include="..\include\g_time.h" />
+    <ClInclude Include="..\include\o_bed.h" />
+    <ClInclude Include="..\include\o_lever.h" />
+    <ClInclude Include="..\include\o_locker.h" />
+    <ClInclude Include="..\include\o_vent.h" />
     <ClInclude Include="..\include\p_player.h" />
     <ClInclude Include="..\include\w_room.h" />
     <ClInclude Include="..\include\w_world.h" />
@@ -163,6 +167,7 @@
     <ClCompile Include="..\src\g_monster.c" />
     <ClCompile Include="..\src\g_random.c" />
     <ClCompile Include="..\src\g_time.c" />
+    <ClCompile Include="..\src\o_bed.c" />
     <ClCompile Include="..\src\p_player.c" />
     <ClCompile Include="..\src\w_room.c" />
     <ClCompile Include="..\src\w_world.c" />

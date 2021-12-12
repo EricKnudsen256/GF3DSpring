@@ -36,6 +36,8 @@ Player* player_new(Vector3D spawnPos)
     player->cloaked = false;
     player->cloaksLeft = 2;
 
+    player->interactCooldown = 1000;
+
     player->light = light_new(player->ent->position);
 
     light_set_color(vector4d(1.0, .9, .6, .02), player->light);
@@ -158,6 +160,19 @@ void player_think(Entity* self)
         player_move(self->down, self);
         //moved = true;
     }
+
+    if (keys[SDL_SCANCODE_E] && get_current_time() >= player->interactTime + player->interactCooldown)
+    {
+        player->checkInteract = true;
+        player->interactTime = get_current_time();
+        //moved = true;
+    }
+    else
+    {
+        player->checkInteract = false;
+    }
+
+    
 
 
     if (self->rotation.x > .9)

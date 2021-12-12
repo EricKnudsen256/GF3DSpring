@@ -16,6 +16,10 @@ typedef struct
 	int cloaksLeft;
 	Uint32 cloakTime;
 
+	Bool checkInteract;
+	Uint32 interactTime;
+	Uint32 interactCooldown;
+
 	Light* light;
 
 }Player;
