@@ -18,6 +18,8 @@ typedef struct
 	Uint32 lastFrame;
 	Uint32 frameRate;
 
+	Bool playSound;
+
 }Monster;
 
 Monster* monster_new();

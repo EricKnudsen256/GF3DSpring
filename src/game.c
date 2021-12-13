@@ -48,7 +48,7 @@ int main(int argc,char *argv[])
 
     Sprite* test, *mainMenuIcon, * gameOverIcon, * winIcon;
 
-    Sound* bgMusic;
+    Sound* bgMusic, *roar;
 
     //int x, y;
 
@@ -343,6 +343,7 @@ int main(int argc,char *argv[])
         entity_manager_update();
 
         bgMusic = gfc_sound_load("audio/Condemned_ Criminal Origins Unofficial ST - Stray.wav", 1, 1);
+        roar = gfc_sound_load("audio/Monster Roar.wav", 1, 1);
         gfc_sound_play(bgMusic, -1, .05, -1, -1);
 
 
@@ -426,6 +427,12 @@ int main(int argc,char *argv[])
                 gf3d_sprite_draw(winIcon, vector2d(0, 0), vector2d(1, 1), 0);
             }
 
+            if (monster->playSound)
+            {
+                
+                gfc_sound_play(roar, -1, .05, 2, 0);
+                monster->playSound = false;
+            }
 
 
 

@@ -295,7 +295,8 @@ void player_kill(Entity* self)
         monster->ent->position = vector3d(player->ent->position.x + normalForward.x * 7, player->ent->position.y + normalForward.y * 7, monster->ent->position.z + 5);
         monster->attacking = true;
         monster->lastFrame = get_current_time();
-     
+        
+        monster->playSound = true;
 
     }
 }
