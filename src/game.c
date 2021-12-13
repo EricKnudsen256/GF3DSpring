@@ -19,6 +19,11 @@
 #include "g_monster.h"
 #include "g_light.h"
 
+#include "o_bed.h"
+#include "o_locker.h"
+#include "o_lever.h"
+#include "o_vent.h"
+
 #include "p_player.h"
 
 #include "w_world.h"
@@ -75,6 +80,7 @@ int main(int argc,char *argv[])
 	slog_sync();
 
     entity_manager_init(1000);
+    object_manager_init(500);
     lighting_manager_init(200);
     gf3d_camera_init();
     world_init(60);
@@ -112,26 +118,36 @@ int main(int argc,char *argv[])
         {
             done = 1;
             editor = 0;
+            game = 1;
         }
-        else
+        else if (keys[SDL_SCANCODE_RETURN])
         {
-            for (int i = 0; i < 322; i++)
-            {
-                if (keys[i])
-                {
-                    done = 1;
-                    game = 0;
-                    break;
-                }
-            }
+            done = 1;
+            editor = 1;
+            game = 0;
         }
 
     }
 
-    if (!game)
+    if (!editor)
     {
-        world_layout_rooms();
+        Room* editorRoom = world_new_room();
+        editorRoom->model = gf3d_model_load("roomLarge");
+        room_make_hitboxs(editorRoom);
+        room_set_position(vector3d(0, 0, 0), editorRoom);
+        room_setup_doors(editorRoom);
+
+        editorRoom->editorRoom = true;
+
+        Uint32 lastPress = get_current_time();
+        Uint32 cooldown = 1000;
+
+
         monster = monster_new();
+
+        monster->ent->position = vector3d(0, 0, -100000);
+
+        light_set_ambient_color(vector4d(1.0, 1.0, 1.0, 1.0), player->light);
 
         //SDL_ShowCursor(SDL_DISABLE)
 
@@ -140,15 +156,116 @@ int main(int argc,char *argv[])
         //update functions
         entity_manager_update();
 
-        bgMusic = gfc_sound_load("audio/Condemned_ Criminal Origins Unofficial ST - Stray.wav", 1, 1);
-        gfc_sound_play(bgMusic, -1, .05, -1, -1);
-
-        while (!game)
+        while (!editor)
         {
             SDL_PumpEvents();   // update SDL's internal event structures
             keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
 
             update_time();
+            Object* currentObj;
+
+            //slog("Editor");
+
+
+            //test functions to add objects for editor
+            if (get_current_time() > lastPress + cooldown)
+            {
+                if (keys[SDL_SCANCODE_B])
+                {
+                    currentObj = bed_new(vector3d(player->ent->position.x, player->ent->position.y + 10, player->ent->position.z), vector3d(0, 0, 0));
+                    lastPress = get_current_time();
+                }
+                if (keys[SDL_SCANCODE_L])
+                {
+                    currentObj = locker_new(vector3d(player->ent->position.x, player->ent->position.y + 10, player->ent->position.z), vector3d(0, 0, 0));
+                    lastPress = get_current_time();
+                }
+                if (keys[SDL_SCANCODE_N])
+                {
+                    currentObj = lever_new(vector3d(player->ent->position.x, player->ent->position.y + 10, player->ent->position.z), vector3d(0, 0, 0), editorRoom);
+                    lastPress = get_current_time();
+                }
+                if (keys[SDL_SCANCODE_V])
+                {
+                    currentObj = vent_new(vector3d(player->ent->position.x, player->ent->position.y + 10, player->ent->position.z), vector3d(0, 0, 0), editorRoom);
+                    lastPress = get_current_time();
+                }
+            }
+            
+            if (currentObj)
+            {
+                if (keys[SDL_SCANCODE_UP])
+                {
+                    currentObj->position.y += 5 * .001;
+                    currentObj->hitbox->center = currentObj->position;
+                    currentObj->interactBox->center = currentObj->position;
+
+                }
+                else if (keys[SDL_SCANCODE_DOWN])
+                {
+                    currentObj->position.y -= 5 * .001;
+                    currentObj->hitbox->center = currentObj->position;
+                    currentObj->interactBox->center = currentObj->position;
+
+                }
+                else if (keys[SDL_SCANCODE_RIGHT])
+                {
+                    currentObj->position.x += 5 * .001;
+                    currentObj->hitbox->center = currentObj->position;
+                    currentObj->interactBox->center = currentObj->position;
+
+                }
+                else if (keys[SDL_SCANCODE_LEFT])
+                {
+                    currentObj->position.x -= 5 * .001;
+                    currentObj->hitbox->center = currentObj->position;
+                    currentObj->interactBox->center = currentObj->position;
+
+                }
+
+                else if (keys[SDL_SCANCODE_R] && get_current_time() > lastPress + cooldown)
+                {
+                    currentObj->rotation.z += M_PI / 2;
+                    currentObj->hitbox->center = currentObj->position;
+                    currentObj->interactBox->center = currentObj->position;
+
+                    lastPress = get_current_time();
+
+                }
+
+                else if (keys[SDL_SCANCODE_T] && get_current_time() > lastPress + cooldown)
+                {
+                    currentObj->position.z += 5 * .001;
+                    currentObj->hitbox->center = currentObj->position;
+                    currentObj->interactBox->center = currentObj->position;
+
+                }
+
+                else if (keys[SDL_SCANCODE_G] && get_current_time() > lastPress + cooldown)
+                {
+                    currentObj->position.z -= 5 * .001;
+                    currentObj->hitbox->center = currentObj->position;
+                    currentObj->interactBox->center = currentObj->position;
+
+                }
+
+                if (keys[SDL_SCANCODE_RETURN])
+                {
+                    currentObj = NULL;
+                }
+            }
+
+            if (keys[SDL_SCANCODE_BACKSPACE] && get_current_time() > lastPress + cooldown)
+            {
+                //save all objects as template
+
+                editor_save_layout(editorRoom);
+                slog("Attempting to save layout");
+
+                lastPress = get_current_time();
+
+            }
+            
 
 
             //think functions
@@ -192,6 +309,8 @@ int main(int argc,char *argv[])
             {
                 entity_manager_draw_hitboxes();
                 world_draw_hitboxes();
+                object_manager_draw_hitboxes();
+
             }
 
 
@@ -199,6 +318,101 @@ int main(int argc,char *argv[])
 
             entity_manager_draw();
             world_draw();
+            object_manager_draw();
+
+
+            gf3d_vgraphics_render_end();
+
+            if (keys[SDL_SCANCODE_ESCAPE])editor = 1; // exit condition
+        }
+
+        vkDeviceWaitIdle(gf3d_vgraphics_get_default_logical_device());
+    }
+
+    if (!game)
+    {
+        world_layout_rooms();
+        monster = monster_new();
+
+        //SDL_ShowCursor(SDL_DISABLE)
+
+        entity_manager_think();
+
+        //update functions
+        entity_manager_update();
+
+        bgMusic = gfc_sound_load("audio/Condemned_ Criminal Origins Unofficial ST - Stray.wav", 1, 1);
+        gfc_sound_play(bgMusic, -1, .05, -1, -1);
+
+        while (!game)
+        {
+            SDL_PumpEvents();   // update SDL's internal event structures
+            keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
+
+            update_time();
+
+
+            //test functions to add objects
+            if (keys[SDL_SCANCODE_B])
+            {
+                bed_new(vector3d(player->ent->position.x, player->ent->position.y + 10, player->ent->position.z), vector3d(0, 0, 0));
+            }
+            if (keys[SDL_SCANCODE_L])
+            {
+                locker_new(vector3d(player->ent->position.x, player->ent->position.y + 10, player->ent->position.z), vector3d(0, 0, 0));
+            }
+
+            //think functions
+            entity_manager_think();
+
+
+            //check collisions
+            entity_manager_check_collions();
+
+
+            //update functions
+            entity_manager_update();
+
+
+
+            //camera update
+            gf3d_camera_update();
+
+
+            //draw calls
+            gf3d_vgraphics_render_start();
+
+
+            while (SDL_PollEvent(&event))
+            {
+                if (event.type == SDL_KEYDOWN && event.button.button == SDL_SCANCODE_P)
+                {
+                    if (drawWireframe == false)
+                    {
+                        drawWireframe = true;
+                    }
+                    else if (drawWireframe == true)
+                    {
+                        drawWireframe = false;
+                    }
+                }
+            }
+
+
+            if (drawWireframe)
+            {
+                entity_manager_draw_hitboxes();
+                world_draw_hitboxes();
+                object_manager_draw_hitboxes();
+
+            }
+
+
+
+
+            entity_manager_draw();
+            world_draw();
+            object_manager_draw();
 
             if (player->ent->dead && !monster->attacking)
             {

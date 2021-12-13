@@ -27,22 +27,32 @@ void main()
 
 	vec3 normalWorldSpace = normalize(mat3(ubo.view) * fragNormal);
 
-	vec3 directionToLight = light.pos - position.xyz;
+	vec3 directionToLight = light.pos - posfix.xyz;
 	float attenuation = 1.0 / dot(directionToLight, directionToLight); // distance squared
+	
+	float Pixels = 1024.0;
+    float dx = 8.0 * (1.0 / Pixels);
+    float dy = 8.0 * (1.0 / Pixels);
+	float dz = 8.0 * (1.0 / Pixels);
 
 
-	float dist = 1 - distance(position.xyz, light.pos) * light.lightColor.w;
+	float dist = 1 - distance(posfix.xyz, light.pos) * light.lightColor.w;
+	
 
 	vec3 lightColor = light.lightColor.xyz * dist;
 	vec3 ambientLight = light.ambientLightColor.xyz * light.ambientLightColor.w;
 	vec3 diffuseLight = lightColor * max(dot(normalWorldSpace, normalize(directionToLight)), 0);
 	
+
 	
-    vec4 baseColor = texture(texSampler, fragTexCoord);
+	vec2 newFrag = vec2(dx * floor(fragTexCoord.x / dx), dy * floor(fragTexCoord.y / dy));
+
+	
+    vec4 baseColor = texture(texSampler, newFrag);
     outColor.x = max(lightColor.x * baseColor.x, ambientLight.x * baseColor.x);
 	outColor.y = max(lightColor.y * baseColor.y, ambientLight.y * baseColor.y);
 	outColor.z = max(lightColor.z * baseColor.z, ambientLight.z * baseColor.z);
-	outColor.w = baseColor.w;
+	outColor.w = 1.0;
 	
 
 }

@@ -11,9 +11,18 @@
 
 typedef struct
 {
-	Object obj;
+	Object *obj;
+	Bool playerHiding;
 
 }Bed;
+
+Object* bed_new(Vector3D position, Vector3D rotation);
+
+void bed_interact(Object* obj, Entity* player);
+
+void bed_free(Object *obj);
+
+
 
 
 

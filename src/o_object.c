@@ -30,7 +30,7 @@ void object_manager_init(Uint32 max_objects)
 }
 
 
-void entity_manager_draw()
+void object_manager_draw()
 {
     if (!object_manager.object_list)
     {
@@ -39,9 +39,9 @@ void entity_manager_draw()
     }
     for (int i = 0; i < object_manager.max_objects; i++)
     {
-        if (!object_manager.object_list[i])continue;
+        if (!object_manager.object_list[i]._inuse)continue;
 
-        object_draw(object_manager.object_list[i]);
+        object_draw(&object_manager.object_list[i]);
     }
 }
 
@@ -55,14 +55,14 @@ void object_manager_draw_hitboxes()
     }
     for (int i = 0; i < object_manager.max_objects; i++)
     {
-        if (!object_manager.object_list[i])continue;
-        if (object_manager.object_list[i]->hitbox)
+        if (!object_manager.object_list[i]._inuse)continue;
+        if (object_manager.object_list[i].hitbox)
         {
-            hitbox_draw(object_manager.object_list[i]->hitbox, object_manager.object_list[i]->modelMat);
+            hitbox_draw(object_manager.object_list[i].hitbox, object_manager.object_list[i].modelMat);
         }
-        if (object_manager.object_list[i]->interactBox)
+        if (object_manager.object_list[i].interactBox)
         {
-            hitbox_draw(object_manager.object_list[i]->interactBox, object_manager.object_list[i]->modelMat);
+            hitbox_draw(object_manager.object_list[i].interactBox, object_manager.object_list[i].modelMat);
         }
 
     }
@@ -79,6 +79,16 @@ void object_manager_free()
     slog("Object system closed");
 }
 
+Object* object_manager_get_object_list()
+{
+    return object_manager.object_list;
+}
+
+Uint32 object_manager_get_object_max()
+{
+    return object_manager.max_objects;
+}
+
 Object* object_new()
 {
     if (!object_manager.object_list)
@@ -88,11 +98,13 @@ Object* object_new()
     }
     for (int i = 0; i < object_manager.max_objects; i++)
     {
-        if (object_manager.object_list[i])continue;
+        if (object_manager.object_list[i]._inuse)continue;
 
-        memset(object_manager.object_list[i], 0, sizeof(Object));
-        object_manager.object_list[i]->_id = i;
-        return object_manager.object_list[i];
+        memset(&object_manager.object_list[i], 0, sizeof(Object));
+
+        object_manager.object_list[i]._id = i;
+        object_manager.object_list[i]._inuse = 1;
+        return &object_manager.object_list[i];
 
     }
     slog("No free objects");
@@ -110,6 +122,11 @@ void object_draw(Object* obj)
     if (!obj->model) return;
     if (!obj->modelMat) return;
 
+    gfc_matrix_identity(obj->modelMat);
+    gfc_matrix_make_translation(obj->modelMat, obj->position);
+    gfc_matrix_rotate(obj->modelMat, obj->modelMat, obj->rotation.x, vector3d(1, 0, 0));
+    gfc_matrix_rotate(obj->modelMat, obj->modelMat, obj->rotation.z, vector3d(0, 0, 1));
+
     gf3d_model_draw(obj->model, obj->modelMat, 0);
 }
 
@@ -120,5 +137,6 @@ void object_free(Object* obj)
         slog("No object given");
         return;
     }
-    memset(object_manager.object_list[obj->_id], 0, sizeof(Object));
+    obj->free(obj);
+    memset(&object_manager.object_list[obj->_id], 0, sizeof(Object));
 }

@@ -144,6 +144,12 @@
     <ClInclude Include="..\include\o_lever.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\o_object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\o_finaldoor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\gfc\simple_json\src\simple_json.c">
@@ -267,6 +273,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\o_bed.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\o_object.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\o_locker.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\o_lever.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\o_vent.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\o_finaldoor.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

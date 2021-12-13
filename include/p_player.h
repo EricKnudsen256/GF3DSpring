@@ -13,12 +13,16 @@ typedef struct
 	int camOffset;
 	Bool crouched;
 	Bool cloaked;
+	Bool win;
 	int cloaksLeft;
 	Uint32 cloakTime;
 
 	Bool checkInteract;
+	Bool hiding;
 	Uint32 interactTime;
 	Uint32 interactCooldown;
+
+	Vector3D hidePos;
 
 	Light* light;
 

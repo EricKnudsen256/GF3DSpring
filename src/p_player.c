@@ -40,7 +40,7 @@ Player* player_new(Vector3D spawnPos)
 
     player->light = light_new(player->ent->position);
 
-    light_set_color(vector4d(1.0, .9, .6, .02), player->light);
+    light_set_color(vector4d(1.0, .9, .6, .01), player->light);
     light_set_ambient_color(vector4d(0, 0, 0, 0), player->light);
 
     return player;
@@ -92,12 +92,12 @@ void player_think(Entity* self)
     }
     else
     {
-        vector3d_scale(self->forward, self->forward, deltaTime * 40);
-        vector3d_scale(self->back, self->back, deltaTime * 40);
-        vector3d_scale(self->right, self->right, deltaTime * 40);
-        vector3d_scale(self->left, self->left, deltaTime * 40);
-        vector3d_scale(self->up, self->up, deltaTime * 40);
-        vector3d_scale(self->down, self->down, deltaTime * 40);
+        vector3d_scale(self->forward, self->forward, deltaTime * 30);
+        vector3d_scale(self->back, self->back, deltaTime * 30);
+        vector3d_scale(self->right, self->right, deltaTime * 30);
+        vector3d_scale(self->left, self->left, deltaTime * 30);
+        vector3d_scale(self->up, self->up, deltaTime * 30);
+        vector3d_scale(self->down, self->down, deltaTime * 30);
     }
 
 
@@ -197,17 +197,29 @@ void player_update(Entity* self)
 
     if (!player->ent->dead)
     {
+        if (player->hiding)
+        {
+            gf3d_camera_set_position(player->hidePos);
+            gf3d_camera_set_rotation(self->rotation);
+        }
+        else
+        {
+            gf3d_camera_set_position(vector3d(self->position.x, self->position.y, self->position.z + player->camOffset));
+            gf3d_camera_set_rotation(self->rotation);
 
-        gf3d_camera_set_position(vector3d(self->position.x, self->position.y, self->position.z + player->camOffset));
-        gf3d_camera_set_rotation(self->rotation);
-
-        vector3d_add(self->position, self->position, self->velocity);
-
+            vector3d_add(self->position, self->position, self->velocity);
+        }
 
         entity_update(self);
+
     }
 
     light_set_pos(vector3d(self->position.x, self->position.y, self->position.z + 4), player->light);
+
+    if (!player->win)
+    {
+        //slog("PLAYER X:%f, Y:%f", self->position.x, self->position.y);
+    }
 
 
 }
@@ -264,7 +276,7 @@ void player_kill(Entity* self)
         return;
     }
 
-    if (!player->cloaked)
+    if (!player->cloaked && !player->hiding)
     {
         player->ent->dead = true;
 

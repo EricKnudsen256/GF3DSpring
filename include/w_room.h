@@ -29,6 +29,8 @@ typedef struct
 
     Vector3D dimensions; //assuming this is a rectangular room
     Vector3D rotation;
+
+    Hitbox* hitbox;
     
 }Door;
 
@@ -42,6 +44,8 @@ typedef struct
     Vector3D rotation;
     Vector3D scale;
     Matrix4 modelMat;
+
+    Bool editorRoom;
 
     Hitbox **hitbox_list;
     Uint32 hitbox_max;
@@ -64,5 +68,9 @@ void room_draw_doors(Room* room);
 void room_setup_doors(Room* room);
 
 void door_set_connected(DoorType type, Room* room);
+
+void room_load_layout_random(Room* room);
+
+void editor_save_layout(Room *room);
 
 #endif

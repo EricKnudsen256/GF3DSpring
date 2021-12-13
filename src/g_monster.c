@@ -77,7 +77,7 @@ void monster_think(Entity* self)
 
     if(((vector3d_distance_between_less_than(player->position, monster->ent->position, 100) && !p->crouched) || 
         (vector3d_distance_between_less_than(player->position, monster->ent->position, 50) && p->crouched)) &&
-         !p->cloaked)
+         !p->cloaked && !p->hiding)
     {
         vector3d_sub(playerDir, player->position, monster->ent->position);
         playerDir = vector3d(playerDir.x, playerDir.y, 0);

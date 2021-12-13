@@ -2,6 +2,9 @@
 
 #include "g_random.h"
 
+#include "o_vent.h"
+#include "o_finaldoor.h"
+
 #include "w_world.h"
 
 World game_world = {0};
@@ -192,6 +195,10 @@ void world_layout_rooms()
                             room_set_position(newPos, newRoom);
                             room_setup_doors(newRoom);
 
+
+                            //todo implement random check so not every room uses a layout
+                            room_load_layout_random(newRoom);
+
                             DoorType type2;
 
                             switch (type)
@@ -245,9 +252,10 @@ void world_layout_rooms()
             if (game_world.room_list[i].door_list[door].connected == false)
             { 
                 game_world.room_list[i].door_list[door].model = gf3d_model_load("door");
+                game_world.room_list[i].door_list[door].locked = false;
                
                
-                        slog("Type:%i", game_world.room_list[i].door_list[door].type);
+                        //slog("Type:%i", game_world.room_list[i].door_list[door].type);
                         switch (game_world.room_list[i].door_list[door].type)
                         {
                             
@@ -256,6 +264,7 @@ void world_layout_rooms()
                                     vector3d(1, game_world.room_list[i].dimensions.y - 8, 20),
                                     vector3d(0, 0, 0));
                                 game_world.room_list[i].hitbox_list[5]->type = HITBOX_DOOR;
+                                game_world.room_list[i].door_list[door].hitbox = game_world.room_list[i].hitbox_list[5];
 
                                 break;
 
@@ -264,6 +273,7 @@ void world_layout_rooms()
                                     vector3d(1, game_world.room_list[i].dimensions.y - 8, 20),
                                     vector3d(0, 0, 0));
                                 game_world.room_list[i].hitbox_list[6]->type = HITBOX_DOOR;
+                                game_world.room_list[i].door_list[door].hitbox = game_world.room_list[i].hitbox_list[6];
                                 break;
 
                             case DOOR_NEG_Y:
@@ -271,6 +281,7 @@ void world_layout_rooms()
                                     vector3d(game_world.room_list[i].dimensions.x - 8, 1, 20),
                                     vector3d(0, 0, 0));
                                 game_world.room_list[i].hitbox_list[7]->type = HITBOX_DOOR;
+                                game_world.room_list[i].door_list[door].hitbox = game_world.room_list[i].hitbox_list[7];
                                 break;
 
                             case DOOR_POS_Y:
@@ -278,6 +289,7 @@ void world_layout_rooms()
                                     vector3d(game_world.room_list[i].dimensions.x - 8, 1, 20),
                                     vector3d(0, 0, 0));
                                 game_world.room_list[i].hitbox_list[8]->type = HITBOX_DOOR;
+                                game_world.room_list[i].door_list[door].hitbox = game_world.room_list[i].hitbox_list[8];
                                 break;
 
                             case DOOR_UNDEFINED:
@@ -288,12 +300,98 @@ void world_layout_rooms()
 
                         }
             }
+
+            else if (game_world.room_list[i].door_list[door].locked == true)
+            {
+                game_world.room_list[i].door_list[door].model = gf3d_model_load("door_lever");
+
+
+                //slog("Type:%i", game_world.room_list[i].door_list[door].type);
+                switch (game_world.room_list[i].door_list[door].type)
+                {
+
+                case DOOR_NEG_X:
+                    game_world.room_list[i].hitbox_list[5] = hitbox_new(game_world.room_list[i].door_list[door].center,
+                        vector3d(.5, game_world.room_list[i].dimensions.y - 8, 20),
+                        vector3d(0, 0, 0));
+                    game_world.room_list[i].hitbox_list[5]->type = HITBOX_INACTIVE;
+                    game_world.room_list[i].door_list[door].hitbox = game_world.room_list[i].hitbox_list[5];
+
+                    break;
+
+                case DOOR_POS_X:
+                    game_world.room_list[i].hitbox_list[6] = hitbox_new(game_world.room_list[i].door_list[door].center,
+                        vector3d(.5, game_world.room_list[i].dimensions.y - 8, 20),
+                        vector3d(0, 0, 0));
+                    game_world.room_list[i].hitbox_list[6]->type = HITBOX_INACTIVE;
+                    game_world.room_list[i].door_list[door].hitbox = game_world.room_list[i].hitbox_list[6];
+                    break;
+
+                case DOOR_NEG_Y:
+                    game_world.room_list[i].hitbox_list[7] = hitbox_new(game_world.room_list[i].door_list[door].center,
+                        vector3d(game_world.room_list[i].dimensions.x - 8, .5, 20),
+                        vector3d(0, 0, 0));
+                    game_world.room_list[i].hitbox_list[7]->type = HITBOX_INACTIVE;
+                    game_world.room_list[i].door_list[door].hitbox = game_world.room_list[i].hitbox_list[7];
+                    break;
+
+                case DOOR_POS_Y:
+                    game_world.room_list[i].hitbox_list[8] = hitbox_new(game_world.room_list[i].door_list[door].center,
+                        vector3d(game_world.room_list[i].dimensions.x - 8, .5, 20),
+                        vector3d(0, 0, 0));
+                    game_world.room_list[i].hitbox_list[8]->type = HITBOX_INACTIVE;
+                    game_world.room_list[i].door_list[door].hitbox = game_world.room_list[i].hitbox_list[8];
+                    break;
+
+                case DOOR_UNDEFINED:
+                    slog("Door type undefined, expect a crash");
+                    break;
+
+
+
+                }
+            }
             
         }
 
     }
 
-    
+    vent_connect_all();
+
+    //create final door
+
+    Bool finalPlaced = false;
+
+    while (!finalPlaced)
+    {
+        int finalRoom = random_int_range(0, game_world.totalRooms - 1);
+
+        if (game_world.room_list[finalRoom]._inuse)
+        {
+            if (game_world.room_list[finalRoom].door_list[0].connected
+                && game_world.room_list[finalRoom].door_list[1].connected
+                && game_world.room_list[finalRoom].door_list[2].connected
+                && game_world.room_list[finalRoom].door_list[3].connected)
+            {
+                continue;
+            }
+
+            
+            
+            while (!finalPlaced)
+            {
+                int chosenDoor = random_int_range(0, 3);
+
+                if (!game_world.room_list[finalRoom].door_list[chosenDoor].connected)
+                {
+                    final_door_new(&game_world.room_list[finalRoom].door_list[chosenDoor]);
+                    finalPlaced = true;
+                }
+            }
+           
+        }
+    }
+
 
 }
 

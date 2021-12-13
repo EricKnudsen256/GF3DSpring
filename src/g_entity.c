@@ -2,7 +2,10 @@
 
 #include "g_entity.h"
 #include "g_time.h"
+
 #include "p_player.h"
+
+#include "o_object.h"
 
 #include "w_world.h"
 
@@ -360,21 +363,8 @@ void entity_check_collisions(Entity* self)
                 {
                     Hitbox* hitbox = world.room_list[i].hitbox_list[j];
 
-                    if (hitbox->type == HITBOX_INTERACT && self->type == ENT_PLAYER)
-                    {
-                        Player* player = self->parent;
+                    if (hitbox->type == HITBOX_INACTIVE)continue;
 
-                        if(hitbox_check_collision(self->hitbox, hitbox, vector3d(0, 0, 0)) && player->checkInteract == true)
-                        {
-                            //run interact function?
-                            slog("Interact Detected!");
-                        }
-                    }
-
-                    if (hitbox->type == HITBOX_INTERACT)
-                    {
-                        continue;
-                    }
 
                     if (!vector3d_distance_between_less_than(self->hitbox->center, hitbox->center, 100)) continue;
 
@@ -448,6 +438,99 @@ void entity_check_collisions(Entity* self)
                 }
             }
         }
+    }
+
+    //iterate through object list
+
+    Object* object_list = object_manager_get_object_list();
+    Uint32 object_max = object_manager_get_object_max();
+
+    for (int i = 0; i < object_max; i++)
+    {
+        if (object_list[i]._inuse)
+        {
+            if (self->type == ENT_PLAYER)
+            {
+                Player* player = self->parent;
+
+                if (hitbox_check_collision(self->hitbox, object_list[i].interactBox, vector3d(0, 0, 0)) && player->checkInteract == true)
+                {
+                    object_list[i].interact(&object_list[i], self);
+                    player->checkInteract = false;
+                }
+            }
+
+            if (!object_list[i].hitbox)continue;
+
+            //check x collision
+            if (hitbox_check_collision(self->hitbox, object_list[i].hitbox, vector3d(self->velocity.x, 0, 0)))
+            {
+                //slog("Collision: true");
+                if (self->velocity.x > 0)
+                {
+                    //slog("Vel:x:%f", self->velocity.x);
+                    self->position.x = (object_list[i].hitbox->center.x) - (object_list[i].hitbox->dimensions.x / 2) - (self->hitbox->dimensions.x / 2);
+                    self->hitbox->center.x = (object_list[i].hitbox->center.x) - (object_list[i].hitbox->dimensions.x / 2) - (self->hitbox->dimensions.x / 2);
+
+                    self->velocity.x = 0;
+                }
+                else if (self->velocity.x < 0)
+                {
+                    //slog("Vel:x:%f", self->velocity.x);
+                    self->position.x = (object_list[i].hitbox->center.x) + (object_list[i].hitbox->dimensions.x / 2) + (self->hitbox->dimensions.x / 2);
+                    self->hitbox->center.x = (object_list[i].hitbox->center.x) + (object_list[i].hitbox->dimensions.x / 2) + (self->hitbox->dimensions.x / 2);
+
+                    self->velocity.x = 0;
+                }
+
+
+            }
+
+            //check y collision
+            if (hitbox_check_collision(self->hitbox, object_list[i].hitbox, vector3d(0, self->velocity.y, 0)))
+            {
+
+                if (self->velocity.y > 0)
+                {
+                    //slog("Vel:x:%f", self->velocity.x);
+                    self->position.y = (object_list[i].hitbox->center.y) - (object_list[i].hitbox->dimensions.y / 2) - (self->hitbox->dimensions.y / 2);
+                    self->hitbox->center.y = (object_list[i].hitbox->center.y) - (object_list[i].hitbox->dimensions.y / 2) - (self->hitbox->dimensions.y / 2);
+
+                    self->velocity.y = 0;
+                }
+                else if (self->velocity.y < 0)
+                {
+                    //slog("Vel:x:%f", self->velocity.x);
+                    self->position.y = (object_list[i].hitbox->center.y) + (object_list[i].hitbox->dimensions.y / 2) + (self->hitbox->dimensions.y / 2);
+                    self->hitbox->center.y = (object_list[i].hitbox ->center.y) + (object_list[i].hitbox->dimensions.y / 2) + (self->hitbox->dimensions.y / 2);
+
+                    self->velocity.y = 0;
+                }
+            }
+
+            //check z collision
+            if (hitbox_check_collision(self->hitbox, object_list[i].hitbox, vector3d(0, 0, self->velocity.z)))
+            {
+                if (self->velocity.z > 0)
+                {
+                    //slog("Vel:x:%f", self->velocity.x);
+                    self->position.z = (object_list[i].hitbox->center.z) - (object_list[i].hitbox->dimensions.z / 2) - (self->hitbox->dimensions.z / 2);
+                    self->hitbox->center.z = (object_list[i].hitbox->center.z) - (object_list[i].hitbox->dimensions.z / 2) - (self->hitbox->dimensions.z / 2);
+
+                    self->velocity.z = 0;
+                }
+                else if (self->velocity.z < 0)
+                {
+                    //slog("Vel:x:%f", self->velocity.x);
+                    self->position.z = (object_list[i].hitbox->center.z) + (object_list[i].hitbox->dimensions.z / 2) + (self->hitbox->dimensions.z / 2);
+                    self->hitbox->center.z = (object_list[i].hitbox->center.z) + (object_list[i].hitbox->dimensions.z / 2) + (self->hitbox->dimensions.z / 2);
+
+                    self->velocity.z = 0;
+                }
+            }
+        }
+
+        
     }
 
 
