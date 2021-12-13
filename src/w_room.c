@@ -43,37 +43,37 @@ void room_make_hitboxs(Room* room)
     room->hitbox_list[0]->type = HITBOX_WORLD;
     room->hitbox_list[0]->parent = room;
 
-    room->hitbox_list[1] = hitbox_new(vector3d(0, 0, 0), vector3d(20, 1, 60), vector3d(60 / 2 - 10, 60 / 2 - 0, 0));
+    room->hitbox_list[1] = hitbox_new(vector3d(0, 0, 0), vector3d(20, 3, 60), vector3d(60 / 2 - 10, 60 / 2 - 0, 0));
     room->hitbox_list[1]->type = HITBOX_WORLD;
     room->hitbox_list[1]->parent = room;
 
-    room->hitbox_list[2] = hitbox_new(vector3d(0, 0, 0), vector3d(20, 1, 60), vector3d(-(60 / 2 - 10), 60 / 2 - 0, 0));
+    room->hitbox_list[2] = hitbox_new(vector3d(0, 0, 0), vector3d(20, 3, 60), vector3d(-(60 / 2 - 10), 60 / 2 - 0, 0));
     room->hitbox_list[2]->type = HITBOX_WORLD;
     room->hitbox_list[2]->parent = room;
 
-    room->hitbox_list[3] = hitbox_new(vector3d(0, 0, 0), vector3d(20, 1, 60), vector3d(-(60 / 2 - 10), -(60 / 2 - 0), 0));
+    room->hitbox_list[3] = hitbox_new(vector3d(0, 0, 0), vector3d(20, 3, 60), vector3d(-(60 / 2 - 10), -(60 / 2 - 0), 0));
     room->hitbox_list[3]->type = HITBOX_WORLD;
     room->hitbox_list[3]->parent = room;
 
-    room->hitbox_list[4] = hitbox_new(vector3d(0, 0, 0), vector3d(20, 1, 60), vector3d(60 / 2 - 10, -(60 / 2 - 0), 0));
+    room->hitbox_list[4] = hitbox_new(vector3d(0, 0, 0), vector3d(20, 3, 60), vector3d(60 / 2 - 10, -(60 / 2 - 0), 0));
     room->hitbox_list[4]->type = HITBOX_WORLD;
     room->hitbox_list[4]->parent = room;
 
 
 
-    room->hitbox_list[11] = hitbox_new(vector3d(0, 0, 0), vector3d(1, 20, 60), vector3d(60 / 2 - 0, 60 / 2 - 10, 0));
+    room->hitbox_list[11] = hitbox_new(vector3d(0, 0, 0), vector3d(3, 20, 60), vector3d(60 / 2 - 0, 60 / 2 - 10, 0));
     room->hitbox_list[11]->type = HITBOX_WORLD;
     room->hitbox_list[11]->parent = room;
 
-    room->hitbox_list[12] = hitbox_new(vector3d(0, 0, 0), vector3d(1, 20, 60), vector3d(-(60 / 2 - 0), 60 / 2 - 10, 0));
+    room->hitbox_list[12] = hitbox_new(vector3d(0, 0, 0), vector3d(3, 20, 60), vector3d(-(60 / 2 - 0), 60 / 2 - 10, 0));
     room->hitbox_list[12]->type = HITBOX_WORLD;
     room->hitbox_list[12]->parent = room;
 
-    room->hitbox_list[13] = hitbox_new(vector3d(0, 0, 0), vector3d(1, 20, 60), vector3d(-(60 / 2 - 0), -(60 / 2 - 10), 0));
+    room->hitbox_list[13] = hitbox_new(vector3d(0, 0, 0), vector3d(3, 20, 60), vector3d(-(60 / 2 - 0), -(60 / 2 - 10), 0));
     room->hitbox_list[13]->type = HITBOX_WORLD;
     room->hitbox_list[13]->parent = room;
 
-    room->hitbox_list[14] = hitbox_new(vector3d(0, 0, 0), vector3d(1, 20, 60), vector3d(60 / 2 - 0, -(60 / 2 - 10), 0));
+    room->hitbox_list[14] = hitbox_new(vector3d(0, 0, 0), vector3d(3, 20, 60), vector3d(60 / 2 - 0, -(60 / 2 - 10), 0));
     room->hitbox_list[14]->type = HITBOX_WORLD;
     room->hitbox_list[14]->parent = room;
     //slog("made room hitboxes");
