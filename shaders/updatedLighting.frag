@@ -23,7 +23,7 @@ layout(binding = 1) uniform LightUBO {
 
 void main()
 {
-	vec3 posfix = vec3(position.x, position.z, position.y);
+	vec3 posfix = vec3(position.x, position.y, position.z);
 
 	vec3 normalWorldSpace = normalize(mat3(ubo.view) * fragNormal);
 
@@ -37,6 +37,7 @@ void main()
 
 
 	float dist = 1 - distance(posfix.xyz, light.pos) * light.lightColor.w;
+	
 	
 
 	vec3 lightColor = light.lightColor.xyz * dist;
