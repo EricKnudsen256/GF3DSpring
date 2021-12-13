@@ -195,7 +195,7 @@ void player_update(Entity* self)
 
 
 
-    if (!player->ent->dead)
+    if (!player->ent->dead || player->win)
     {
         if (player->hiding)
         {
@@ -276,7 +276,7 @@ void player_kill(Entity* self)
         return;
     }
 
-    if (!player->cloaked && !player->hiding)
+    if (!player->cloaked && !player->hiding && !player->win)
     {
         player->ent->dead = true;
 

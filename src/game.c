@@ -46,7 +46,7 @@ int main(int argc,char *argv[])
     SDL_Event event;
     Bool drawWireframe = false;
 
-    Sprite* test, *mainMenuIcon, * gameOverIcon;
+    Sprite* test, *mainMenuIcon, * gameOverIcon, * winIcon;
 
     Sound* bgMusic;
 
@@ -92,6 +92,7 @@ int main(int argc,char *argv[])
 
     mainMenuIcon = gf3d_sprite_load("images/Mainscreen.png", 3840, 2160, 1);
     gameOverIcon = gf3d_sprite_load("images/gameOver.png", 3840, 2160, 1);
+    winIcon = gf3d_sprite_load("images/winScreen.png", 3840, 2160, 1);
 
 
     Vector3D playerSpawn = vector3d(0, 0, -19);
@@ -344,6 +345,7 @@ int main(int argc,char *argv[])
         bgMusic = gfc_sound_load("audio/Condemned_ Criminal Origins Unofficial ST - Stray.wav", 1, 1);
         gfc_sound_play(bgMusic, -1, .05, -1, -1);
 
+
         while (!game)
         {
             SDL_PumpEvents();   // update SDL's internal event structures
@@ -419,11 +421,21 @@ int main(int argc,char *argv[])
                 gf3d_sprite_draw(gameOverIcon, vector2d(0, 0), vector2d(1, 1), 0);
             }
 
+            if (player->win)
+            {
+                gf3d_sprite_draw(winIcon, vector2d(0, 0), vector2d(1, 1), 0);
+            }
+
+
+
 
             gf3d_vgraphics_render_end();
 
+            slog("Monster Pos: X:%f, Y:%f, Player Pos: X:%f, Y:%f", monster->ent->position.x, monster->ent->position.y, player->ent->position.x, player->ent->position.y);
+
             if (keys[SDL_SCANCODE_ESCAPE])game = 1; // exit condition
         }
+
 
         vkDeviceWaitIdle(gf3d_vgraphics_get_default_logical_device());
     }

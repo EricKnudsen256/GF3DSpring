@@ -73,6 +73,11 @@ void monster_think(Entity* self)
     Entity* player = entity_manager_get_player();
     Player* p = player->parent;
 
+    if (p->win)
+    {
+        self->_lockmovement = true;
+    }
+
     Vector3D playerDir;
 
     if(((vector3d_distance_between_less_than(player->position, monster->ent->position, 100) && !p->crouched) || 
