@@ -1,23 +1,11 @@
-# gf3d
-a collection of utlitity functions designed to facilitate creating 3D games with ~~OpenGL~~ Vulkan and SDL2
-This project is specifically intended to function as an educational tool for my students taking 3D Game Programming.
+# Horror Game Demo
+This game was made during my Vulkan game development course at NJIT. 
 
-Currently the project is in a WIP state.
-It represents my first stab at getting vulkan rendering pipeline setup.
-It is not stable and I intend to do a complete rewrite of the vulkan system as soon as I can find some time
+A very basic project was provided to the class with just enough code to render a few very simple objects to the scene. All other additions and improvements, such as the first person camera and controller, level generation system, AI monster, and the interactible objects around the environment, were coded and developed by me exclusively.
 
+All rendering was done through Vulkan using HLSL shaders. While a sample rendering pipeline was provided for us, I created a seperate pipeline for the purpose to rendering debug wireframes, and improved on the original pipeline to add in a dynamic lighting system, shown in the demo video.
 
-# Build Process
+While there are a ton of additions that I could make to this game, I believe my results were very good, despite the relatively short time frame.
 
-Before you can build the example code we are providing for you, you will need to obtain the libraries required
-by the source code. Some of these libraries are easy to obtain and others are provided by the vendors of hardware
-that is installed in your computer. After the libraries are obtained the following sequence of steps should be
-performable from the following steps from the root of the cloned git repository within a terminal. 
-
-1. Obtain the code: `git clone <repo name>`
-2. Checkout seed branch: `git checkout <branch name>`
-3. Make sure ou fetch submodules: `git submodule update --init --recursive`
-4. Build libraries: `pushd gfc/src; make; popd`
-5. Build game: `pushd src; make; popd`
-
-You should now have a `gf3d` binary within the root of your git repository. Executing this will start your game.
+# Demo Video
+https://www.youtube.com/watch?v=Wteeg9gJNjw
